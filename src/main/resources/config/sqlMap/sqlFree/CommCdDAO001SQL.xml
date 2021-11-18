@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CommCdDAO">
+	
+	<typeAlias alias="egovMap"        	type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="CommCdVO"         type="com.lottejtb.comm.service.CommCdVO"/>
+	
+	<resultMap id="comCdList" class="CommCdVO">
+		<result property="cd" column="CD" columnIndex="1"/>
+		<result property="cdNmEn" column="CD_NM_EN" columnIndex="2"/>
+		<result property="cdNmKr" column="CD_NM_KR" columnIndex="3"/>
+	</resultMap>
+	
+	<select id="CommCdDAO.selectCdList" resultMap="comCdList" parameterClass="CommCdVO">
+		<![CDATA[			
+			SELECT /* CommCdDAO.selectCdList */
+					CD 
+			      , CD_NM_EN
+			      , CD_NM_KR
+			FROM COM_SYS_CD
+			WHERE GRP_CD = #grpCd#
+			  AND USE_YN = 'Y'
+			ORDER BY SORT_ORD
+		]]>
+	</select>
+</sqlMap>

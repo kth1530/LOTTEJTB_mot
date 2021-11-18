@@ -1,0 +1,16 @@
+document.write('<meta http-equiv="cache-control" content="no-cache" />');
+document.write('<meta http-equiv="pragma" content="no-cache" />');
+document.write('<meta http-equiv="expires" content="-1" />');
+document.write('<meta name="robots" content="all" />');
+document.write('<meta name="keywords" content="" />');
+document.write('<script src="/resources/common/js/UserAgent.js"></script></script>');           
+document.write('<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">'); 
+document.write(' <title>롯데Holyday 모바일</title>');
+document.write('<link rel="stylesheet" href="/resources/common/css/jquery.mobile-1.4.5.min.css">'); 
+document.write('<link rel="stylesheet" href="/resources/common/css/swiper.min.css">');
+document.write('<link rel="stylesheet" href="/resources/common/css/common.css">');
+document.write('<link rel="shortcut icon" type="image/x-icon" href="/resources/common/css/lottejtb.ico">');			 
+document.write('<script  src="/resources/common/js/jquery-latest.min.js"></script>');
+document.write('<script src="/resources/common/js/jquery.mobile-1.4.5.min.js"></script>');
+document.write('<script src="/resources/common/js/common.js"></script>');
+document.write('<script src="/resources/common/js/library/jquery.anchor.js"></script>');

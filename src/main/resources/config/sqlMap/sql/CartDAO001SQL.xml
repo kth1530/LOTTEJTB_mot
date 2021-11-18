@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CartDAO">
+	
+		
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="DIWishListVO"         type="com.lottejtb.goods.service.DIWishListVO"/>
+   
+    <!-- 상품상세 UI >  찜하기 정보   -->
+	<resultMap id="goodsCart" class="DIWishListVO">
+	    <result property="wish_seq" column="WISH_SEQ"/>
+	 	<result property="wish_cd" column="WISH_CD"/>
+	 	<result property="ctg_seq" column="CTG_SEQ"/>
+	 	<result property="cust_cd" column="CUST_CD"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>
+
+	 	<result property="event_cd" column="EVENT_CD"/>
+	 	<result property="start_day" column="START_DAY"/>
+    </resultMap>		
+	
+	<!--  상품 상세 UI > 찜하기 정보 조회   -->
+	<select id="CartDAO.selectCartList" parameterClass="DIWishListVO" resultMap="goodsCart">
+        SELECT WISH_SEQ,
+               WISH_CD,
+               CTG_SEQ,
+               CUST_CD,
+               GOODS_CD,
+               EVENT_CD,
+               START_DAY      
+          FROM DI_WISH_LIST
+         WHERE DEL_YN = 'N'
+               AND WISH_CD = #wish_cd# /** -- 찜은 01 최근 본 상품은 02 **/
+               AND CUST_CD = #cust_cd#
+               AND EVENT_CD = #event_cd#
+               AND GOODS_CD = #goods_cd#
+               AND CTG_SEQ = #ctg_seq#
+	</select>
+		
+	<insert id="CartDAO.insertCart" parameterClass="DIWishListVO">
+        INSERT INTO DI_WISH_LIST
+        (
+          	   WISH_SEQ
+          	 , WISH_CD
+          	 , CTG_SEQ  	 
+          	 , CUST_CD
+          	 , GOODS_CD
+          	 , EVENT_CD
+          	 , START_DAY
+          	 , DEL_YN
+        ) VALUES (
+          	   (SELECT NVL(MAX(WISH_SEQ)+1, 1) FROM DI_WISH_LIST)
+          	 , #wish_cd#
+          	 , #ctg_seq#
+             , #cust_cd#
+             , #goods_cd#
+             , #event_cd#
+             , #start_day#
+             , 'N'
+        )				
+	</insert>
+	
+	<select id="CartDAO.duplicationCheck" parameterClass="DIWishListVO" resultClass="int">
+		SELECT COUNT(1) AS cnt 
+          FROM DI_WISH_LIST
+         WHERE DEL_YN = 'N'
+               AND WISH_CD = #wish_cd# /** -- 찜은 01 최근 본 상품은 02 **/
+               AND CUST_CD = #cust_cd#
+               AND EVENT_CD = #event_cd#
+               AND GOODS_CD = #goods_cd#
+               AND CTG_SEQ = #ctg_seq#
+	</select>
+	
+	<update id="CartDAO.updateCart" parameterClass="DIWishListVO">
+		UPDATE DI_WISH_LIST
+		   SET INS_DT = SYSDATE
+         WHERE DEL_YN = 'N'
+               AND WISH_CD = #wish_cd# /** -- 찜은 01 최근 본 상품은 02 **/
+               AND CUST_CD = #cust_cd#
+               AND EVENT_CD = #event_cd#
+               AND GOODS_CD = #goods_cd#
+               AND CTG_SEQ = #ctg_seq#
+	</update>
+</sqlMap>

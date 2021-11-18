@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="RentalCarDAO">
+
+  	<typeAlias alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+  	<typeAlias alias="RentalcarVO"		type="com.lottejtb.front.service.RentalcarVO"/>
+  	<typeAlias alias="ResRentalcarVO"	type="com.lottejtb.front.rentcar.service.RsvRentcarVO"/>
+   
+	<!-- 예약내역 조회 -->
+	<select id="RentalCarDAO.selectRentOffice" parameterClass="java.util.HashMap" resultClass="RentalcarVO">
+		SELECT INTNUM																							AS intnum
+		     , RECORD_TYPE																						AS recordType
+		     , ACTION_CODE																						AS actionCode
+		     , VENDOR_ID_BRAND																					AS vendorIdBrand
+		     , OAG_CODE																							AS oagCode
+		     , COUNTRY																							AS country
+		     , STATE																							AS state
+		     , ZIP_CODE																							AS zipCode
+		     , CITY																								AS city
+		     , ADDRESS1																							AS address1
+		     , ADDRESS2																							AS address2
+		     , ADDRESS3																							AS address3
+		     , PHONE																							AS phone
+		     , CASE WHEN NVL(OPEN1_MON, '1') = '1' THEN '' ELSE OPEN1_MON || '~' || CLOSE1_MON END
+		        || CASE WHEN NVL(OPEN2_MON, '1') = '1' THEN '' ELSE ', ' || OPEN2_MON || '~' || CLOSE2_MON END
+		        || CASE WHEN NVL(OPEN3_MON, '1') = '1' THEN '' ELSE ', ' || OPEN3_MON || '~' || CLOSE3_MON END 	AS monTime
+		     , CASE WHEN NVL(OPEN1_TUE, '1') = '1' THEN '' ELSE OPEN1_TUE || '~' || CLOSE1_TUE END
+		        || CASE WHEN NVL(OPEN2_TUE, '1') = '1' THEN '' ELSE ', ' || OPEN2_TUE || '~' || CLOSE2_TUE END
+		        || CASE WHEN NVL(OPEN3_TUE, '1') = '1' THEN '' ELSE ', ' || OPEN3_TUE || '~' || CLOSE3_TUE END 	AS tueTime
+		     , CASE WHEN NVL(OPEN1_WED, '1') = '1' THEN '' ELSE OPEN1_WED || '~' || CLOSE1_WED END
+		        || CASE WHEN NVL(OPEN2_WED, '1') = '1' THEN '' ELSE ', ' || OPEN2_WED || '~' || CLOSE2_WED END
+		        || CASE WHEN NVL(OPEN3_WED, '1') = '1' THEN '' ELSE ', ' || OPEN3_WED || '~' || CLOSE3_WED END 	AS wedTime
+		     , CASE WHEN NVL(OPEN1_THU, '1') = '1' THEN '' ELSE OPEN1_THU || '~' || CLOSE1_THU END
+		        || CASE WHEN NVL(OPEN2_THU, '1') = '1' THEN '' ELSE ', ' || OPEN2_THU || '~' || CLOSE2_THU END
+		        || CASE WHEN NVL(OPEN3_THU, '1') = '1' THEN '' ELSE ', ' || OPEN3_THU || '~' || CLOSE3_THU END 	AS thuTime
+		     , CASE WHEN NVL(OPEN1_FRI, '1') = '1' THEN '' ELSE OPEN1_FRI || '~' || CLOSE1_FRI END
+		        || CASE WHEN NVL(OPEN2_FRI, '1') = '1' THEN '' ELSE ', ' || OPEN2_FRI || '~' || CLOSE2_FRI END
+		        || CASE WHEN NVL(OPEN3_FRI, '1') = '1' THEN '' ELSE ', ' || OPEN3_FRI || '~' || CLOSE3_FRI END 	AS friTime
+		     , CASE WHEN NVL(OPEN1_SAT, '1') = '1' THEN '' ELSE OPEN1_SAT || '~' || CLOSE1_SAT END
+		        || CASE WHEN NVL(OPEN2_SAT, '1') = '1' THEN '' ELSE ', ' || OPEN2_SAT || '~' || CLOSE2_SAT END
+		        || CASE WHEN NVL(OPEN3_SAT, '1') = '1' THEN '' ELSE ', ' || OPEN3_SAT || '~' || CLOSE3_SAT END 	AS satTime
+		     , CASE WHEN NVL(OPEN1_SUN, '1') = '1' THEN '' ELSE OPEN1_SUN || '~' || CLOSE1_SUN END
+		        || CASE WHEN NVL(OPEN2_SUN, '1') = '1' THEN '' ELSE ', ' || OPEN2_SUN || '~' || CLOSE2_SUN END
+		        || CASE WHEN NVL(OPEN3_SUN, '1') = '1' THEN '' ELSE ', ' || OPEN3_SUN || '~' || CLOSE3_SUN END 	AS sunTime
+		     , LATITUDE																							AS latitude
+		     , LONGITUDE																						AS longitude
+		     , DESCRIPTION_LOCATION_NAME																		AS descriptionLocationName
+		     , (SELECT MESSAGE FROM RNT_RESTRICTIONS_MSG WHERE OAG_CD = A.OAG_CODE AND MESSAGE_CD = 'WNA') 		AS wnaMsg
+          	 , (SELECT MESSAGE FROM RNT_RESTRICTIONS_MSG WHERE OAG_CD = A.OAG_CODE AND MESSAGE_CD = 'PFL') 		AS pflMsg
+          	 , (SELECT MESSAGE FROM RNT_RESTRICTIONS_MSG WHERE OAG_CD = A.OAG_CODE AND MESSAGE_CD = 'HGO') 		AS hgoMsg
+		FROM API_HERTZ_SALELIST A
+		WHERE VENDOR_ID_BRAND = 'ZE'
+		  AND COUNTRY = #country#
+		  <isEqual property="searchType" compareValue="CITY">
+		  	AND CITY LIKE '%' || #city# || '%'
+		  </isEqual>
+		  <isEqual property="searchType" compareValue="OAG_CODE">
+		  	AND OAG_CODE LIKE '%' || #city# || '%'
+		  </isEqual>
+		<isEqual property="type" compareValue="same">
+			<isEqual property="takeNumday" compareValue="MON">
+				AND (#takeTime# BETWEEN OPEN1_MON AND CLOSE1_MON
+					OR #takeTime# BETWEEN OPEN2_MON AND CLOSE2_MON
+					OR #takeTime# BETWEEN OPEN3_MON AND CLOSE3_MON)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="TUE">
+				AND (#takeTime# BETWEEN OPEN1_TUE AND CLOSE1_TUE
+					OR #takeTime# BETWEEN OPEN2_TUE AND CLOSE2_TUE
+					OR #takeTime# BETWEEN OPEN3_TUE AND CLOSE3_TUE)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="WEN">
+				AND (#takeTime# BETWEEN OPEN1_WEN AND CLOSE1_WEN
+					OR #takeTime# BETWEEN OPEN2_WEN AND CLOSE2_WEN
+					OR #takeTime# BETWEEN OPEN3_WEN AND CLOSE3_WEN)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="THU">
+				AND (#takeTime# BETWEEN OPEN1_THU AND CLOSE1_THU
+					OR #takeTime# BETWEEN OPEN2_THU AND CLOSE2_THU
+					OR #takeTime# BETWEEN OPEN3_THU AND CLOSE3_THU)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="FRI">
+				AND (#takeTime# BETWEEN OPEN1_FRI AND CLOSE1_FRI
+					OR #takeTime# BETWEEN OPEN2_FRI AND CLOSE2_FRI
+					OR #takeTime# BETWEEN OPEN3_FRI AND CLOSE3_FRI)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="SAT">
+				AND (#takeTime# BETWEEN OPEN1_SAT AND CLOSE1_SAT
+					OR #takeTime# BETWEEN OPEN2_SAT AND CLOSE2_SAT
+					OR #takeTime# BETWEEN OPEN3_SAT AND CLOSE3_SAT)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="SUN">
+				AND (#takeTime# BETWEEN OPEN1_SUN AND CLOSE1_SUN
+					OR #takeTime# BETWEEN OPEN2_SUN AND CLOSE2_SUN
+					OR #takeTime# BETWEEN OPEN3_SUN AND CLOSE3_SUN)
+			</isEqual>
+			
+			<isEqual property="returnNumday" compareValue="MON">
+				AND (#returnTime# BETWEEN OPEN1_MON AND CLOSE1_MON
+					OR #returnTime# BETWEEN OPEN2_MON AND CLOSE2_MON
+					OR #returnTime# BETWEEN OPEN3_MON AND CLOSE3_MON)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="TUE">
+				AND (#returnTime# BETWEEN OPEN1_TUE AND CLOSE1_TUE
+					OR #returnTime# BETWEEN OPEN2_TUE AND CLOSE2_TUE
+					OR #returnTime# BETWEEN OPEN3_TUE AND CLOSE3_TUE)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="WEN">
+				AND (#returnTime# BETWEEN OPEN1_WEN AND CLOSE1_WEN
+					OR #returnTime# BETWEEN OPEN2_WEN AND CLOSE2_WEN
+					OR #returnTime# BETWEEN OPEN3_WEN AND CLOSE3_WEN)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="THU">
+				AND (#returnTime# BETWEEN OPEN1_THU AND CLOSE1_THU
+					OR #returnTime# BETWEEN OPEN2_THU AND CLOSE2_THU
+					OR #returnTime# BETWEEN OPEN3_THU AND CLOSE3_THU)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="FRI">
+				AND (#returnTime# BETWEEN OPEN1_FRI AND CLOSE1_FRI
+					OR #returnTime# BETWEEN OPEN2_FRI AND CLOSE2_FRI
+					OR #returnTime# BETWEEN OPEN3_FRI AND CLOSE3_FRI)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="SAT">
+				AND (#returnTime# BETWEEN OPEN1_SAT AND CLOSE1_SAT
+					OR #returnTime# BETWEEN OPEN2_SAT AND CLOSE2_SAT
+					OR #returnTime# BETWEEN OPEN3_SAT AND CLOSE3_SAT)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="SUN">
+				AND (#returnTime# BETWEEN OPEN1_SUN AND CLOSE1_SUN
+					OR #returnTime# BETWEEN OPEN2_SUN AND CLOSE2_SUN
+					OR #returnTime# BETWEEN OPEN3_SUN AND CLOSE3_SUN)
+			</isEqual>
+		</isEqual>
+		<isEqual property="type" compareValue="pickup">
+			<isEqual property="takeNumday" compareValue="MON">
+				AND (#takeTime# BETWEEN OPEN1_MON AND CLOSE1_MON
+					OR #takeTime# BETWEEN OPEN2_MON AND CLOSE2_MON
+					OR #takeTime# BETWEEN OPEN3_MON AND CLOSE3_MON)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="TUE">
+				AND (#takeTime# BETWEEN OPEN1_TUE AND CLOSE1_TUE
+					OR #takeTime# BETWEEN OPEN2_TUE AND CLOSE2_TUE
+					OR #takeTime# BETWEEN OPEN3_TUE AND CLOSE3_TUE)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="WEN">
+				AND (#takeTime# BETWEEN OPEN1_WEN AND CLOSE1_WEN
+					OR #takeTime# BETWEEN OPEN2_WEN AND CLOSE2_WEN
+					OR #takeTime# BETWEEN OPEN3_WEN AND CLOSE3_WEN)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="THU">
+				AND (#takeTime# BETWEEN OPEN1_THU AND CLOSE1_THU
+					OR #takeTime# BETWEEN OPEN2_THU AND CLOSE2_THU
+					OR #takeTime# BETWEEN OPEN3_THU AND CLOSE3_THU)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="FRI">
+				AND (#takeTime# BETWEEN OPEN1_FRI AND CLOSE1_FRI
+					OR #takeTime# BETWEEN OPEN2_FRI AND CLOSE2_FRI
+					OR #takeTime# BETWEEN OPEN3_FRI AND CLOSE3_FRI)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="SAT">
+				AND (#takeTime# BETWEEN OPEN1_SAT AND CLOSE1_SAT
+					OR #takeTime# BETWEEN OPEN2_SAT AND CLOSE2_SAT
+					OR #takeTime# BETWEEN OPEN3_SAT AND CLOSE3_SAT)
+			</isEqual>
+			<isEqual property="takeNumday" compareValue="SUN">
+				AND (#takeTime# BETWEEN OPEN1_SUN AND CLOSE1_SUN
+					OR #takeTime# BETWEEN OPEN2_SUN AND CLOSE2_SUN
+					OR #takeTime# BETWEEN OPEN3_SUN AND CLOSE3_SUN)
+			</isEqual>
+		</isEqual>
+		<isEqual property="type" compareValue="return">
+			<isEqual property="returnNumday" compareValue="MON">
+				AND (#returnTime# BETWEEN OPEN1_MON AND CLOSE1_MON
+					OR #returnTime# BETWEEN OPEN2_MON AND CLOSE2_MON
+					OR #returnTime# BETWEEN OPEN3_MON AND CLOSE3_MON)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="TUE">
+				AND (#returnTime# BETWEEN OPEN1_TUE AND CLOSE1_TUE
+					OR #returnTime# BETWEEN OPEN2_TUE AND CLOSE2_TUE
+					OR #returnTime# BETWEEN OPEN3_TUE AND CLOSE3_TUE)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="WEN">
+				AND (#returnTime# BETWEEN OPEN1_WEN AND CLOSE1_WEN
+					OR #returnTime# BETWEEN OPEN2_WEN AND CLOSE2_WEN
+					OR #returnTime# BETWEEN OPEN3_WEN AND CLOSE3_WEN)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="THU">
+				AND (#returnTime# BETWEEN OPEN1_THU AND CLOSE1_THU
+					OR #returnTime# BETWEEN OPEN2_THU AND CLOSE2_THU
+					OR #returnTime# BETWEEN OPEN3_THU AND CLOSE3_THU)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="FRI">
+				AND (#returnTime# BETWEEN OPEN1_FRI AND CLOSE1_FRI
+					OR #returnTime# BETWEEN OPEN2_FRI AND CLOSE2_FRI
+					OR #returnTime# BETWEEN OPEN3_FRI AND CLOSE3_FRI)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="SAT">
+				AND (#returnTime# BETWEEN OPEN1_SAT AND CLOSE1_SAT
+					OR #returnTime# BETWEEN OPEN2_SAT AND CLOSE2_SAT
+					OR #returnTime# BETWEEN OPEN3_SAT AND CLOSE3_SAT)
+			</isEqual>
+			<isEqual property="returnNumday" compareValue="SUN">
+				AND (#returnTime# BETWEEN OPEN1_SUN AND CLOSE1_SUN
+					OR #returnTime# BETWEEN OPEN2_SUN AND CLOSE2_SUN
+					OR #returnTime# BETWEEN OPEN3_SUN AND CLOSE3_SUN)
+			</isEqual>
+		</isEqual>
+		ORDER BY A.LOC_TYPE1 ASC, A.OAG_CODE ASC
+	</select>
+	<select id="RentalCarDAO.selectRentcarRsvList" parameterClass="ResRentalcarVO" resultClass="ResRentalcarVO">
+		SELECT A.CAR_MODEL_NM																						AS carModelNm
+			 , A.RNT_STATE_GB																						AS rntStateGb
+		     , A.CAR_SIZE																							AS carSize
+		     , FN_SCODE_NM_KR('RT006', A.CAR_SIZE) || '(' || FN_SCODE_NM_EN('RT006', A.CAR_SIZE) || ')'				AS carSizeNm
+		     , A.BOD_QTY																							AS bodQty
+		     , A.BAGE_QTY																							AS bageQty
+		     , A.AIRCON_YN																							AS airconYn
+		     , A.TRANSMISSION_GB																					AS transmissionGb
+		     , FN_SCODE_NM_KR('RT003', A.TRANSMISSION_GB) 															AS transmissionNm
+		     , A.FUEL_TY																							AS fuelTy
+		     , B.FURATE_KPL																							AS furateKpl
+		     , B.DUAL_ABAG_YN																						AS dualAbagYn
+		     , B.ABAG_YN																							AS abagYn
+		     , A.CAR_DISTANCE																						AS carDistance
+		     , (SELECT NATION_KR_NM FROM COM_NTCD WHERE NATION_CD = A.NATION_CD) 									AS nationKrNm
+		     , SUBSTR(A.PICKUP_DT, 0, 4) || '.' || SUBSTR(A.PICKUP_DT, 5, 2) || '.' || SUBSTR(A.PICKUP_DT, 7, 2)	AS pickupDt
+		     , SUBSTR(A.PICKUP_HM, 0, 2) || ':' || SUBSTR(A.PICKUP_HM, 3, 2)										AS pickupHm
+		     , A.PICKUP_LOC																							AS pickupLoc
+		     , SUBSTR(A.RT_DT, 0, 4) || '.' || SUBSTR(A.RT_DT, 5, 2) || '.' || SUBSTR(A.RT_DT, 7, 2)				AS rtDt
+		     , SUBSTR(A.RT_HM, 0, 2) || ':' || SUBSTR(A.RT_HM, 3, 2)												AS rtHm
+		     , A.RT_LOC																								AS rtLoc
+		     , A.ORG_AMT																							AS orgAmt
+		     , A.CURRENCY_CD																						AS currencyCd
+		     , A.OPER_NM_KR																							AS operNmKr
+		     , A.OPER_NM																							AS operNm
+		     , A.OPER_AGE_GB																						AS operAgeGb
+		     , A.OPER_TELNO																							AS operTelno
+		FROM RNT_RSV_MST A LEFT OUTER JOIN RNT_BASE_CARINF B
+		                                ON A.NATION_CD = B.NATION_CD
+		                               AND A.CAR_CD = B.CAR_CD
+	   WHERE A.FIT_RSV_NO = #fitRsvNo#
+	</select>
+</sqlMap>

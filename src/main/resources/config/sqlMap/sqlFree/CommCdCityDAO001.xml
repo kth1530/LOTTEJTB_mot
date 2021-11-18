@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CommCdCityDAO">
+	
+	<typeAlias alias="egovMap"        	type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="SearchCityVO"         type="com.lottejtb.front.service.SearchCityVO"/>
+	<typeAlias alias="SearchHotelCityVO"         type="com.lottejtb.front.service.SearchHotelCityVO"/>
+	<typeAlias alias="SearchRentCityVO"         type="com.lottejtb.front.service.SearchRentCityVO"/>
+	
+	<resultMap id="comCityCdList" class="SearchCityVO">
+		<result property="airportCd" column="AIRPORT_CD" columnIndex="1"/>
+		<result property="nationCd" column="NATION_CD" columnIndex="2"/>
+		<result property="nationKrNm" column="NATION_KR_NM" columnIndex="3"/>
+		<result property="ctCd" column="CT_CD" columnIndex="4"/>
+		<result property="airportKrNm" column="AIRPORT_KR_NM" columnIndex="5"/>
+		<result property="airportEnNm" column="AIRPORT_EN_NM" columnIndex="6"/>
+	</resultMap>
+	
+	<resultMap id="hotelCityCdList" class="SearchHotelCityVO">
+		<result property="countryCd" column="COUNTRY_CD" columnIndex="1"/>
+		<result property="cityNmEn" column="CITY_NM_EN" columnIndex="2"/>
+		<result property="cityNmKr" column="CITY_NM_KR" columnIndex="3"/>
+		<result property="cityId" column="CITY_ID" columnIndex="4"/>
+		<result property="regionNmEn" column="REGION_NM_EN" columnIndex="5"/>
+		<result property="countryNm" column="COUNTRYNM" columnIndex="6"/>
+	</resultMap>
+	
+	<resultMap id="rentCityCdList" class="SearchRentCityVO">
+		<result property="city" column="CITY" columnIndex="1" />
+		<result property="country" column="COUNTRY" columnIndex="2" />
+		<result property="cityNm" column="CITY_NM" columnIndex="3"/>
+		<result property="nationKrNm" column="NATION_KR_NM" columnIndex="4" />
+	</resultMap>
+	
+	<select id="CommCdCityDAO.selectCityList" resultClass="SearchCityVO">
+		<![CDATA[			
+			SELECT /* CommCdCityDAO.selectCityList */
+            		AA.*
+		    FROM  (	
+		      		SELECT  	
+		              '1' ordNo
+		              , CP.AIRPORT_CD		airportCd
+					      	, CP.NATION_CD		nationCd
+		            		, NVL(CN.NATION_KR_NM, '')	nationKrNm
+					      	, CP.CT_CD			ctCd
+		              		, NVL(CC.STATE_CD, '')	stateCd 
+					      	, NVL(CP.AIRPORT_KR_NM, CC.CT_KR_NM)	airportKrNm
+					      	, CP.AIRPORT_EN_NM	airportEnNm
+					     	, NVL(INITCAP(CC.CT_EN_NM), '')	htlCd
+					FROM 
+					      	COM_AIRPORTCD CP
+		                	, COM_CTCD CC
+		            		, COM_NTCD CN
+		              		, ZIMSI_MAPP_CITY ZMC
+					WHERE 
+		            		CP.NATION_CD = CN.NATION_CD(+)
+			            AND CP.CT_CD = CC.CT_CD
+			            AND (CC.NATION_CD || CC.CT_CD) = ZMC.CITY_CD(+)
+		        		AND CP.NATION_CD != 'KR'
+		        		AND	NVL(CP.AIRPORT_KR_NM, CC.CT_KR_NM) IS NOT NULL
+					  	AND (
+					        UPPER(CP.AIRPORT_CD) = UPPER(#sVal#)
+					        OR  UPPER(CP.NATION_CD) = UPPER(#sVal#)
+					        OR  UPPER(CP.CT_CD) = UPPER(#sVal#)
+					        OR  UPPER(CP.AIRPORT_KR_NM) = UPPER(#sVal#)
+					        OR  UPPER(CC.CT_KR_NM) = UPPER(#sVal#)
+					        OR  UPPER(CC.CT_EN_NM) = UPPER(#sVal#)
+					        OR  UPPER(CN.NATION_EN_NM) = UPPER(#sVal#)
+					        OR  UPPER(CN.NATION_KR_NM) = UPPER(#sVal#)
+			              	OR  UPPER(ZMC.REF01) = UPPER(#sVal#)
+			              	OR  UPPER(ZMC.REF02) = UPPER(#sVal#)
+			              	OR  UPPER(ZMC.REF03) = UPPER(#sVal#)
+			              	OR  UPPER(ZMC.CITY_CD) = UPPER(#sVal#)
+			              	OR  UPPER(ZMC.CITY_NM) = UPPER(#sVal#)
+			              	OR  UPPER(ZMC.CITY_NM_KR) = UPPER(#sVal#)
+					       	)
+		      
+				  UNION ALL
+			      	SELECT  	
+		              		'2' ordNo
+		              		, CP.AIRPORT_CD		airportCd
+					      	, CP.NATION_CD		nationCd
+		            		, NVL(CN.NATION_KR_NM, '')	nationKrNm
+					      	, CP.CT_CD			ctCd
+		              		, NVL(CC.STATE_CD, '')	stateCd 
+					      	, NVL(CP.AIRPORT_KR_NM, CC.CT_KR_NM)	airportKrNm
+					      	, CP.AIRPORT_EN_NM	airportEnNm
+					     	, NVL(INITCAP(CC.CT_EN_NM), '')	htlCd
+					FROM 
+					      	COM_AIRPORTCD CP
+		                	, COM_CTCD CC
+		            		, COM_NTCD CN
+		              		, ZIMSI_MAPP_CITY ZMC
+					WHERE 
+		            		CP.NATION_CD = CN.NATION_CD(+)
+			            AND CP.CT_CD = CC.CT_CD
+			            AND (CC.NATION_CD || CC.CT_CD) = ZMC.CITY_CD(+)
+		        		AND CP.NATION_CD != 'KR'
+		        		AND	NVL(CP.AIRPORT_KR_NM, CC.CT_KR_NM) IS NOT NULL
+					  	AND (
+					        UPPER(CP.AIRPORT_CD) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CP.NATION_CD) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CP.CT_CD) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CP.AIRPORT_KR_NM) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CC.CT_KR_NM) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CC.CT_EN_NM) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CN.NATION_EN_NM) LIKE '_%'|| UPPER(#sVal#) ||'%'
+					        OR  UPPER(CN.NATION_KR_NM) LIKE '_%'|| UPPER(#sVal#) ||'%'
+			              	OR  UPPER(ZMC.REF01) LIKE '_%' || UPPER(#sVal#) ||'%'
+			              	OR  UPPER(ZMC.REF02) LIKE '_%' || UPPER(#sVal#) ||'%'
+			              	OR  UPPER(ZMC.REF03) LIKE '_%' || UPPER(#sVal#) ||'%'
+			              	OR  UPPER(ZMC.CITY_CD) LIKE '_%' || UPPER(#sVal#) ||'%'
+			              	OR  UPPER(ZMC.CITY_NM) LIKE '_%' || UPPER(#sVal#) ||'%'
+			              	OR  UPPER(ZMC.CITY_NM_KR) LIKE '_%' || UPPER(#sVal#) ||'%'
+					       	)
+				              
+			      	) AA
+	      	ORDER BY ordNo
+		]]>
+	</select>
+	
+	<!-- <select id="CommCdCityDAO.selectHotelCityList" parameterClass="java.util.HashMap" resultMap="hotelCityCdList">	
+			SELECT /* CommCdCityDAO.selectHotelCityList */
+				ACI.COUNTRYCODE
+  				, ACI.CITYNM_EN
+  				, ACI.CITYNM_KR
+  				, ACI.EAN_CODE
+  				, ACI.GTA_CODE
+  				, ACI.HP_CODE
+  				, ACI.BICO_CODE
+          		, (SELECT NAME_KR FROM API_COUNTRY ACO WHERE ACO.EAN_CODE = ACI.COUNTRYCODE) COUNTRYNM
+			FROM API_CITY ACI
+			WHERE UPPER(CITYNM_EN) LIKE '%'|| #sVal# ||'%'
+  			OR  UPPER(CITYNM_KR) LIKE '%'|| #sVal# ||'%'
+  			<isEqual property="sDome" compareValue="Y">
+	 		   AND ACI.COUNTRYCODE = 'KR'
+	 		 </isEqual>
+	 		 <isEqual property="sDome" compareValue="N">
+	 		   AND ACI.COUNTRYCODE <![CDATA[<>]]> 'KR'
+	 		 </isEqual>
+	</select> -->
+	
+	<!-- <select id="CommCdCityDAO.selectHotelCityList" resultMap="hotelCityCdList">
+		<![CDATA[			
+			SELECT /* CommCdCityDAO.selectHotelCityList */
+				  DISTINCT ACI.COUNTRYCODE
+  				, ACI.CITYNM_EN
+  				, ACI.CITYNM_KR
+  				, ACI.EAN_CODE
+  				, ACI.GTA_CODE
+  				, ACI.HP_CODE
+  				, ACI.BICO_CODE
+          		, (SELECT NAME_KR FROM API_COUNTRY ACO WHERE ACO.EAN_CODE = ACI.COUNTRYCODE) COUNTRYNM
+			FROM API_CITY ACI
+			WHERE (UPPER(CITYNM_EN) LIKE '%'|| #sVal# ||'%'
+  			OR  UPPER(CITYNM_KR) LIKE '%'|| #sVal# ||'%')
+  			AND EAN_CODE IS NOT NULL
+		]]>
+	</select> -->
+	
+	<select id="CommCdCityDAO.selectHotelCityList" resultMap="hotelCityCdList">
+		SELECT 	A.COUNTRY_CD	
+  				, A.CITY_NM_EN
+	  			, A.CITY_NM_KR
+            	, A.CITY_ID	
+			    , A.REGION_NM_EN
+           		, A.COUNTRYNM
+			FROM (	  
+			    SELECT
+			      	'1' ORD_NO
+			      	, HBC.CITY_ID
+			       	, HBC.COUNTRY_CD
+			  		, HBC.CITY_NM_EN
+			  		, HBC.CITY_NM_KR
+			        , HBC.REGION_NM_EN
+                	, (SELECT NAME_KR FROM API_COUNTRY ACO WHERE ACO.EAN_CODE = HBC.COUNTRY_CD AND ROWNUM = 1) COUNTRYNM
+				FROM HTL_BASE_CITYS2 HBC
+                	, ZIMSI_MAPP_CITY ZMC
+				WHERE HBC.COUNTRY_CD = ZMC.COUNTRY_CD(+)
+			    	AND HBC.CITY_NM_EN = UPPER(ZMC.CITY_NM(+))
+					AND HBC.CITY_NM_EN IS NOT NULL
+					AND HBC.CITY_NM_KR IS NOT NULL
+			        AND ( UPPER(HBC.CITY_NM_EN) = UPPER(#sVal#)
+				  		OR  HBC.CITY_NM_KR = #sVal#
+				        OR  ZMC.REF01 = #sVal#
+				        OR  ZMC.REF02 = #sVal#
+				        OR  ZMC.REF03 = #sVal#
+				        OR  ZMC.CITY_NM_KR = #sVal# 
+				        OR  UPPER(ZMC.CITY_NM) = UPPER(#sVal#)
+				        OR  ZMC.CITY_CD LIKE '__' || UPPER(#sVal#)
+					)
+                    
+			  UNION ALL
+			    SELECT 
+		          	'2' ORD_NO
+		          	, HBC.CITY_ID
+		          	, HBC.COUNTRY_CD
+	  				, HBC.CITY_NM_EN
+			  		, HBC.CITY_NM_KR
+			        , HBC.REGION_NM_EN
+                	, (SELECT NAME_KR FROM API_COUNTRY ACO WHERE ACO.EAN_CODE = HBC.COUNTRY_CD AND ROWNUM = 1) COUNTRYNM
+				FROM HTL_BASE_CITYS2 HBC
+                	, ZIMSI_MAPP_CITY ZMC
+				WHERE HBC.COUNTRY_CD = ZMC.COUNTRY_CD(+)
+			    	AND HBC.CITY_NM_EN = UPPER(ZMC.CITY_NM(+))
+					AND HBC.CITY_NM_EN IS NOT NULL
+					AND HBC.CITY_NM_KR IS NOT NULL
+			        AND ( UPPER(HBC.CITY_NM_EN) LIKE UPPER(#sVal#) || '_%'
+						OR  HBC.CITY_NM_KR LIKE #sVal# || '_%'
+			            OR  ZMC.REF01 LIKE #sVal# || '_%'
+			            OR  ZMC.REF02 LIKE #sVal# || '_%'
+			            OR  ZMC.REF03 LIKE #sVal# || '_%'
+			            OR  ZMC.CITY_NM_KR LIKE #sVal# || '_%'
+			            OR  UPPER(ZMC.CITY_NM) LIKE UPPER(#sVal#) || '_%'
+		            )
+                    
+			  UNION ALL
+			    SELECT 
+			        '3' ORD_NO
+			        , HBC.CITY_ID
+			        , HBC.COUNTRY_CD
+			  		, HBC.CITY_NM_EN
+			  		, HBC.CITY_NM_KR
+			        , HBC.REGION_NM_EN
+                	, (SELECT NAME_KR FROM API_COUNTRY ACO WHERE ACO.EAN_CODE = HBC.COUNTRY_CD AND ROWNUM = 1) COUNTRYNM
+				FROM HTL_BASE_CITYS2 HBC
+                	, ZIMSI_MAPP_CITY ZMC
+				WHERE HBC.COUNTRY_CD = ZMC.COUNTRY_CD(+)
+			    	AND HBC.CITY_NM_EN = UPPER(ZMC.CITY_NM(+))
+					AND HBC.CITY_NM_EN IS NOT NULL
+					AND HBC.CITY_NM_KR IS NOT NULL
+			        AND ( UPPER(HBC.CITY_NM_EN) LIKE '_%' || UPPER(#sVal#) || '%'
+						OR  HBC.CITY_NM_KR LIKE '_%' || #sVal# || '%'
+					)
+				) A
+				ORDER BY A.ORD_NO, A.CITY_ID
+			
+	</select>
+	
+	
+	
+	
+	<select id="CommCdCityDAO.selectRentCityList" parameterClass="java.util.HashMap" resultMap="rentCityCdList">
+		SELECT G1.CITY
+			 , G1.COUNTRY
+			 , CASE WHEN NVL(G1.CITYNM_KR, 'N') = 'N' THEN G1.CITY ELSE G1.CITYNM_KR END AS CITY_NM
+			 , G2.NATION_KR_NM
+		  FROM (
+		    SELECT A.COUNTRY
+		    	 , A.CITY
+		    	 , B.CITYNM_KR
+		    FROM API_HERTZ_SALELIST A LEFT OUTER JOIN API_CITY B
+		    									   ON A.CITY = UPPER(B.CITYNM_EN)
+		    GROUP BY A.COUNTRY, A.CITY, B.CITYNM_KR
+		  ) G1 LEFT OUTER JOIN COM_NTCD G2
+		                    ON G1.COUNTRY = G2.NATION_CD
+		WHERE G2.NATION_KR_NM LIKE '%' || #sVal# || '%'
+		   OR G1.COUNTRY LIKE '%' || #sVal# || '%'
+		   OR G1.CITY LIKE '%' || #sVal# || '%'
+		   OR (G1.CITYNM_KR IS NOT NULL AND G1.CITYNM_KR LIKE '%' || #sVal# || '%')
+		ORDER BY NATION_KR_NM
+				
+	</select>
+	
+	
+	<!-- 국내 도시 조회 2019.03.05 정렬순서 수정 bum -->
+	<select id="CommCdCityDAO.selectListDomeCityCd" resultClass="SearchHotelCityVO">
+		<![CDATA[			
+			SELECT 
+			    HBC.COUNTRY_CD  countryCd
+			    , HBC.CITY_NM_EN  cityNmEn
+			    , HBC.CITY_NM_KR  cityNmKr
+			    , HBC.CITY_ID			cityId
+			    , HHC.CITY_CD_HNJ  regionNmEn
+			    , (SELECT NAME_KR 
+			        FROM API_COUNTRY ACO 
+			        WHERE ACO.EAN_CODE = HBC.COUNTRY_CD 
+			          OR  ACO.HP_CODE = HBC.COUNTRY_CD 
+			          OR  ACO.GTA_CODE = HBC.COUNTRY_CD 
+			        AND ROWNUM = 1) countryNm
+			FROM HTL_BASE_HNJ_CITYS HHC
+			  LEFT OUTER JOIN HTL_BASE_CITYS2 HBC ON HHC.CITY_CD_HNJ = HBC.CITY_CD_HNJ
+			WHERE HHC.CITY_LVL = 1
+			ORDER BY DECODE(HHC.CITY_CD_HNJ,'SE',1,'JJ',2,'IC',3,'BS',4,'DJ',5,'DG',6,'GJ',7,'US',8,'GG',9,'GW',10,'CN',11,'CB',12,'JB',13,'JN',14,'GN',15,'GB',16)
+		]]>
+	</select>
+	
+	<!-- 국내 도시 조회 - 상세 -->
+	<select id="CommCdCityDAO.selectListDomeCityCdDetail" resultClass="SearchHotelCityVO">
+		<![CDATA[			
+			SELECT 
+			    HBC.COUNTRY_CD  	countryCd
+			    , HBC.CITY_NM_EN  	cityNmEn
+			    , HBC.CITY_NM_KR  	cityNmKr
+			    , HBC.CITY_ID		cityId
+			    , HHC.AREA_CD		regionNmEn
+			    , (SELECT NAME_KR 
+			        FROM API_COUNTRY ACO 
+			        WHERE ACO.EAN_CODE = HBC.COUNTRY_CD 
+			          OR  ACO.HP_CODE = HBC.COUNTRY_CD 
+			          OR  ACO.GTA_CODE = HBC.COUNTRY_CD 
+			        AND ROWNUM = 1) countryNm
+			FROM HTL_BASE_HNJ_CITYS HHC
+			  LEFT OUTER JOIN HTL_BASE_CITYS2 HBC ON HHC.CITY_CD_HNJ = HBC.CITY_CD_HNJ
+			WHERE HHC.CITY_LVL = 2
+			ORDER BY HBC.CITY_NM_KR
+		]]>
+	</select>
+	
+	
+</sqlMap>

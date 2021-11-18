@@ -1,0 +1,16 @@
+package com.lottejtb.framework.common;
+
+import javax.annotation.Resource;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+import egovframework.rte.psl.dataaccess.EgovAbstractDAO;
+
+public abstract class CommAbstractDAO extends EgovAbstractDAO{
+
+	@Resource(name="sqlMapClient")
+	public void setSuperSqlMapClient(SqlMapClient sqlMapClient) {
+        super.setSuperSqlMapClient(sqlMapClient);
+    }
+
+}

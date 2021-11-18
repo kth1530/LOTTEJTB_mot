@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Request>
+<Source>
+<RequestorID Client ="187" EMailAddress ="XML.EBSOLUTIONS@LOTTE.COM" Password ="PASS"/>
+ <RequestorPreferences Country="KR" Language="EN" Currency="KRW">
+<RequestMode>SYNCHRONOUS</RequestMode>
+</RequestorPreferences>
+</Source>
+<RequestDetails>
+<SearchHotelPricePaxRequest>
+            <ItemDestination DestinationCode = "LON" DestinationType = "city"/>
+            <ImmediateConfirmationOnly/>
+            <ItemCode>HILY</ItemCode>
+            <PeriodOfStay>
+                <CheckInDate>2017-03-01</CheckInDate>
+                <Duration>1</Duration>
+            </PeriodOfStay>
+            <IncludeChargeConditions/>
+            <PaxRooms>
+                <PaxRoom
+                    Adults = "2"
+                    Cots = "0"
+                    RoomIndex = "1"
+                    Id = "001:HILY:9737:S9467:10864:45077">
+                    <ChildAges>
+                        <Age>6</Age>
+                    </ChildAges>
+                </PaxRoom>
+            </PaxRooms>
+        </SearchHotelPricePaxRequest>
+</RequestDetails>
+</Request>

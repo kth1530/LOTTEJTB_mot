@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="FaqDAO">
+	
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="FaqVO"         type="com.lottejtb.customer.service.FaqVO"/>
+	
+	 <resultMap id="faq" class="FaqVO">
+	 	<result property="rn" column="RN"/>
+	 	<result property="beginNo" column="BEGIN_NO"/>
+	 	<result property="bbsSeq" column="BBS_SEQ"/>	 	
+	 	<result property="bbsHeadSeq" column="BBS_HEAD_SEQ"/>
+	 	<result property="title" column="TITLE"/>
+		<result property="bbsCnts" column="BBS_CNTS" jdbcType="CLOB" javaType="String" />
+		<result property="knm" column="KNM"/>
+		<result property="custId" column="CUST_ID"/>
+		<result property="email" column="EMAIL"/>	
+		<result property="dispYn" column="DISP_YN"/>				
+		<result property="insId" column="INS_ID"/>
+		<result property="insDt" column="INS_DT"/>
+		<result property="bbsNm" column="BBS_NM"/>
+		<result property="bbsTypeCd" column="BBS_TYPE_CD"/>
+		<result property="clsCd" column="CLS_CD"/>				
+    </resultMap>
+	
+	<select id="FaqDAO.selectFaqFirstList" parameterClass="FaqVO" resultMap="faq">
+		SELECT * FROM ( SELECT 
+		 QUERY.NO RN, QUERY.BBS_SEQ, QUERY.BBS_HEAD_SEQ, QUERY.TITLE, QUERY.BBS_CNTS, QUERY.KNM, QUERY.CUST_ID, 
+		 QUERY.EMAIL, QUERY.DISP_YN, QUERY.INS_ID,QUERY.INS_DT,QUERY.BBS_NM, QUERY.BBS_TYPE_CD, QUERY.CLS_CD, QUERY.BEGIN_NO 
+		 FROM (
+				SELECT	
+					  ROW_NUMBER() OVER (ORDER BY A.BBS_HEAD_SEQ DESC) AS NO,  
+					  A.BBS_SEQ, A.BBS_HEAD_SEQ, A.TITLE, A.BBS_CNTS, A.KNM, A.CUST_ID, 
+					  A.EMAIL, A.DISP_YN, A.INS_ID,A.INS_DT,B.BBS_NM, B.BBS_TYPE_CD, '0' AS CLS_CD, '0' AS BEGIN_NO
+				FROM  DI_BBS_HEAD A, DI_BBS_MST B
+			   WHERE  A.BBS_SEQ = B.BBS_SEQ
+					  AND  A.DEL_YN = 'N'
+					  AND  A.DISP_YN = 'Y'
+					  AND  A.BBS_SEQ = 1
+					  AND A.CLS_CD in (10, 20, 30, 40, 50,60)
+					  <isNotEmpty property="searchKeyword">
+					  AND A.TITLE LIKE '%' || #searchKeyword# || '%'
+					  </isNotEmpty>
+				UNION ALL
+				SELECT	
+					  ROW_NUMBER() OVER (PARTITION BY CLS_CD ORDER BY A.BBS_HEAD_SEQ DESC) AS NO,  
+					  A.BBS_SEQ, A.BBS_HEAD_SEQ, A.TITLE, A.BBS_CNTS, A.KNM, A.CUST_ID, 
+					  A.EMAIL, A.DISP_YN, A.INS_ID,A.INS_DT,B.BBS_NM, B.BBS_TYPE_CD, A.CLS_CD,
+					  DECODE(A.CLS_CD,'10','1','20','2','30','3','40','4','50','5','60','6') AS BEGIN_NO
+				FROM  DI_BBS_HEAD A, DI_BBS_MST B
+			   WHERE  A.BBS_SEQ = B.BBS_SEQ
+					  AND  A.DEL_YN = 'N'
+					  AND  A.DISP_YN = 'Y'
+					  AND  A.BBS_SEQ = 1
+					  AND A.CLS_CD in (10, 20, 30, 40, 50,60)
+					  <isNotEmpty property="searchKeyword">
+					  AND A.TITLE LIKE '%' || #searchKeyword# || '%'
+					  </isNotEmpty>
+		) QUERY WHERE NO BETWEEN #startRow# AND #endRow# ) 
+	</select>
+	
+	<select id="FaqDAO.selectFaqListAllCount" parameterClass="FaqVO" resultClass="FaqVO">
+		SELECT	
+			  COUNT(1) AS type0,  
+			  NVL(SUM(CASE WHEN A.CLS_CD = '10' THEN 1 ELSE 0 END),0) AS type10,
+			  NVL(SUM(CASE WHEN A.CLS_CD = '20' THEN 1 ELSE 0 END),0) AS type20,
+			  NVL(SUM(CASE WHEN A.CLS_CD = '30' THEN 1 ELSE 0 END),0) AS type30,
+			  NVL(SUM(CASE WHEN A.CLS_CD = '40' THEN 1 ELSE 0 END),0) AS type40,
+			  NVL(SUM(CASE WHEN A.CLS_CD = '50' THEN 1 ELSE 0 END),0) AS type50,
+			  NVL(SUM(CASE WHEN A.CLS_CD = '60' THEN 1 ELSE 0 END),0) AS type60
+		FROM  DI_BBS_HEAD A, DI_BBS_MST B
+		WHERE  A.BBS_SEQ = B.BBS_SEQ
+			  AND  A.DEL_YN = 'N'
+			  AND  A.DISP_YN = 'Y'
+			  AND  A.BBS_SEQ = 1
+			  AND A.CLS_CD in (10, 20, 30, 40, 50,60)
+			  <isNotEmpty property="searchKeyword">
+			  AND A.TITLE LIKE '%' || #searchKeyword# || '%'
+			  </isNotEmpty>
+	</select>	
+    
+	<select id="FaqDAO.selectFaqList" parameterClass="FaqVO" resultMap="faq">
+		SELECT * FROM ( SELECT 
+		 QUERY.BBS_SEQ, QUERY.BBS_HEAD_SEQ, QUERY.TITLE, QUERY.BBS_CNTS, QUERY.KNM, QUERY.CUST_ID, 
+		 QUERY.EMAIL, QUERY.DISP_YN, QUERY.INS_ID,QUERY.INS_DT,QUERY.BBS_NM, QUERY.BBS_TYPE_CD, QUERY.CLS_CD
+		,ROWNUM RN, 0 BEGIN_NO FROM (
+				SELECT	
+					  A.BBS_SEQ, A.BBS_HEAD_SEQ, A.TITLE, A.BBS_CNTS, A.KNM, A.CUST_ID, 
+					  A.EMAIL, A.DISP_YN, A.INS_ID,A.INS_DT,B.BBS_NM, B.BBS_TYPE_CD, A.CLS_CD
+				FROM  DI_BBS_HEAD A, DI_BBS_MST B
+			   WHERE  A.BBS_SEQ = B.BBS_SEQ
+					  AND  A.DEL_YN = 'N'
+					  AND  A.DISP_YN = 'Y'
+					  AND  A.BBS_SEQ = 1
+					  <isNotEmpty prepend="" property="clsCd">
+					   	<isEqual property="clsCd" compareValue="0">
+					  	 AND A.CLS_CD in (10, 20, 30, 40, 50,60)
+					  	</isEqual>
+					    <isNotEqual property="clsCd" compareValue="0">
+					     AND A.CLS_CD = #clsCd#
+					    </isNotEqual>
+					  </isNotEmpty>
+					  <isNotEmpty property="searchKeyword">
+			  			AND A.TITLE LIKE '%' || #searchKeyword# || '%'
+			  		  </isNotEmpty>	
+			ORDER BY  A.BBS_HEAD_SEQ DESC
+		) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+
+	</select>
+	
+</sqlMap>

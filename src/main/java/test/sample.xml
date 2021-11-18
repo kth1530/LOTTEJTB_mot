@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<HotelListRequest>
+	<arrivalDate>10/17/2016</arrivalDate>
+	<departureDate>10/19/2016</departureDate>
+	<RoomGroup>
+		<Room>
+			<numberOfAdults>2</numberOfAdults>
+			<numberOfChildren>1</numberOfChildren>
+			<childAges>5</childAges>
+		</Room>
+	</RoomGroup>
+	<city>Boston</city>
+	<stateProvinceCode>MA</stateProvinceCode>
+	<countryCode>US</countryCode>
+</HotelListRequest>

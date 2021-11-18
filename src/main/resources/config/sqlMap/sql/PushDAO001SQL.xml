@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PushDAO">
+
+  	<typeAlias alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+  	<typeAlias alias="PushInfoVO"		type="com.lottejtb.push.service.PushInfoVO"/>
+  	<typeAlias alias="SendPushVO"		type="com.lottejtb.push.service.SendPushVO"/>
+  	
+   
+	<!-- push 정보조회 -->
+	<select id="PushDAO.getPushInfo" parameterClass="PushInfoVO" resultClass="PushInfoVO">
+		SELECT 
+			DEVICE_ID     			"device_id",
+			CUST_CD		  			"cust_cd",
+			OS_TYPE		  			"os_type", 
+			DEVICE_TOKEN			"device_token",
+			INS_DT					"ins_dt",
+			INS_ID					"ins_id",
+			UPD_DT					"upd_dt",
+			UPD_ID					"upd_id",
+			DEVICE_MODEL			"device_model",
+			OS_VERSION				"os_version",
+			MARKETING_YN			"marketing_yn"
+			
+		FROM  MO_PUSH_INFO
+		WHERE MARKETING_YN = 'Y'
+	        AND DEVICE_TOKEN != 'null'   <!-- 유효하지않은 토큰값 -->
+	        AND DEVICE_TOKEN != '0'		<!-- 유효하지않은 토큰값 -->
+		
+	</select>
+	
+	<!-- 푸시 전송할 내용 조회 -->
+	<select id="PushDAO.sendPushInfo" parameterClass="SendPushVO" resultClass="SendPushVO">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (	
+		
+			SELECT
+				NOTICE_SEQ		   AS   noSeq,  
+				NOTICE_TITLE       AS 	title,		/*title*/
+				NOTICE_CNTS		   AS 	message,	/*전송 메시지*/
+				PRE_URL			   AS	tagetUrl,   /*링크 연결 */
+				START_DT           AS 	startDt,		/*예약일시 컬럼*/
+				INS_DT			   AS 	insDt,      /*등록일자*/
+				INS_ID			   AS 	insId,		/*등록인*/
+				UPD_DT			   AS   updDt,
+				UPD_ID			   AS 	updId,
+				PUSH_YN			   AS 	pushYn								
+			FROM  DI_NOTICE_MST
+			WHERE  NOTICE_CLS_CD = '90'      <!-- 공지사항 테이블에서 모바일 푸시 -->
+			ORDER BY NOTICE_SEQ desc
+		) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> 1 ) WHERE RN >= 0
+	
+	</select> 
+
+ 	<!-- <select id="PushDAO.sendPushInfo" parameterClass="SendPushVO" resultClass="SendPushVO">
+		
+			SELECT
+				NOTICE_SEQ		   AS   noSeq,  
+				NOTICE_TITLE       AS 	title,		/*title*/
+				NOTICE_CNTS		   AS 	message,	/*전송 메시지*/
+				PRE_URL			   AS	tagetUrl,   /*링크 연결 */
+				START_DT           AS 	startDt,		/*예약일시 컬럼*/
+				INS_DT			   AS 	insDt,      /*등록일자*/
+				INS_ID			   AS 	insId,		/*등록인*/
+				UPD_DT			   AS   updDt,
+				UPD_ID			   AS 	updId,
+				PUSH_YN			   AS 	pushYn								
+			FROM  DI_NOTICE_MST
+			WHERE rownum = 1
+			ORDER BY NOTICE_SEQ desc
+	
+	</select> -->
+	
+ 	<update id="PushDAO.sendPushYn" parameterClass="SendPushVO">
+			UPDATE DI_NOTICE_MST
+			
+			SET PUSH_YN = #pushYn#
+						
+			WHERE NOTICE_SEQ = #noSeq#
+	</update>
+	
+	
+ 	<update id="PushDAO.delPushToken" parameterClass="PushInfoVO">
+			UPDATE MO_PUSH_INFO
+			
+			SET MARKETING_YN = #marketing_yn#
+						
+			WHERE DEVICE_TOKEN = #device_token#
+	</update>
+	
+	<!-- 푸시 전송 로그 테이블 -->
+<!-- 	<select id="PushDAO.sendPushLog" parameterClass="SendPushLogVO" resultClass="SendPushLogVO">
+		
+	
+	</select> -->
+	
+	<insert id="PushDAO.insertPushCnt" parameterClass="PushInfoVO">
+		INSERT INTO PUSH_STATS
+		(
+			  SEQ
+			, INS_DT
+			, TOTAL
+			, TOK_NULL
+			, TOK_NOT_NULL
+			, AND_SUCC
+			, AND_FAIL
+			, AND_ERR
+			, IOS_SUCC
+			, IOS_FAIL
+			, IOS_ERR1
+			, IOS_ERR2
+			, IOS_ERR3
+			, IOS_ERR4
+			, IOS_ERR5	
+		) 
+		VALUES
+		(
+			  (SELECT NVL(MAX(SEQ), 0) + 1 FROM PUSH_STATS)
+			, SYSDATE
+			, #total#
+			, #tok_null#
+			, #tok_not_null#
+			, #and_succ#
+			, #and_fail#
+			, #and_err#
+			, #ios_succ#
+			, #ios_fail#
+			, #ios_err1#
+			, #ios_err2#
+			, #ios_err3#
+			, #ios_err4#
+			, #ios_err5#	
+		) 
+	</insert>
+	
+	
+
+</sqlMap>

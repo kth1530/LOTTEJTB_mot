@@ -1,0 +1,225 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../../common/commTagLib.jsp"%>
+<head>
+<script type="text/javascript">
+	//  http://localhost:8080/ean/APInfoAjax.do?minorRev=30&locale=ko_KR&currencyCode=KRW&arrivalDate=10/17/2016&departureDate=10/19/2016&numberOfAdults=2&numberOfChildren=3&childAges=5,6,7&city=Boston&stateProvinceCode=MA&countryCode=US
+	//  http://api.ean.com/ean-services/rs/hotel/v3/list?cid=500317&sig=d0d3bb8d3908675e8b4a9701046c7af8&minorRev=30&apiKey=42054h3uto03kvli4lpk1ls71f&locale=ko_KR&currencyCode=KRW&customerIpAddress=10.26.131.178&customerUserAgent=Mozilla/5.0+(Windows+NT+6.1;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/53.0.2785.116+Safari/537.36&customerSessionId=&xml=<HotelListRequest><departureDate>10/17/2016</departureDate><departureDate>10/19/2016</departureDate><RoomGroup><numberOfAdults>2</numberOfAdults><numberOfChildren>3</numberOfChildren><childAges>5,6,7</childAges></RoomGroup><city>Boston</city><stateProvinceCode>MA</stateProvinceCode><countryCode>US</countryCode><numberOfResults>1</numberOfResults></HotelListRequest>&_type=json
+	var strJSON = "";                                       var strHTML = "";
+	var hotel_id    = new Array();
+	var hotel_name  = new Array();
+	var thumImg     = new Array();
+	var deepLink    = new Array();
+	$(document).ready(function(){
+		/* 
+		
+		$.ajax({
+	        url: "https://book.api.ean.com/ean-services/rs/hotel/v3/list?cid=500317&sig=11b6ed47f87f22d982d26155805023c6&minorRev=30&apiKey=42054h3uto03kvli4lpk1ls71f&locale=ko_KR&currencyCode=USD&customerIpAddress=10.26.131.178&customerUserAgent=Mozilla/5.0+(Windows+NT+6.1;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/53.0.2785.116+Safari/537.36&customerSessionId=D1AD00E9DCA4F49DF476D0E72665F4AF&xml=%3CHotelListRequest%3E%3CarrivalDate%3E10/17/2016%3C/arrivalDate%3E%3CdepartureDate%3E10/19/2016%3C/departureDate%3E%3CRoomGroup%3E%3CRoom%3E%3CnumberOfAdults%3E2%3C/numberOfAdults%3E%3CnumberOfChildren%3E3%3C/numberOfChildren%3E%3CchildAges%3E5,6,7%3C/childAges%3E%3C/Room%3E%3C/RoomGroup%3E%3Ccity%3EBoston%3C/city%3E%3CstateProvinceCode%3EMA%3C/stateProvinceCode%3E%3CcountryCode%3EUS%3C/countryCode%3E%3CnumberOfResults%3E1%3C/numberOfResults%3E%3C/HotelListRequest%3E&_type=json" ,
+	        type: 'POST',
+	        data: "",
+	        async: false,
+	        cache: false,
+	        dataType : "jsonp",
+	        contentType: false,
+	        processData: false,
+	        success: function (data,status) {
+	        	$("#contents").text(data);
+	        },
+	        error : function(request,status,error){
+	        	var errMsg = "code:"+request.status+"<br />"+"message:"+request.responseText+"<br />"+"error:"+error;
+	        	alert(errMsg);
+    			//fn_error();
+	        }
+	    });
+		 */
+		
+		var url = "<c:url value='/CommAPInfoAjax.do' />";
+		var formData = new FormData();
+		formData.append("minorRev","30");
+		//formData.append("locale","ko_KR");
+		formData.append("locale","us_US");
+		//formData.append("currencyCode","KRW");
+		formData.append("currencyCode","USD");
+		formData.append("arrivalDate","10/17/2016");
+		formData.append("departureDate","10/19/2016");
+		formData.append("numberOfAdults","2");
+		formData.append("numberOfChildren","3");
+		formData.append("childAges","5,6,7");
+		formData.append("city","HongKong");
+		formData.append("stateProvinceCode","MA");
+		formData.append("countryCode","US");
+		formData.append("numberOfResults","50");
+		
+		$.ajax({
+	        url: url ,
+	        type: 'POST',
+	        data: formData,
+	        async: false,
+	        cache: false,
+	        dataType : "json",
+	        contentType: false,
+	        processData: false,
+	        success: function (data,status) {
+	        	var dataStr = JSON.parse(data);
+	        	dataStr     = dataStr.HotelListResponse;
+	        	
+	        	$.each(dataStr, function( key , value ){
+	        		strJSON = strJSON+"<b>1 DEPTH : "+key+"</b> = "+value+"<br />";
+	        		if( typeof value == "object"){
+	        			$.each(value, function( key , value ){
+	        				strJSON = strJSON+"&nbsp;&nbsp;&nbsp;2 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        				if ( key == "@size" ) HotelListLength = value;
+	        				if( typeof value == "object"){
+	        					var intLoop = 0;
+	        					$.each(value, function( key , value ){
+	        						strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        						if ( key == "hotelId" ) hotel_id[intLoop]   = value;
+	        						if ( key == "name" )    hotel_name[intLoop] = value;
+	        						if ( key == "thumbNailUrl" )    thumImg[intLoop]  = value;
+	        						if ( key == "deepLink" )        deepLink[intLoop] = value;
+	        						if( typeof value == "object"){
+	        							$.each(value, function( key , value ){
+	        								strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        								if( typeof value == "object"){
+	        									$.each(value, function( key , value ){
+	        										strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        										if( typeof value == "object"){
+	        											$.each(value, function( key , value ){
+	        												strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        												if( typeof value == "object"){
+	        													$.each(value, function( key , value ){
+	        														strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        														if( typeof value == "object"){
+	        															$.each(value, function( key , value ){
+	        																strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        																if( typeof value == "object"){
+	        																	$.each(value, function( key , value ){
+	        																		strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        																		if( typeof value == "object"){
+	        																			$.each(value, function( key , value ){
+	        																				strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 DEPTH : <b>"+key+"</b> = "+value+"<br />";
+	        																				if( typeof value == "object"){
+	        																					$.each(value, function( key , value ){
+	        																						strJSON = strJSON+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 DEPTH : <b>"+key+"</b> = "+value+"<br />";		
+	        																					});
+	        																				}
+	        																			});
+	        																		}
+	        																	});
+	        																}
+	        															});
+	        														}
+	        													});
+	        												}
+	        											});
+	        										}
+	        									});
+	        								}
+	        							})
+	        						}
+	        					});
+	        					intLoop++;
+	        				}
+	        			});
+	        		}
+	        	});
+	        	for( intLoop=0;intLoop<=(HotelListLength-1);intLoop++){
+	        		if( intLoop==0 ) strHTML = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\" xmlns:fo=\"http://www.w3.org/1999/XSL/Format\"><tbody>";
+	        		strHTML += "<tr>";
+	        		strHTML += "  <td>"+(intLoop+1)+"</td>";
+	        		strHTML += "  <td>"+(intLoop+1)+"</td>";
+	        		strHTML += "</tr>";
+	        		if( intLoop==(HotelListLength-1) ) strHTML += "</tbody></table>";
+	        	}
+	        	
+	        	$("#contents").html(strJSON);
+	        	$("#Div_Hotel_List").html(strHTML);
+	        	/*
+	        	*/
+	        	/*
+	        	var dataStr = data.resultList.replaceAll("/","\\/");
+	        	$("#contents").text(data.resultList);
+	        	var dataStr = JSON.stringify(data.resultList); //"{\"HotelListResponse\":{\"customerSessionId\":\"0ABAAA63-8378-7C79-1572-6AFF4A499530\",\"numberOfRoomsRequested\":1,\"moreResultsAvailable\":true,\"cacheKey\":\"283787c7:1576aff4a49:558\",\"cacheLocation\":\"10.186.170.99:7300\",\"cachedSupplierResponse\":{\"@supplierCacheTolerance\":\"NOT_SUPPORTED\",\"@cachedTime\":\"0\",\"@supplierRequestNum\":\"307\",\"@supplierResponseNum\":\"1\",\"@supplierResponseTime\":\"282\",\"@candidatePreptime\":\"9\",\"@otherOverheadTime\":\"12\",\"@tpidUsed\":\"5001\",\"@matchedCurrency\":\"true\",\"@matchedLocale\":\"true\"},\"HotelList\":{\"@size\":\"1\",\"@activePropertyCount\":\"307\",\"HotelSummary\":{\"@order\":\"0\",\"@ubsScore\":\"1072487605\",\"hotelId\":105311,\"name\":\"The Westin Copley Place, Boston\",\"address1\":\"10 Huntington Ave\",\"city\":\"Boston\",\"stateProvinceCode\":\"MA\",\"postalCode\":\"02116\",\"countryCode\":\"US\",\"airportCode\":\"BOS\",\"supplierType\":\"E\",\"propertyCategory\":1,\"hotelRating\":4.0,\"hotelRatingDisplay\":\"Star\",\"confidenceRating\":20,\"amenityMask\":1458691,\"tripAdvisorRating\":4.5,\"tripAdvisorReviewCount\":3332,\"tripAdvisorRatingUrl\":\"http:\/\/www.tripadvisor.com\/img\/cdsi\/img2\/ratings\/traveler\/4.5-123456-4.gif\",\"locationDescription\":\"Near Copley Place\",\"shortDescription\":\"&lt;p&gt;&lt;b&gt;Property Location&lt;\/b&gt; &lt;br \/&gt;A stay at The Westin Copley Place, Boston places you in the heart of Boston, steps from Boston Public Library and Copley Place.  This 4-star hotel is close to Hynes\",\"highRate\":466.70,\"lowRate\":466.70,\"rateCurrencyCode\":\"USD\",\"latitude\":42.34873,\"longitude\":-71.07758,\"proximityDistance\":0.6346643,\"proximityUnit\":\"MI\",\"hotelInDestination\":true,\"thumbNailUrl\":\"\/hotels\/1000000\/10000\/4500\/4443\/4443_289_t.jpg\",\"deepLink\":\"http:\/\/www.travelnow.com\/templates\/500317\/hotels\/105311\/overview?lang=en&amp;currency=USD&amp;standardCheckin=10\/18\/2016&amp;standardCheckout=10\/20\/2016&amp;roomsCount=1&amp;rooms[0].adultsCount=1\",\"RoomRateDetailsList\":{\"RoomRateDetails\":{\"roomTypeCode\":201040424,\"rateCode\":205585821,\"maxRoomOccupancy\":3,\"quotedRoomOccupancy\":1,\"minGuestAge\":0,\"roomDescription\":\"Deluxe Room, 1 King Bed, City View\",\"propertyAvailable\":true,\"propertyRestricted\":false,\"expediaPropertyId\":4443,\"RateInfos\":{\"@size\":\"1\",\"RateInfo\":{\"@priceBreakdown\":\"true\",\"@promo\":\"false\",\"@rateChange\":\"false\",\"RoomGroup\":{\"Room\":{\"numberOfAdults\":1,\"numberOfChildren\":0,\"rateKey\":\"8da8c467-dc70-498e-808c-a5c111cb7068-5001\",\"ChargeableNightlyRates\":[{\"@baseRate\":\"466.70\",\"@rate\":\"466.70\",\"@promo\":\"false\"},{\"@baseRate\":\"466.70\",\"@rate\":\"466.70\",\"@promo\":\"false\"}]}},\"ChargeableRateInfo\":{\"@averageBaseRate\":\"466.70\",\"@averageRate\":\"466.70\",\"@commissionableUsdTotal\":\"933.40\",\"@currencyCode\":\"USD\",\"@maxNightlyRate\":\"466.70\",\"@nightlyRateTotal\":\"933.40\",\"@surchargeTotal\":\"169.34\",\"@total\":\"1102.74\",\"NightlyRatesPerRoom\":{\"@size\":\"2\",\"NightlyRate\":[{\"@baseRate\":\"466.70\",\"@rate\":\"466.70\",\"@promo\":\"false\"},{\"@baseRate\":\"466.70\",\"@rate\":\"466.70\",\"@promo\":\"false\"}]},\"Surcharges\":{\"@size\":\"1\",\"Surcharge\":{\"@type\":\"TaxAndServiceFee\",\"@amount\":\"169.34\"}}},\"nonRefundable\":true,\"rateType\":\"MerchantStandard\",\"currentAllotment\":75}}}}}}}}";
+	        	data = JSON.parse(dataStr);
+	        	$.each( data , function( key , value ){
+	        		alert(key+"="+value);
+	        	});
+	        	*/
+	        },
+	        error : function(request,status,error){
+	        	var errMsg = "code:"+request.status+"<br />"+"message:"+request.responseText+"<br />"+"error:"+error;
+	        	alert(errMsg);
+    			//fn_error();
+	        }
+	    });
+		
+	});
+</script>
+</head>
+<body>
+<div id="url">url</div>
+<br /><br /><br /><br />
+<br /><br /><br /><br />
+
+<div id="contents"></div>
+
+<br /><br /><br /><br />
+<br /><br /><br /><br />
+
+<div id="Div_Hotel_List"></div>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+	<tbody>
+		
+		<tr>
+			<td valign="top" width="8"><b class="dkBlueBG">1</b></td>
+			<td valign="top" width="64"><img src="http://images.travelnow.com/hotels/1000000/120000/119200/119162/119162_137_t.jpg" width="64" height="64" border="1" name="hotelImage" align="left"></td>
+			<td valign="top" width="175" class="small">
+				&lt;hotelId&gt;  <b class="red"><a href="" onmouseover="showRollTip('The EAN system unique hotel ID. Use this value in all EAN XML requests where the hotel ID is required.',event)" onmouseout="hideRollTip()">153531</a></b><br><b><a title="Get Hotel Information for 르 메르디앙 케임브리지-MIT" href="hotelInfo.asp?CID=500317&amp;apiKey=42054h3uto03kvli4lpk1ls71f&amp;minorRev=30&amp;customerIpAddress=10.26.131.178&amp;customerUserAgent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36&amp;customerSessionId=0AB29095-73D9-7991-5762-4026DFC923D0&amp;locale=ko_KR&amp;currencyCode=KRW&amp;sig=b22febd28b9d975a867082ce7d9294ca&amp;hotelId=153531&amp;supplierType=E&amp;arrivalDate=10/17/2016&amp;departureDate=10/19/2016&amp;numberOfRooms=1&amp;city=Boston&amp;stateProvinceCode=MA&amp;countryCode=US&amp;rateKey=&amp;numberOfAdults1=2&amp;numberOfChildren1=1&amp;childAges1=&lt;childAges&gt;5&lt;/childAges&gt;&amp;room1Child1=5">르 메르디앙 케임브리지-MIT</a></b><br><b>20 Sidney Street</b><br><b>Cambridge</b>, <b>MA</b>, <b>US</b> <b>02139</b><br>&lt;airportCode&gt;  <b>BOS</b><br>&lt;expediaPropertyId&gt;  <b><a href="" onmouseover="showRollTip('The Expedia system mapped hotel ID',event)" onmouseout="hideRollTip()">119162</a></b></td>
+			<td valign="top" class="small" nowrap=""><a href="" onmouseover="showRollTip('an Expedia result indicates inventory that is contracted and sold through the Expedia system.<br /><br />supplierType=E',event)" onmouseout="hideRollTip()"><b class="dkBlueBG" style="padding:5px;">Expedia Result</b></a><br></td>
+			<td valign="top" class="small">&lt;supplierType&gt;  <b class="red">E</b><br>&lt;hotelRating&gt;  <b class="red">4.0 stars</b><br>&lt;propertyCategory&gt;  <b>1</b><br><a href="" onmouseover="showRollTip('A confidence rating is applied to GDS inventory to determine how well or how quickly they pay commissions on non-prepaid bookings.  Does not apply to an Expedia booking.',event)" onmouseout="hideRollTip()">&lt;confidenceRating&gt;</a><b>10</b><br>&lt;tripAdvisorRating&gt;  <b>4.0</b><br>&lt;tripAdvisorReviewCount&gt;  <b>96</b><br>&lt;tripAdvisorRatingUrl&gt;  <b>http://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.0-123456-4.gif</b></td>
+			<td valign="top" class="small"><a href="" onmouseover="showRollTip('The high and low rate is a statistical value only and may not be a rate returned with the dates selected when requesting availability for booking.',event)" onmouseout="hideRollTip()">High and Low Rate</a><br>&lt;lowRate&gt;  <b>512621</b><br>&lt;highRate&gt;  <b>512621</b><br>&lt;rateCurrencyCode&gt;  <b>KRW</b><br></td>
+			<td valign="top" class="small" nowrap="">&lt;latitude&gt;  <b>42.36237</b><br>&lt;longitude&gt;  <b>-71.10019</b><br>&lt;proximityDistance&gt;  <b>0.87755406</b><br>&lt;proximityUnit&gt;  <b>MI</b><br>&lt;hotelInDestination&gt;  <b>true</b></td>
+			<td valign="top" class="small" width="150">&lt;locationDescription&gt;  <b>매사추세츠 공과대학 부근에 위치</b><br><br><a href="" onmouseover="showRollTip('<p><b>숙박 시설 위치</b> <br />케임브리지에 자리한 르 메르디앙 케임브리지-MIT에서는 몇 분만 걸으면 MIT 박물관에 갈 수 있고 가까운 거리에는 보스턴대학교도 있습니다. 이 4성급 호텔에서는 가까운 거리에 펜웨이 파크 및 하버드 광장도 있습니다.</p><p><b>객실</b> <br />에어컨이 설치된 210개의 객실에는 평면 TV도',event)" onmouseout="hideRollTip()" disable-output-escaping="yes">&lt;shortDescription&gt;</a>&nbsp;</td>
+			<td valign="top" class="small" nowrap=""><a href="javascript: popUp('http://travel.ian.com/hotel/maps/153531?cid=500317');" title="Open a Map Window"><b>MAP</b></a><br><a href="javascript: popUp('http://travel.ian.com/hotel/tours/153531?cid=500317');" title="Open a Virtual Tour"><b>Virtual Tour</b></a><br><b><a title="Get Hotel Information for 르 메르디앙 케임브리지-MIT" href="hotelInfo.asp?CID=500317&amp;apiKey=42054h3uto03kvli4lpk1ls71f&amp;minorRev=30&amp;customerIpAddress=10.26.131.178&amp;customerUserAgent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36&amp;customerSessionId=0AB29095-73D9-7991-5762-4026DFC923D0&amp;locale=ko_KR&amp;currencyCode=KRW&amp;sig=b22febd28b9d975a867082ce7d9294ca&amp;hotelId=153531&amp;supplierType=E&amp;arrivalDate=10/17/2016&amp;departureDate=10/19/2016&amp;numberOfRooms=1&amp;city=Boston&amp;stateProvinceCode=MA&amp;countryCode=US&amp;rateKey=&amp;numberOfAdults1=2&amp;numberOfChildren1=1&amp;childAges1=&lt;childAges&gt;5&lt;/childAges&gt;&amp;room1Child1=5">Hotel Info</a></b><br><b><a href="http://www.travelnow.com/templates/500317/hotels/153531/overview?lang=ko&amp;currency=KRW&amp;standardCheckin=10/17/2016&amp;standardCheckout=10/19/2016&amp;roomsCount=1&amp;rooms[0].adultsCount=2&amp;rooms[0].childrenCount=1&amp;rooms[0].children[0].age=5" target="blank" title="Deep Link to Your Template Page">Deep Link</a></b></td>
+			<td valign="top">
+				<form action="roomAvailability.asp" method="post" name="rez1">
+					<input type="hidden" name="CID" value="500317">
+					<input type="hidden" name="apiKey" value="42054h3uto03kvli4lpk1ls71f">
+					<input type="hidden" name="minorRev" value="30">
+					<input type="hidden" name="customerIpAddress" value="10.26.131.178">
+					<input type="hidden" name="customerUserAgent" value="Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36">
+					<input type="hidden" name="customerSessionId" value="0AB29095-73D9-7991-5762-4026DFC923D0">
+					<input type="hidden" name="locale" value="ko_KR">
+					<input type="hidden" name="currencyCode" value="KRW">
+					<input type="hidden" name="sig" value="b22febd28b9d975a867082ce7d9294ca">
+					<input type="hidden" name="arrivalDate" value="10/17/2016">
+					<input type="hidden" name="departureDate" value="10/19/2016">
+					<input type="hidden" name="hotelId" value="153531">
+					<input type="hidden" name="city" value="Boston">
+					<input type="hidden" name="stateProvinceCode" value="MA">
+					<input type="hidden" name="countryCode" value="US">
+					<input type="hidden" name="numberOfRooms" value="1">
+					
+					<input type="hidden" name="numberOfAdults1" value="2">
+					<input type="hidden" name="numberOfChildren1" value="1">
+					<input type="hidden" name="childAges1" value="<childAges>5</childAges>">
+					<input type="hidden" name="room1Child1" value="5">
+					<input type="submit" name="Submit" value="Get Rooms" class="dkBlueBG"><br>
+					<a href="" onmouseover="showRollTip('Select an option before submitting if you want to receive hotel info along with the room results',event)" onmouseout="hideRollTip()"><img src="/QA/img/arrows/arrow-green.png" alt="Tip" width="12" height="12" hspace="5" align="middle">TIP</a>
+					<select name="options" class="BGgreen" style="width:130px;">
+						<option value=""> &lt;options&gt; </option>
+						<option value=""></option>
+						<option value="HOTEL_DETAILS">HOTEL_DETAILS</option>
+						<option value="ROOM_TYPES">ROOM_TYPES</option>
+						<option value="ROOM_AMENITIES">ROOM_AMENITIES</option>
+						<option value="PROPERTY_AMENITIES">PROPERTY_AMENITIES</option>
+						<option value="HOTEL_IMAGES">HOTEL_IMAGES</option>
+						<option value="HOTEL_DETAILS,ROOM_TYPES,ROOM_AMENITIES,PROPERTY_AMENITIES,HOTEL_IMAGES">All Details</option>
+					</select>
+				</form>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+</body>

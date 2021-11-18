@@ -1,0 +1,38 @@
+@charset "utf-8";
+/* 멘토링 검색 */
+.Mentoring_tit{padding:13px 0; background:#fff}
+.Mentoring_tit h2{font-size:18px; color:#727272; text-align:center;}
+.Mentoring_tit h2 b{font-size:25px; font-weight:bold; color:#e70014;}
+.Mentoring_tit > p{font-size:18px; font-weight:bold; color:#222; text-align:center; margin-top:5px;}
+.Mentoring_tit .box{font-size:0; padding:0 10px;}
+.Mentoring_tit .box .step{ width:100%; margin:0 auto; margin-bottom:13px; height:190px; vertical-align:top; display:block; font-size:14px; border:1px solid #e2e0eb; box-sizing:border-box;}
+.Mentoring_tit .box .step h3{background:#f6f5fb; font-size:17px; color:#7d4dbb; font-weight:bold; height:40px; line-height:40px; border-bottom:1px solid #e2e0eb; text-align:center;}
+.Mentoring_tit .box .step .text{padding:15px 20px; box-sizing:border-box;}
+.Mentoring_tit .box .step .text .text_tit{font-size:15px; padding-bottom:5px; color:#454545; font-weight:bold; border-bottom:1px solid #bfbdc8; height:28px; line-height:28px; margin-bottom:15px;}
+.Mentoring_tit .box .step3 .text .dl_set{width:100%}
+
+.Mentoring_tit .box .step_right_search{text-align:right; max-width:620px;  margin:0 auto; padding:0 20px;}
+.Mentoring_tit .box .step_right_search a{width:91px; height:31px; background:#7b4eb9; font-size:13px; color:#fff; line-height:31px; text-align:center; font-weight:bold; display:inline-block; border-radius:4px;}
+.selectbox{text-align: center; background-size: auto 18px; position: relative; overflow: hidden;}
+.selectbox .select{background: none; color: #303030; font-size: .9em; width: 100%;  margin: 0 auto; height: 42px; border: 1px solid #eee;}
+.dl_set dt{margin-bottom: 6px; margin-top: -6px;}
+
+#sortSelect:after, #areaSelect:after, #subAreaSelect:after{content: ""; display: block; position: absolute; width: 30px;  height: 36px;  background: #ffffff url(../../images/btn/btn_down.png) center center no-repeat; background-size: auto 8px;  top: 3px;  right: 1px;}
+#areaSelect{width: 48%; float: left; margin-right: 5px;}
+#subAreaSelect{width: 49%; float: right;}
+
+.chk_allday{width: 100%; height: 23px; text-align: left; float: left; font-size: 14px; color: #454545;}
+.chkbox label{font-size: 14px;}
+
+div.last{background: #f6f6f8 url(../../images/ico/bg_lilastico.png) no-repeat .8em 1.1em; padding: 1em 1em 1em 2.2em; font-size: .8em; border-bottom: 1px solid #d1d1d6; background-size: 13px auto; line-height: 1.3;}
+    
+ .tm_title{margin-top:47px;margin-bottom: 1px; background-color:#ffffff; padding:10px; word-break:keep-all;}
+ .tm_title h2{font-size: 16px; color: #727272; text-align: center;}
+ .tm_title span{font-weight: bold; color: #e70014;}
+ .tm_title p{font-size: 14px; color: #222;  text-align: center; margin-top: 5px;}
+ 
+ .chkbox input {z-index: 1;}
+ 
+ .search_text{padding:10px 1px 10px 15px;border-bottom:1px solid #d1d1d6; background-size:13px auto; line-height:30px;background: #f6f6f8; margin-top: 2px; font-weight: 600; font-size: 13px;}
+ .sm_sub_textbox3{color: #969696; font-size: 11px; margin-bottom: 5px;}
+ .freesearch .tra_day li {background: #f6f6f8 url(../../images/ico/ico_clder.png) 10px 13px no-repeat;background-size: auto 15px;}

@@ -1,0 +1,1629 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="ReserveDAO">
+	
+		
+	<typeAlias alias="egovMap"        		type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="ManagerDTO"     		type="com.lottejtb.reserve.service.ManagerDTO"></typeAlias>
+	<typeAlias alias="CUMstVO"        		type="com.lottejtb.member.service.CUMstVO"/>
+	<typeAlias alias="ReserveVO"      		type="com.lottejtb.reserve.service.ReserveVO"/>
+	<typeAlias alias="EtPriceDTO"     		type="com.lottejtb.reserve.service.EtPriceDTO"/>	
+	<typeAlias alias="ReserveRosterVO"     	type="com.lottejtb.reserve.service.ReserveRosterVO"/>
+	<typeAlias alias="ComCodeVO"     		type="com.lottejtb.reserve.service.ComCodeVO"/>
+	<typeAlias alias="SyCdDetVO"     		type="com.lottejtb.reserve.service.SyCdDetVO"/>
+	<typeAlias alias="AirsBlockDTO"     	type="com.lottejtb.reserve.service.AirsBlockDTO"/>
+	<typeAlias alias="SmsVO"     			type="com.lottejtb.reserve.service.SmsVO"/>
+	<typeAlias alias="EmsMailSendVO"        type="com.lottejtb.goods.service.EmsMailSendVO"/>
+	<typeAlias alias="UmsLogVO"        		type="com.lottejtb.reserve.service.UmsLogVO"/>
+	<typeAlias alias="RvPerInfoVO"        	type="com.lottejtb.reserve.service.RvPerInfoVO"/>
+	<typeAlias alias="RvPerInfoHisVO"       type="com.lottejtb.reserve.service.RvPerInfoHisVO"/>
+	 
+    <!-- 예약  UI > 몰 관련 구분 코드  조회   -->
+	<resultMap id="airBlock" class="AirsBlockDTO">
+		<result property="event_block" column="EVENT_BLOCK"/>
+		<result property="real_cnt" column="REAL_CNT"/>
+	</resultMap>	
+	
+    <!-- 예약  UI > 몰 관련 구분 코드  조회   -->
+	<resultMap id="syCdDet" class="SyCdDetVO">
+		<result property="cd" column="CD"/>
+		<result property="site_cd" column="SITE_CD"/>
+	</resultMap>	
+	
+    <!-- 예약  UI > 몰 관련 구분 코드  조회   -->
+	<resultMap id="syCdDet2" class="SyCdDetVO">
+		<result property="type_cd" column="TYPE_CD"/>
+		<result property="event_cd" column="EVENT_CD"/>
+		<result property="res_day" column="RES_DAY"/>		
+	</resultMap>	
+			
+    <!-- 예약  UI > 시스템 관련 코드 조회   -->
+	<resultMap id="comcode" class="ComCodeVO">
+		<result property="cd" column="CODE"/>
+		<result property="cd_nm" column="CD_NM"/>
+		<result property="cd_jp_nm" column="CD_JP_NM"/>
+		<result property="cd_en_nm" column="CD_EN_NM"/>
+		<result property="grp_cd" column="GRP_CD"/>
+	</resultMap>	   
+	
+    <!-- 예약  UI > 비회원인 경우 고객 정보 등록 관련  -->
+	<resultMap id="member" class="CUMstVO">
+		<result property="jmno_cnt" column="JMNO_CNT"/>
+		<result property="email_cnt" column="EMAIL_CNT"/>
+		<result property="handphone_cnt" column="HANDPHONE_CNT"/>
+		<result property="lotte_id_cnt" column="LOTTE_ID_CNT"/>
+		<result property="tel_cnt" column="TEL_CNT"/>
+
+		<result property="cnt" column="CNT"/>		
+		<result property="cust_cd" column="CUST_CD"/>
+		<result property="jmno" column="JMNO"/>
+		<result property="knm" column="KNM"/>
+		<result property="first_enm" column="FIRST_ENM"/>
+
+		<result property="last_enm" column="LAST_ENM"/>
+		<result property="repre_country_cd" column="REPRE_COUNTRY_CD"/>
+		<result property="id" column="ID"/>
+		<result property="pass" column="PASS"/>
+		<result property="regi_fg" column="REGI_FG"/>
+		
+		<result property="etc_tel_no" column="ETC_TEL_NO"/>
+		<result property="birthday" column="BIRTHDAY"/>
+		<result property="birth_chk" column="BIRTH_CHK"/>
+		<result property="marry_day" column="MARRY_DAY"/>
+		<result property="spouse_yn" column="SPOUSE_YN"/>
+
+		<result property="zip_cd" column="ZIP_CD"/>
+		<result property="home_addr1" column="HOME_ADDR1"/>
+		<result property="home_addr2" column="HOME_ADDR2"/>
+		<result property="job_cd" column="JOB_CD"/>
+		<result property="comp_zip_cd" column="COMP_ZIP_CD"/>
+
+		<result property="comp_addr1" column="COMP_ADDR1"/>
+		<result property="comp_addr2" column="COMP_ADDR2"/>
+		<result property="comp_nm" column="COMP_NM"/>
+		<result property="job_nm" column="JOB_NM"/>
+		<result property="dept_nm" column="DEPT_NM"/>
+
+		<result property="grade_nm" column="GRADE_NM"/>
+		<result property="sch_nm" column="SCH_NM"/>
+		<result property="sch_yn" column="SCH_YN"/>
+		<result property="subject" column="SUBJECT"/>
+		<result property="cust_grade_cd" column="CUST_GRADE_CD"/>
+		
+		<result property="aircard_yn" column="AIRCARD_YN"/>
+		<result property="dm_yn" column="DM_YN"/>
+		<result property="email_yn" column="EMAIL_YN"/>
+		<result property="comp_desc" column="COMP_DESC"/>
+		<result property="url" column="URL"/>
+		
+		<result property="email" column="EMAIL"/>
+		<result property="comp_fax" column="COMP_FAX"/>
+		<result property="handphone_cd" column="HANDPHONE_CD"/>
+		<result property="handphone1" column="HANDPHONE1"/>
+		<result property="handphone2" column="HANDPHONE2"/>
+
+		<result property="handphone3" column="HANDPHONE3"/>
+		<result property="handphone" column="HANDPHONE"/>
+		
+		<result property="home_tel1" column="HOME_TEL1"/>
+		<result property="home_tel2" column="HOME_TEL2"/>
+		<result property="home_tel3" column="HOME_TEL3"/>
+		<result property="comp_tel1" column="COMP_TEL1"/>
+
+		<result property="comp_tel2" column="COMP_TEL2"/>
+		<result property="comp_tel3" column="COMP_TEL3"/>
+		<result property="site_cd" column="SITE_CD"/>
+		<result property="sms_yn" column="SMS_YN"/>
+		<result property="info_open_yn" column="INFO_OPEN_YN"/>
+
+		<result property="nick_nm" column="NICK_NM"/>
+		<result property="detail_cd" column="DETAIL_CD"/>
+		<result property="join_path" column="JOIN_PATH"/>
+		<result property="bad_cust_yn" column="BAD_CUST_YN"/>
+		<result property="real_nm_yn" column="REAL_NM_YN"/>
+
+		<result property="repre_cust_key" column="REPRE_CUST_KEY"/>
+		<result property="rel_cd" column="REL_CD"/>
+		<result property="remark" column="REMARK"/>
+		<result property="secession_cd" column="SECESSION_CD"/>
+		<result property="secession_remark" column="SECESSION_REMARK"/>
+
+		<result property="ins_id" column="INS_ID"/>
+		<result property="cha_id" column="CHA_ID"/>
+		<result property="chs_dept_cd" column="CHS_DEPT_CD"/>
+		<result property="comp_adm_info" column="COMP_ADM_INFO"/>
+		<result property="comp_email" column="COMP_EMAIL"/>
+
+		<result property="lotte_id" column="LOTTE_ID"/>
+		<result property="keyman_cd" column="KEYMAN_CD"/>
+		<result property="sex" column="SEX"/>
+    </resultMap>
+    		
+    <!-- 예약  UI > 행사 담당자 정보 조회   -->
+	<resultMap id="manager" class="ManagerDTO">
+		<result property="cha_id" column="CHA_ID"/>
+		<result property="cha_dept_cd" column="CHA_DEPT_CD"/>	
+	</resultMap>
+	
+    <!-- 예약  UI > 행사 상품 가격  정보 조회   -->
+	<resultMap id="price" class="EtPriceDTO">
+		<result property="adult_price" column="ADULT_PRICE"/>
+		<result property="child_price" column="CHILD_PRICE"/>
+		<result property="baby_price" column="BABY_PRICE"/>		
+		<result property="etc_price1" column="ETC_PRICE1"/>		
+		<result property="etc_price2" column="ETC_PRICE2"/>		
+		<result property="etc_price3" column="ETC_PRICE3"/>																
+	</resultMap>
+
+    <!-- 예약  UI > 예약 마스터 프론트 용 정보 조회    -->
+	<resultMap id="reserve" class="ReserveVO">
+		<result property="res_cd" column="RES_CD"/>
+		<result property="event_cd" column="EVENT_CD"/>
+		<result property="res_day" column="RES_DAY"/>		
+		<result property="posi_cd" column="POSI_CD"/>		
+		<result property="status_cd" column="STATUS_CD"/>	
+			
+		<result property="res_nm" column="RES_NM"/>																
+		<result property="res_chk_cd" column="RES_CHK_CD"/>																
+		<result property="site_cd" column="SITE_CD"/>																
+		<result property="dept_cd" column="DEPT_CD"/>																
+		<result property="mass_cd" column="MASS_CD"/>																
+
+		<result property="mass_site_cd" column="MASS_SITE_CD"/>																
+		<result property="res_cnt" column="RES_CNT"/>																
+		<result property="canc_cnt" column="CANC_CNT"/>																
+		<result property="copy_yn" column="COPY_YN"/>																
+		<result property="cust_cd" column="CUST_CD"/>	
+		
+		<result property="cust_id" column="CUST_ID"/>	
+		<result property="jmno" column="JMNO"/>	
+		<result property="zip_cd" column="ZIP_CD"/>	
+		<result property="addr1" column="ADDR1"/>	
+		<result property="addr2" column="ADDR2"/>	
+		
+		<result property="handphone1" column="HANDPHONE1"/>			
+		<result property="handphone2" column="HANDPHONE2"/>			
+		<result property="handphone3" column="HANDPHONE3"/>			
+		<result property="phone_fg" column="PHONE_FG"/>			
+		<result property="tel1" column="TEL1"/>			
+
+		<result property="tel2" column="TEL2"/>			
+		<result property="tel3" column="TEL3"/>			
+		<result property="co_tel1" column="CO_TEL1"/>			
+		<result property="co_tel2" column="CO_TEL2"/>			
+		<result property="co_tel3" column="CO_TEL3"/>			
+
+		<result property="email" column="EMAIL"/>			
+		<result property="fare_tax_yn" column="FARE_TAX_YN"/>			
+		<result property="event_amt" column="EVENT_AMT" nullValue="0"/>			
+		<result property="sale_amt" column="SALE_AMT" nullValue="0"/>			
+		<result property="sale_id" column="SALE_ID"/>			
+
+		<result property="sale_dept_cd" column="SALE_DEPT_CD"/>			
+		<result property="cha_id" column="CHA_ID"/>			
+		<result property="cha_dept_cd" column="CHA_DEPT_CD"/>			
+		<result property="conn_yn" column="CONN_YN"/>			
+		<result property="conn_day" column="CONN_DAY"/>			
+
+		<result property="remark" column="REMARK"/>			
+		<result property="confirm_fare" column="CONFIRM_FARE"/>			
+		<result property="confirm_status" column="CONFIRM_STATUS"/>			
+		<result property="last_status_cd" column="LAST_STATUS_CD"/>			
+		<result property="etc_res_cd" column="ETC_RES_CD"/>			
+
+		<result property="incentive_yn" column="INCENTIVE_YN"/>			
+		<result property="join_fg" column="JOIN_FG"/>			
+		<result property="join_shop" column="JOIN_SHOP"/>			
+		<result property="join_area" column="JOIN_AREA"/>			
+		<result property="invoice_remark" column="INVOICE_REMARK"/>			
+
+		<result property="ins_dt" column="INS_DT"/>			
+		<result property="ins_id" column="INS_ID"/>			
+		<result property="cust_site_cd" column="CUST_SITE_CD"/>			
+		<result property="cust_tour_yn" column="CUST_TOUR_YN"/>			
+		<result property="agent_remark" column="AGENT_REMARK"/>			
+
+		<result property="mass_desc" column="MASS_DESC"/>			
+		<result property="web_conf_yn" column="WEB_CONF_YN"/>			
+		<result property="upd_dt" column="UPD_DT"/>			
+		<result property="upd_id" column="UPD_ID"/>			
+		<result property="mass_fg" column="MASS_FG"/>	
+																																	
+	</resultMap>
+
+    <!-- 예약  UI > 행사 상품 가격  정보 조회   -->
+	<resultMap id="reserveRoster" class="ReserveRosterVO">
+		<result property="res_cd" column="RES_CD" nullValue=""/>
+		<result property="res_seq" column="RES_SEQ" nullValue="0"/>
+		<result property="res_day" column="RES_DAY" nullValue=""/>		
+		<result property="etc_res_cd" column="ETC_RES_CD" nullValue=""/>		
+		<result property="nm_kor" column="NM_KOR" nullValue=""/>	
+			
+		<result property="enm_last" column="ENM_LAST" nullValue=""/>																
+		<result property="enm_first" column="ENM_FIRST" nullValue=""/>																
+		<result property="jmno" column="JMNO" nullValue=""/>																
+		<result property="sex" column="SEX" nullValue=""/>																
+		<result property="age_cd" column="AGE_CD" nullValue=""/>																
+
+		<result property="roster_title" column="ROSTER_TITLE" nullValue=""/>																
+		<result property="cust_cd" column="CUST_CD" nullValue=""/>
+		<result property="handphone1" column="HANDPHONE1" nullValue=""/>		
+		<result property="handphone2" column="HANDPHONE2" nullValue=""/>
+		<result property="handphone3" column="HANDPHONE3" nullValue=""/>
+
+		<result property="email" column="EMAIL" nullValue=""/>				
+		<result property="pp_yn" column="PP_YN" nullValue=""/>				
+		<result property="conn_yn" column="CONN_YN" nullValue=""/>	
+		<result property="conn_day" column="CONN_DAY" nullValue=""/>			
+		<result property="conn_time" column="CONN_TIME" nullValue=""/>
+
+		<result property="remark" column="REMARK" nullValue=""/>	
+		<result property="visa_yn" column="VISA_YN" nullValue=""/>				
+		<result property="visa_no" column="VISA_NO" nullValue=""/>				
+		<result property="visa_info" column="VISA_INFO" nullValue=""/>	
+		<result property="contract_send_yn" column="CONTRACT_SEND_YN" nullValue=""/>
+
+		<result property="contract_accept_yn" column="CONTRACT_ACCEPT_YN" nullValue=""/>	
+		<result property="res_team_no" column="RES_TEAM_NO" nullValue="0"/>	
+		<result property="single_yn" column="SINGEL_YN" nullValue=""/>	
+		<result property="air_arng_yn" column="AIR_ARNG_YN" nullValue=""/>	
+		<result property="land_arng_yn" column="LAND_ARNG_YN" nullValue=""/>
+
+		<result property="online_yn" column="ONLINE_YN" nullValue=""/>	
+		<result property="event_amt" column="EVENT_AMT" nullValue="0"/>	
+		<result property="dc_amt" column="DC_AMT" nullValue="0"/>	
+		<result property="add_amt" column="ADD_AMT" nullValue="0"/>	
+		<result property="sale_amt" column="SALE_AMT" nullValue="0"/>	
+
+		<result property="site_comm_rate" column="SITE_COMM_RATE" nullValue="0"/>	
+		<result property="full_amt_w" column="FULL_AMT_W" nullValue="0"/>	
+		<result property="fare_tax_amt" column="FARE_TAX_AMT"  nullValue="0"/>	
+		<result property="fare_vat_amt" column="FARE_VAT_AMT" nullValue="0"/>	
+		<result property="fare_surcharge" column="FARE_SURCHARGE" nullValue="0"/>	
+		<result property="fare_charge_yn" column="FARE_CHARGE_YN" nullValue=""/>	
+	 
+		<result property="agent_dc_rate" column="AGENT_DC_RATE" nullValue="0"/>	
+		<result property="agent_dc_amt" column="AGENT_DC_AMT" nullValue="0"/>	
+		<result property="air_dc_cd" column="AIR_DC_CD" nullValue=""/>	
+		<result property="ins_dt" column="INS_DT" nullValue=""/>	
+		<result property="ins_id" column="INS_ID" nullValue=""/>	
+
+		<result property="pp_remark" column="PP_REMARK" nullValue=""/>	
+		<result property="air_issue_yn" column="AIR_ISSUE_YN" nullValue=""/>	
+		<result property="prove_remark" column="PROVE_REMARK" nullValue=""/>	
+		<result property="coop_comm_rate" column="COOP_COMM_RATE" nullValue="0"/>	
+		<result property="coop_comm" column="COOP_COMM" nullValue="0"/>
+
+		<result property="upd_dt" column="UPD_DT" nullValue=""/>	
+		<result property="upd_id" column="UPD_ID" nullValue=""/>	
+		<result property="pickup_area_cd" column="PICKUP_AREA_CD" nullValue=""/>
+
+																			
+	</resultMap>
+	
+	<resultMap id="reserveRoster2" class="ReserveRosterVO">
+		<result property="res_cd" column="RES_CD"/>
+		<result property="res_seq" column="RES_SEQ"/>
+		<result property="res_day" column="RES_DAY"/>		
+		<result property="etc_res_cd" column="ETC_RES_CD"/>		
+		<result property="nm_kor" column="NM_KOR"/>	
+			
+		<result property="enm_last" column="ENM_LAST"/>																
+		<result property="enm_first" column="ENM_FIRST"/>																
+		<result property="jmno" column="JMNO"/>																
+		<result property="sex" column="SEX"/>																
+		<result property="age_cd" column="AGE_CD"/>																
+
+		<result property="roster_title" column="ROSTER_TITLE"/>																
+		<result property="cust_cd" column="CUST_CD"/>
+		<result property="zip_cd" column="ZIP_CD"/>
+		<result property="addr1" column="ADDR1"/>
+		<result property="addr2" column="ADDR2"/>
+
+		<result property="phone_type" column="PHONE_TYPE"/>
+		<result property="tel1" column="TEL1"/>
+		<result property="tel2" column="TEL2"/>
+		<result property="tel3" column="TEL3"/>
+		<result property="handphone1" column="HANDPHONE1"/>
+		
+		<result property="handphone2" column="HANDPHONE2"/>
+		<result property="handphone3" column="HANDPHONE3"/>				
+		<result property="email" column="EMAIL"/>				
+		<result property="pp_yn" column="PP_YN"/>				
+		<result property="pp_nat_cd" column="PP_NAT_CD"/>				
+
+		<result property="pp_no" column="PP_NO"/>				
+		<result property="pp_termi_day" column="PP_TERMI_DAY"/>																								
+		<result property="visa_yn" column="VISA_YN"/>				
+		<result property="visa_no" column="VISA_NO"/>				
+		<result property="visa_termi_day" column="VISA_TERMI_DAY"/>	
+		
+		<result property="conn_yn" column="CONN_YN"/>	
+		<result property="conn_day" column="CONN_DAY"/>	
+		<result property="conn_time" column="CONN_TIME"/>	
+		<result property="air_remark" column="AIR_REMARK"/>	
+		<result property="land_remark" column="LAND_REMARK"/>	
+		
+		<result property="remark" column="REMARK"/>	
+		<result property="pp_remark" column="PP_REMARK"/>	
+		<result property="visa_info" column="VISA_INFO"/>	
+		<result property="air_card_cd" column="AIR_CARD_CD"/>	
+		<result property="air_card_no" column="AIR_CARD_NO"/>
+
+		<result property="apis_no" column="APIS_NO"/>	
+		<result property="apis_crs" column="APIS_CRS"/>	
+		<result property="apis_remark" column="APIS_REMARK"/>	
+		<result property="contract_send_yn" column="CONTRACT_SEND_YN"/>	
+		<result property="send_dt" column="SEND_DT"/>
+
+		<result property="apis_no" column="APIS_NO"/>	
+		<result property="apis_crs" column="APIS_CRS"/>	
+		<result property="apis_remark" column="APIS_REMARK"/>	
+		<result property="contract_send_yn" column="CONTRACT_SEND_YN"/>	
+		<result property="send_dt" column="SEND_DT"/>
+
+		<result property="contract_accept_yn" column="CONTRACT_ACCEPT_YN"/>	
+		<result property="accept_dt" column="ACCEPT_DT"/>	
+		<result property="res_team_no" column="RES_TEAM_NO"/>	
+		<result property="res_room_seq" column="RES_ROOM_SEQ"/>	
+		<result property="parlor_cd" column="PARLOR_CD"/>
+
+		<result property="singel_yn" column="SINGEL_YN"/>	
+		<result property="insu_price" column="INSU_PRICE"/>	
+		<result property="insu_target_cd" column="INSU_TARGET_CD"/>	
+		<result property="insu_enter_day" column="INSU_ENTER_DAY"/>	
+		<result property="insu_remark" column="INSU_REMARK"/>	
+
+		<result property="air_arng_yn" column="AIR_ARNG_YN"/>	
+		<result property="land_arng_yn" column="LAND_ARNG_YN"/>	
+		<result property="online_yn" column="ONLINE_YN"/>	
+		<result property="event_amt" column="EVENT_AMT"/>	
+		<result property="dc_amt" column="DC_AMT"/>	
+
+		<result property="add_amt" column="ADD_AMT"/>	
+		<result property="sale_amt" column="SALE_AMT" nullValue="0"/>	
+		<result property="site_comm_rate" column="SITE_COMM_RATE"/>	
+		<result property="site_comm" column="SITE_COMM"/>	
+		<result property="coop_comm_rate" column="COOP_COMM_RATE"/>	
+
+		<result property="coop_comm" column="COOP_COMM"/>	
+		<result property="full_amt_w" column="FULL_AMT_W"/>	
+		<result property="fare_tax_amt" column="FARE_TAX_AMT"/>	
+		<result property="fare_vat_amt" column="FARE_VAT_AMT"/>	
+		<result property="fare_surcharge" column="FARE_SURCHARGE"/>	
+		
+		<result property="fare_charge_yn" column="FARE_CHARGE_YN"/>	
+		<result property="agent_dc_rate" column="AGENT_DC_RATE"/>	
+		<result property="agent_dc_amt" column="AGENT_DC_AMT"/>	
+		<result property="air_dc_cd" column="AIR_DC_CD"/>	
+		<result property="prove_remark" column="PROVE_REMARK"/>		
+		
+		<result property="air_issue_yn" column="AIR_ISSUE_YN"/>	
+		<result property="ins_dt" column="INS_DT"/>	
+		<result property="ins_id" column="INS_ID"/>	
+		<result property="upd_dt" column="UPD_DT"/>	
+		<result property="upd_id" column="UPD_ID"/>		
+
+		<result property="canc_desc" column="CANC_DESC"/>	
+		<result property="canc_cd" column="CANC_CD"/>	
+		<result property="canc_dt" column="CANC_DT"/>	
+		<result property="canc_id" column="CANC_ID"/>	
+		<result property="comp_comm_rate" column="COMP_COMM_RATE"/>		
+
+		<result property="comp_comm" column="COMP_COMM"/>	
+		<result property="insu_req_yn" column="INSU_REQ_YN"/>	
+		<result property="insu_req_dt" column="INSU_REQ_DT"/>	
+		<result property="insu_conf_yn" column="INSU_CONF_YN"/>	
+		<result property="insu_conf_dt" column="INSU_CONF_DT"/>		
+
+		<result property="add_site_comm_rate" column="ADD_SITE_COMM_RATE"/>	
+		<result property="add_site_comm" column="ADD_SITE_COMM"/>	
+		<result property="res_send_seq" column="RES_SEND_SEQ"/>	
+		<result property="shop_comm_rate" column="SHOP_COMM_RATE"/>	
+		<result property="shop_comm" column="SHOP_COMM"/>		
+
+		<result property="shop_conf_day" column="SHOP_CONF_DAY"/>	
+		<result property="pickup_area_cd" column="PICKUP_AREA_CD" nullValue=""/>																			
+	</resultMap>
+	
+	<!--  예약 UI > SMS 발송  -->
+	<resultMap id="sms" class="SmsVO">
+		<result property="serialno" column="SERIALNO"/>	
+		<result property="destcallno" column="DESTCALLNO"/>
+		<result property="callbackno" column="CALLBACKNO"/>
+		<result property="type" column="TYPE"/>		
+		<result property="smsdata" column="SMSDATA"/>		
+		<result property="jeobsu_time" column="JEOBSU_TIME"/>	
+
+		<result property="yeyak_time" column="YEYAK_TIME"/>	
+		<result property="reserved" column="RESERVED"/>	
+		<result property="subject" column="SUBJECT"/>			
+	</resultMap>
+	
+	<!--  예약 UI >  예약 완료  메일 발송 -->
+	<resultMap id="emsMailSendVO" class="EmsMailSendVO">
+		<result property="schd_seq" 			column="SCHD_SEQ"/>
+		<result property="reg_dt" 				column="REG_DT"/>
+		<result property="mail_code" 			column="MAIL_CODE"/>
+		<result property="mail_nm" 				column="MAIL_NM"/>
+		<result property="to_name" 				column="TO_NAME"/>
+		<result property="to_email" 			column="TO_EMAIL"/>
+		<result property="from_name" 			column="FROM_NAME"/>
+		<result property="from_email" 			column="FROM_EMAIL"/>
+		<result property="subject" 				column="SUBJECT"/>
+		<result property="contents_mapping" 	column="CONTENTS_MAPPING"/>
+		<result property="mail_url_mapping" 	column="MAIL_URL_MAPPING"/>
+	</resultMap>	
+
+	<!--  예약 UI >  UMS 로그 관련 -->
+	<resultMap id="umsLogVO" class="UmsLogVO">
+		<result property="ums_fg_cd" 			column="UMS_FG_CD"/>
+		<result property="umskey" 				column="UMSKEY"/>
+		<result property="ums_det_cd" 			column="UMS_DET_CD"/>
+		<result property="res_cd" 				column="RES_CD"/>
+		<result property="cust_cd" 				column="CUST_CD"/>
+		<result property="ums_desc" 			column="UMS_DESC"/>
+		<result property="trans_cd" 			column="TRANS_CD"/>
+		<result property="ins_dt" 			column="INS_DT"/>
+		<result property="ins_id" 				column="INS_ID"/>
+	</resultMap>
+	
+
+	<!-- 예약 UI > 항공 블록수 조회    -->
+	<select id="ReserveDAO.selectAirsBlocks" parameterClass="AirsBlockDTO" resultMap="airBlock">
+		SELECT	
+			   A.EVENT_BLOCK	"EVENT_BLOCK",
+		       NVL(SUM(B.res_cnt)-SUM(B.canc_cnt),0) "REAL_CNT"
+		FROM   ET_MST A left join RV_MST B ON A.event_cd = B.event_cd
+		WHERE  A.EVENT_CD = #event_cd#
+		GROUP BY A.EVENT_CD, A.EVENT_BLOCK
+	</select>
+		
+	<!-- 예약 UI > 시스템 관련 코드 조회    -->
+	<select id="ReserveDAO.selectMallCd" parameterClass="SyCdDetVO" resultMap="syCdDet">
+		SELECT 
+			cd   "CD" , 
+			char2 "SITE_CD"
+		FROM sy_Cd_det 
+		WHERE grp_cd = 'ADMSDET' and CD = #comp_cd#
+	</select>
+		
+	<!-- 예약 UI > 시스템 관련 코드 조회    -->
+	<select id="ReserveDAO.selectComCode" parameterClass="ComCodeVO" resultMap="comcode">
+		SELECT	
+			A.CD "CODE"	/** --그룹코드 **/
+			,A.CD_NM "CD_NM"
+			,A.CD_JP_NM "CD_JP_NM"
+			,A.CD_EN_NM "CD_EN_NM"
+		    ,A.GRP_CD "GRP_CD"
+		FROM SY_CD_DET A
+		WHERE A.DEL_YN = 'N'
+		AND A.GRP_CD = #grp_cd#	
+		ORDER BY A.DISP_ORDER ASC, A.CD_NM
+	</select>
+			
+	<!-- 예약 UI > 업무 구분 코드 조회   -->
+	<select id="ReserveDAO.selectGoodsOpCd" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT OP_CD
+		FROM GD_MST
+		WHERE GOODS_CD = #goods_cd#
+		AND COMP_CD = #comp_cd#		
+	</select>
+		
+	<!-- 예약 UI > 비회원인 고객 주문 > 중복 체크   -->
+	<select id="ReserveDAO.checkDuplicatedMember" parameterClass="CUMstVO" resultMap="member">
+		    select JMNO_CNT,EMAIL_CNT,HANDPHONE_CNT,LOTTE_ID_CNT,TEL_CNT,
+		    	(JMNO_CNT+EMAIL_CNT+HANDPHONE_CNT+LOTTE_ID_CNT+TEL_CNT) AS CNT from 
+		    (SELECT 
+		    	count(*) as JMNO_CNT
+		    FROM CU_MST
+		    WHERE 
+		    JMNO = TRIM(#jmno#)
+		    AND KNM = #knm#)JMNO,
+		    (SELECT 
+		    	count(*) as EMAIL_CNT
+		    FROM CU_MST
+		    WHERE 
+		    EMAIL = #email#
+		    AND EMAIL <![CDATA[ <> ]]> 'no@mail.com'
+		    AND KNM = #knm#) EMAIL,
+		    (SELECT 
+		    	count(*) as LOTTE_ID_CNT
+		    FROM CU_MST
+		    WHERE 
+		    LOTTE_ID = #lotte_id#
+		    AND KNM = #knm#) LOTTE_ID_CNT,
+		    (SELECT 
+		    	count(*) as HANDPHONE_CNT
+		    FROM CU_MST
+		    WHERE 
+		    HANDPHONE1||HANDPHONE2||HANDPHONE3 = :HANDPHONE
+		    AND KNM = #knm#) HANDPHONE,
+		    (SELECT 
+		    	count(*) as TEL_CNT
+		    FROM CU_MST
+		    WHERE 
+		    HOME_TEL1||HOME_TEL2||HOME_TEL3 = #tel#
+		    AND KNM = #knm#) TEL
+	</select>
+	
+	<!-- 예약 UI > 비회원인 고객 주문 > 중복 체크   -->
+	<select id="ReserveDAO.checkDuplicatedMember2" parameterClass="CUMstVO" resultClass="int">
+	    SELECT MAX(CUST_CD) AS CUST_CD
+	    FROM CU_MST
+	    WHERE KNM = #knm#
+	</select>	
+
+	<!-- 예약 UI > 비회원인 고객 주문 > 고객 시퀀스 생성   -->
+	<select id="ReserveDAO.selectCustCd" parameterClass="CUMstVO" resultClass="java.lang.String">
+		  SELECT CUST_CD FROM (SELECT 
+		  NVL((SELECT LPAD(TO_CHAR(max(TO_NUMBER(CUST_CD))+1),10,'0') FROM CU_MST), 1) CUST_CD
+		  FROM CU_MST) WHERE ROWNUM <![CDATA[ < ]]> 2
+	</select>	
+	
+	<!-- 예약 UI > 비회원인 고객 주문 > 고객 정보 등록  -->
+	<insert id="ReserveDAO.insertMember" parameterClass="CUMstVO">
+	    INSERT INTO CU_MST
+	    (
+	    	CUST_CD         	,
+	    	JMNO            	,
+	    	KNM             	,
+	    	FIRST_ENM       	,
+	    	LAST_ENM        	,
+	    	REPRE_COUNTRY_CD	,
+	    	ID              	,
+	    	PASS            	,
+	    	REGI_FG         	,
+	    	ETC_TEL_NO      	,
+	    	BIRTHDAY        	,
+	    	BIRTH_CHK       	,
+	    	MARRY_DAY       	,
+	    	SPOUSE_YN       	,
+	    	ZIP_CD          	,
+	    	HOME_ADDR1      	,
+	    	HOME_ADDR2      	,
+	    	JOB_CD          	,
+	    	COMP_ZIP_CD     	,
+	    	COMP_ADDR1      	,
+	    	COMP_ADDR2      	,
+	    	COMP_NM         	,
+	    	JOB_NM          	,
+	    	DEPT_NM         	,
+	    	GRADE_NM        	,
+	    	SCH_NM          	,
+	    	SCH_YN          	,
+	    	SUBJECT         	,
+	    	CUST_GRADE_CD   	,
+	    	AIRCARD_YN      	,
+	    	DM_YN           	,
+	    	EMAIL_YN        	,
+	    	COMP_DESC       	,
+	    	URL             	,
+	    	EMAIL           	,
+	    	COMP_FAX        	,
+	    	HANDPHONE_CD    	,
+	    	HANDPHONE1      	,
+	    	HANDPHONE2      	,
+	    	HANDPHONE3      	,
+	    	HOME_TEL1       	,
+	    	HOME_TEL2       	,
+	    	HOME_TEL3       	,
+	    	COMP_TEL1       	,
+	    	COMP_TEL2       	,
+	    	COMP_TEL3       	,
+	    	SITE_CD         	,
+	    	SMS_YN          	,
+	    	INFO_OPEN_YN    	,
+	    	NICK_NM         	,
+	    	DETAIL_CD       	,
+	    	JOIN_PATH       	,
+	    	BAD_CUST_YN     	,
+	    	REAL_NM_YN      	,
+	    	REPRE_CUST_KEY  	,
+	    	REL_CD          	,
+	    	REMARK          	,
+	    	SECESSION_CD    	,
+	    	SECESSION_REMARK	,
+	    	INS_DT          	,
+	    	INS_ID          	,
+	    	CHA_ID          	,
+	    	CHS_DEPT_CD			,
+	    	COMP_ADM_INFO		,
+	    	COMP_EMAIL			,
+	    	LOTTE_ID			,
+	    	KEYMAN_CD			,
+	    	SEX             	
+	    ) 
+	    VALUES
+	    (
+	    	#cust_cd#        	,
+	    	#jmno#            	,
+	    	#knm#             	,
+	    	#first_enm#       	,
+	    	#last_enm#        	,
+	    	#repre_country_cd#	,
+	    	#id#              	,
+	    	#pass#            	,
+	    	#regi_fg#         	,
+	    	#etc_tel_no#      	,
+	    	#birthday#        	,
+	    	#birth_chk#       	,
+	    	#marry_day#       	,
+	    	#spouse_yn#       	,
+	    	#zip_cd#          	,
+	    	#home_addr1#      	,
+	    	#home_addr2#      	,
+	    	#job_cd#          	,
+	    	#comp_zip_cd#     	,
+	    	#comp_addr1#      	,
+	    	#comp_addr2#      	,
+	    	#comp_nm#         	,
+	    	#job_nm#          	,
+	    	#dept_nm#         	,
+	    	#grade_nm#        	,
+	    	#sch_nm#          	,
+	    	#sch_yn#          	,
+	    	#subject#         	,
+	    	#cust_grade_cd#   	,
+	    	#aircard_yn#      	,
+	    	#dm_yn#           	,
+	    	#email_yn#        	,
+	    	#comp_desc#       	,
+	    	#url#             	,
+	    	#email#           	,
+	    	#comp_fax#        	,
+	    	#handphone_cd#    	,
+	    	#handphone1#      	,
+	    	#handphone2#      	,
+	    	#handphone3#      	,
+	    	#home_tel1#       	,
+	    	#home_tel2#       	,
+	    	#home_tel3#       	,
+	    	#comp_tel1#       	,
+	    	#comp_tel2#       	,
+	    	#comp_tel3#       	,
+	    	#site_cd#         	,
+	    	#sms_yn#          	,
+	    	#info_open_yn#    	,
+	    	#nick_nm#         	,
+	    	#detail_cd#       	,
+	    	#join_path#       	,
+	    	#bad_cust_yn#     	,
+	    	#real_nm_yn#      	,
+	    	#repre_cust_key#  	,
+	    	#rel_cd#          	,
+	    	#remark#          	,
+	    	#secession_cd#    	,
+	    	#secession_remark#	,
+	    	sysdate				,
+	    	#ins_id#          	,
+	    	#cha_id#         	,
+	    	#chs_dept_cd#		,
+	    	#comp_adm_info#		,
+	    	#comp_email#			,
+	    	#lotte_id#			,
+	    	#keyman_cd#			,
+	    	#sex#                
+	    ) 
+
+	</insert>	
+	
+	<!-- 예약 UI > 롯데 아이디 조회    -->
+	<select id="ReserveDAO.selectLotteID" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT LOTTE_ID AS CUST_ID
+		FROM CU_MST
+		WHERE CUST_CD = #cust_cd#
+	</select>	
+
+	<!-- 예약 UI > 예약 번호  조회    -->
+	<select id="ReserveDAO.selectResCd" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<!--SELECT NVL(#goods_type_cd#||TO_CHAR(SYSDATE,'YYMMDD')||'-'|| DECODE(LENGTH(MAX(SUBSTR(RES_CD,9,11))+1),NULL,'0001'
+			,'1','000'||(MAX(SUBSTR(RES_CD,9,11))+1)
+			,'2','00'||(MAX(SUBSTR(RES_CD,9,11))+1 )
+			,'3','0'||(MAX(SUBSTR(RES_CD,9,11))+1 )
+			,'4',(MAX(SUBSTR(RES_CD,9,11))+1 )),'') "RES_CD" 
+			-->
+		SELECT CASE
+		         WHEN RES_CD = '0' THEN #goods_type_cd# || TO_CHAR(SYSDATE, 'YYMMDD') || '-0001'
+		         ELSE SUBSTR(RES_CD, 1, LENGTH(RES_CD) - 4) || LPAD(SUBSTR(RES_CD, LENGTH(RES_CD) - 3, LENGTH(RES_CD)) + 1, 4, '0')
+		       END AS RES_CD
+		FROM   (SELECT NVL(MAX(RES_CD), 0) AS RES_CD
+		        FROM   RV_MST
+		        WHERE  SUBSTR(RES_CD,1,7) = #goods_type_cd# || TO_CHAR(SYSDATE,'YYMMDD')) G1 
+	</select>	
+	
+	<!-- 예약 UI > 행사 담당자 정보 조회   -->
+	<select id="ReserveDAO.selectEventManager" parameterClass="ManagerDTO" resultMap="manager">
+			
+ 			SELECT NVL(A.CHA_ID1, B.CHA_ID) AS CHA_ID,  
+		        CASE WHEN A.CHA_ID1 IS NOT NULL AND A.CHA_DEPT_CD1 IS NOT NULL THEN A.CHA_DEPT_CD1 WHEN A.CHA_ID1 IS NOT NULL AND A.CHA_DEPT_CD1 IS NULL THEN (SELECT DEPT_CD FROM ADM_ADMIN WHERE USERID = A.CHA_ID1) ELSE (SELECT DEPT_CD FROM ADM_ADMIN WHERE USERID = B.CHA_ID) END AS CHA_DEPT_CD
+		      FROM ET_MST A, GD_MST B
+		      WHERE A.EVENT_CD = #event_cd#
+		      AND B.GOODS_CD = #goods_cd#    
+		      AND B.COMP_CD=#comp_cd#			
+	</select>	
+
+	<!-- 예약 UI > 예약 완료 상품 조회   -->
+	<select id="ReserveDAO.selectResconfirmGoods" parameterClass="SyCdDetVO" resultMap="syCdDet2">
+		SELECT 	REMARK "EVENT_CD", 
+				CD_DESC "RES_DAY"      
+		  FROM 	SY_CD_DET 
+		 WHERE 	GRP_CD = 'RESCONFIRM'
+		 AND REMARK = #event_cd#
+	</select>
+	
+	<!-- 예약 UI > 행사 상품 가격 정보 조회   -->
+	<select id="ReserveDAO.selectPrices" parameterClass="EtPriceDTO" resultMap="price">
+		SELECT 
+		    ADULT_PRICE     "ADULT_PRICE",
+		    CHILD_PRICE     "CHILD_PRICE",
+		    BABY_PRICE      "BABY_PRICE",
+		    ETC_PRICE1		"ETC_PRICE1",
+		    ETC_PRICE2		"ETC_PRICE2",
+		    ETC_PRICE3		"ETC_PRICE3"
+		FROM ET_PRICE
+		WHERE 
+		    EVENT_CD = #event_cd#
+		    AND FEE_YN = 'Y' 
+	</select>	
+
+	<!-- 예약 UI > 예약 마스터 프론트 용 정보 조회    -->
+	<select id="ReserveDAO.selectReserve" parameterClass="ReserveVO" resultMap="reserve">
+		SELECT	
+				RES_CD        	"RES_CD",		
+				EVENT_CD      	"EVENT_CD",		
+				RES_DAY       	"RES_DAY",		
+				POSI_CD       	"POSI_CD",		
+				STATUS_CD     	"STATUS_CD",	
+				RES_NM        	"RES_NM",		
+				RES_CHK_CD    	"RES_CHK_CD",	
+				SITE_CD       	"SITE_CD",		
+				DEPT_CD       	"DEPT_CD",		
+				MASS_CD       	"MASS_CD",		
+				MASS_SITE_CD  	"MASS_SITE_CD",	
+				NVL(RES_CNT, 0) "RES_CNT",		
+				NVL(CANC_CNT, 0) "CANC_CNT",		
+				COPY_YN       	"COPY_YN",		
+				CUST_CD       	"CUST_CD",		
+				CUST_ID       	"CUST_ID",		
+				JMNO          	"JMNO",		
+				ZIP_CD        	"ZIP_CD",		
+				ADDR1         	"ADDR1",		
+				ADDR2         	"ADDR2",		
+				HANDPHONE1    	"HANDPHONE1",	
+				HANDPHONE2    	"HANDPHONE2",	
+				HANDPHONE3    	"HANDPHONE3",	
+				PHONE_FG      	"PHONE_FG",		
+				TEL1          	"TEL1",		
+				TEL2          	"TEL2",		
+				TEL3          	"TEL3",		
+				CO_TEL1       	"CO_TEL1",	
+				CO_TEL2       	"CO_TEL2",	
+				CO_TEL3       	"CO_TEL3",	
+				EMAIL         	"EMAIL",	
+				FARE_TAX_YN   	"FARE_TAX_YN",	
+				EVENT_AMT     	"EVENT_AMT",	
+				FN_GET_TOT_SALE_AMT(RES_CD) "SALE_AMT",		
+				SALE_ID       	"SALE_ID",		
+				SALE_DEPT_CD  	"SALE_DEPT_CD",	
+				CHA_ID        	"CHA_ID",		
+				CHA_DEPT_CD   	"CHA_DEPT_CD",	
+				CONN_YN       	"CONN_YN",		
+				CONN_DAY      	"CONN_DAY",		
+				REMARK        	"REMARK",		
+				CONFIRM_FARE  	"CONFIRM_FARE",	
+				CONFIRM_STATUS	"CONFIRM_STATUS",
+				LAST_STATUS_CD	"LAST_STATUS_CD",
+				ETC_RES_CD    	"ETC_RES_CD",	
+				INCENTIVE_YN  	"INCENTIVE_YN",	
+				JOIN_FG       	"JOIN_FG",		
+				JOIN_SHOP     	"JOIN_SHOP",	
+				JOIN_AREA     	"JOIN_AREA",	
+				INVOICE_REMARK	"INVOICE_REMARK",
+				INS_DT        	"INS_DT",		
+				INS_ID        	"INS_ID",		
+				CUST_SITE_CD  	"CUST_SITE_CD",	
+				CUST_TOUR_YN  	"CUST_TOUR_YN",	
+				AGENT_REMARK  	"AGENT_REMARK",	
+				MASS_DESC     	"MASS_DESC",
+				WEB_CONF_YN   	"WEB_CONF_YN",
+				UPD_DT        	"UPD_DT",
+				UPD_ID        	"UPD_ID",
+				MASS_FG       	"MASS_FG" 
+		FROM	RV_MST 
+		WHERE	RES_CD = #res_cd#
+	</select>	
+	
+	<select id="ReserveDAO.selectReserveRosters" parameterClass="ReserveRosterVO" resultMap="reserveRoster">
+		SELECT	
+				RES_CD            	"RES_CD",		
+				RES_SEQ           	"RES_SEQ",	
+				RES_DAY           	"RES_DAY",	
+				ETC_RES_CD        	"ETC_RES_CD",	
+				NM_KOR            	"NM_KOR",	
+
+				ENM_FIRST         	"ENM_FIRST",	
+				ENM_LAST          	"ENM_LAST",	
+				JMNO              	"JMNO",		
+				SEX               	"SEX",		
+				AGE_CD            	"AGE_CD",	
+				
+				ROSTER_TITLE      	"ROSTER_TITLE",	
+				CUST_CD           	"CUST_CD",		
+				HANDPHONE1        	"HANDPHONE1",	
+				HANDPHONE2        	"HANDPHONE2",	
+				HANDPHONE3        	"HANDPHONE3",	
+				
+				EMAIL             	"EMAIL",		
+				PP_YN             	"PP_YN",		
+				CONN_YN           	"CONN_YN",	
+				CONN_DAY          	"CONN_DAY",	
+				CONN_TIME         	"CONN_TIME",
+				REMARK            	"REMARK",	
+				VISA_YN             "VISA_YN",
+				VISA_NO             "VISA_NO",
+				VISA_INFO         	"VISA_INFO",	
+				CONTRACT_SEND_YN  	"CONTRACT_SEND_YN",	
+				CONTRACT_ACCEPT_YN	"CONTRACT_ACCEPT_YN",	
+
+				RES_TEAM_NO       	"RES_TEAM_NO",
+				SINGEL_YN         	"SINGEL_YN",	
+				AIR_ARNG_YN       	"AIR_ARNG_YN",	
+				LAND_ARNG_YN      	"LAND_ARNG_YN",	
+				ONLINE_YN         	"ONLINE_YN",	
+				EVENT_AMT         	"EVENT_AMT",	
+				DC_AMT            	"DC_AMT",		
+				ADD_AMT           	"ADD_AMT",	
+				SALE_AMT          	"SALE_AMT",	
+				SITE_COMM_RATE    	"SITE_COMM_RATE",	
+				SITE_COMM         	"SITE_COMM",	
+
+				FULL_AMT_W        	"FULL_AMT_W",	
+				FARE_TAX_AMT      	"FARE_TAX_AMT",	
+				FARE_VAT_AMT      	"FARE_VAT_AMT",	
+				FARE_SURCHARGE    	"FARE_SURCHARGE",	
+				FARE_CHARGE_YN    	"FARE_CHARGE_YN",	
+				AGENT_DC_RATE     	"AGENT_DC_RATE",	
+				AGENT_DC_AMT      	"AGENT_DC_AMT",	
+
+				AIR_DC_CD         	"AIR_DC_CD",	
+				INS_DT            	"INS_DT",		
+				INS_ID            	"INS_ID",		
+				PP_REMARK         	"PP_REMARK",	
+				AIR_ISSUE_YN      	"AIR_ISSUE_YN",
+				PROVE_REMARK      	"PROVE_REMARK",
+				COOP_COMM_RATE    	"COOP_COMM_RATE",
+				COOP_COMM         	"COOP_COMM",
+				UPD_DT            	"UPD_DT",
+				UPD_ID            	"UPD_ID",
+				 
+				PICKUP_AREA_CD		"PICKUP_AREA_CD"
+		FROM	RV_ROSTER 
+		WHERE	RES_CD = #res_cd#
+		ORDER BY RES_SEQ
+	</select>	
+		
+	<!-- 예약 UI > SMS 테이블의 시퀀스 조회      -->
+	<select id="ReserveDAO.selectSmsSeq" parameterClass="java.util.Map" resultClass="int">
+		SELECT SQ_SMS.NEXTVAL "SERIALNO" FROM DUAL
+	</select>	
+	
+	<!-- 예약 UI > EMS  테이블의 시퀀스 조회      -->
+	<select id="ReserveDAO.selectEmsMailSendSeq" parameterClass="java.util.Map" resultClass="int">
+		SELECT EMS_MAIL_SEND_SCHD_SEQ.nextval "SERIALNO" FROM EMS_MAIL_SEND WHERE ROWNUM <![CDATA[ < ]]> 2
+	</select>	
+	
+	
+	<!-- 예약 UI > 제휴사 수수료 정보 조회     -->
+	<select id="ReserveDAO.selectCoopCommRate" parameterClass="java.util.Map" resultClass="int">
+		select
+			nvl(0,fn_co_site_agent_s01(#site_cd#, TO_CHAR(sysdate, 'YYYYMMDD'))) "COOP_COMM_RATE"
+		from dual
+	</select>	
+		
+	<!-- 예약 UI > 고객 정보 조회 (프론트 일행용) -->
+	<select id="ReserveDAO.selectCustCd02" parameterClass="java.util.Map" resultClass="java.lang.String">
+SELECT CUST_CD
+		  FROM(
+		  SELECT CUST_CD
+		    FROM CU_MST
+		   WHERE KNM = #knm# AND (JMNO = #jmno# OR (HANDPHONE1 = #handphone1# AND HANDPHONE2 = #handphone2# AND HANDPHONE3 = #handphone3#))
+		   ORDER BY LOTTE_ID
+		  )
+		WHERE ROWNUM <![CDATA[ < ]]> 2
+</select>
+	
+	<!--  예약 UI > 예약 마스터 정보 등록  -->
+	<insert id="ReserveDAO.insertReserve" parameterClass="ReserveVO">
+			INSERT INTO RV_MST (
+				RES_CD           ,
+				EVENT_CD         ,
+				RES_DAY          ,
+				POSI_CD          ,
+				STATUS_CD        ,
+				RES_NM           ,
+				RES_CHK_CD       ,
+				SITE_CD          ,
+				DEPT_CD          ,
+				MASS_CD          ,
+				MASS_SITE_CD     ,
+				MASS_DESC        ,
+				RES_CNT          ,
+				CANC_CNT         ,
+				COPY_YN          ,
+				CUST_TOUR_YN     ,
+				CUST_CD          ,
+				CUST_ID          ,
+				JMNO             ,
+				ZIP_CD           ,
+				ADDR1            ,
+				ADDR2            ,
+				HANDPHONE1       ,
+				HANDPHONE2       ,
+				HANDPHONE3       ,
+				PHONE_FG         ,
+				TEL1             ,
+				TEL2             ,
+				TEL3             ,
+				CUST_SITE_CD     ,
+				CO_TEL1          ,
+				CO_TEL2          ,
+				CO_TEL3          ,
+				EMAIL            ,
+				FARE_TAX_YN      ,
+				EVENT_AMT        ,
+				SALE_AMT         ,
+				SALE_ID          ,
+				SALE_DEPT_CD     ,
+				CHA_ID           ,
+				CHA_DEPT_CD      ,
+				CONN_YN          ,
+				CONN_DAY         ,
+				REMARK           ,
+				CONFIRM_FARE     ,
+				CONFIRM_STATUS   ,
+				LAST_STATUS_CD   ,
+				ETC_RES_CD       ,
+				INCENTIVE_YN     ,
+				JOIN_FG          ,
+				JOIN_SHOP        ,
+				JOIN_AREA        ,
+				WEB_CONF_YN      ,
+				INVOICE_REMARK   ,
+				AGENT_REMARK     ,
+				INS_DT           ,
+				INS_ID           ,
+				UPD_DT           ,
+				UPD_ID           ,
+				CANC_CD          ,
+				CANC_DESC        ,
+				CANC_DT          ,
+				CANC_ID          ,
+				JOIN_SITE_CD     ,
+				RECOM_ID         ,
+				MASS_FG          ,
+				ACC_YN           
+			) VALUES (
+				#res_cd#         ,
+				#event_cd#       ,
+				#res_day#        ,
+				#posi_cd#        ,
+				#status_cd#      ,
+				#res_nm#         ,
+				#res_chk_cd#     ,
+				#site_cd#        ,
+				#dept_cd#        ,
+				'LTB'        	 ,
+				#mass_site_cd#   			 ,
+				#mass_desc#      ,
+				#res_cnt#        ,
+				#canc_cnt#       ,
+				#copy_yn#        ,
+				#cust_tour_yn#   ,
+				#cust_cd#        ,
+				#cust_id#        ,
+				#jmno#           ,
+				#zip_cd#         ,
+				#addr1#            ,
+				#addr2#            ,
+				#handphone1#       ,
+				#handphone2#       ,
+				#handphone3#       ,
+				#phone_fg#         ,
+				#tel1#             ,
+				#tel2#             ,
+				#tel3#             ,
+				#cust_site_cd#     ,
+				#co_tel1#          ,
+				#co_tel2#          ,
+				#co_tel3#          ,
+				#email#            ,
+				#fare_tax_yn#      ,
+				#event_amt#        ,
+				#sale_amt#         ,
+				#sale_id#          ,
+				#sale_dept_cd#     ,
+				#cha_id#           ,
+				#cha_dept_cd#      ,
+				#conn_yn#          ,
+				#conn_day#         ,
+				#remark#           ,
+				#confirm_fare#     ,
+				#confirm_status#   ,
+				#last_status_cd#   ,
+				#etc_res_cd#       ,
+				#incentive_yn#     ,
+				#join_fg#          ,
+				#join_shop#        ,
+				#join_area#        ,
+				#web_conf_yn#      ,
+				#invoice_remark#   ,
+				#agent_remark#     ,
+				sysdate            ,
+				#ins_id#           ,
+				sysdate            ,
+				#upd_id#           ,
+				#canc_cd#          ,
+				#canc_desc#        ,
+				#canc_dt#          ,
+				#canc_id#          ,
+				#join_site_cd#     ,
+				#recom_id#         ,
+				'03'          ,
+				'N'           
+			)	
+	</insert>	
+	
+	<!--  예약 UI > 예약 인원 현황  정보 등록  -->
+	<insert id="ReserveDAO.insertReserveRoster" parameterClass="ReserveRosterVO">
+		INSERT INTO RV_ROSTER 
+		(         
+			RES_CD              ,
+			RES_SEQ         ,
+			RES_DAY             ,
+			ETC_RES_CD          ,
+			NM_KOR              ,
+			ENM_LAST            ,
+			ENM_FIRST           ,
+			JMNO                ,
+			SEX                 ,
+			AGE_CD              ,
+			ROSTER_TITLE        ,
+			CUST_CD             ,
+			ZIP_CD              ,
+			ADDR1               ,
+			ADDR2               ,
+			PHONE_TYPE          ,
+			TEL1                ,
+			TEL2                ,
+			TEL3                ,
+			HANDPHONE1          ,
+			HANDPHONE2          ,
+			HANDPHONE3          ,
+			EMAIL               ,
+			PP_YN               ,
+			PP_NAT_CD           ,
+			PP_NO               ,
+			PP_TERMI_DAY        ,
+			VISA_YN             ,
+			VISA_NO             ,
+			VISA_TERMI_DAY      ,
+			CONN_YN             ,
+			CONN_DAY            ,
+			CONN_TIME           ,
+			AIR_REMARK          ,
+			LAND_REMARK         ,
+			REMARK              ,
+			PP_REMARK           ,
+			VISA_INFO           ,
+			AIR_CARD_CD         ,
+			AIR_CARD_NO         ,
+			APIS_NO             ,
+			APIS_CRS            ,
+			APIS_REMARK         ,
+			CONTRACT_SEND_YN    ,
+			SEND_DT             ,
+			CONTRACT_ACCEPT_YN  ,
+			ACCEPT_DT           ,
+		  	RES_TEAM_NO     ,
+			RES_ROOM_SEQ    ,
+			PARLOR_CD           ,
+			SINGEL_YN           ,
+			INSU_PRICE          ,
+			INSU_TARGET_CD      ,
+			INSU_ENTER_DAY      ,
+			INSU_REMARK         ,
+			AIR_ARNG_YN         ,
+			LAND_ARNG_YN        ,
+			ONLINE_YN           ,
+			EVENT_AMT       ,
+			DC_AMT          ,
+			ADD_AMT         ,
+			SALE_AMT        ,
+			SITE_COMM_RATE  ,
+			SITE_COMM       ,
+			COOP_COMM_RATE  ,
+			COOP_COMM       ,
+			FULL_AMT_W      ,
+			FARE_TAX_AMT    ,
+			FARE_VAT_AMT    ,
+			FARE_SURCHARGE  ,
+			FARE_CHARGE_YN      ,
+			AGENT_DC_RATE   ,
+			AGENT_DC_AMT    ,
+			AIR_DC_CD           ,
+			PROVE_REMARK        ,
+			AIR_ISSUE_YN        ,
+			INS_DT              ,
+			INS_ID              ,
+			UPD_DT              ,
+			UPD_ID              ,
+			CANC_DESC           ,
+			CANC_CD             ,
+			CANC_DT             ,
+			CANC_ID             ,
+			COMP_COMM_RATE  ,
+			COMP_COMM       ,
+			INSU_REQ_YN         ,
+			INSU_REQ_DT         ,
+			INSU_CONF_YN        ,
+			INSU_CONF_DT        ,
+			ADD_SITE_COMM_RATE  ,
+			ADD_SITE_COMM       ,
+			RES_SEND_SEQ        ,
+			SHOP_COMM_RATE      ,
+			SHOP_COMM           ,
+			SHOP_CONF_DAY       ,
+			PICKUP_AREA_CD   
+		) VALUES (
+			#res_cd#          ,
+			#res_seq#         ,
+			#res_day#         ,
+			#etc_res_cd#      ,
+			#nm_kor#          ,
+			#enm_last#        ,
+			#enm_first#       ,
+			#jmno#            ,
+			#sex#             ,
+			#age_cd#          ,
+			#roster_title#    ,
+			#cust_cd#           ,
+			#zip_cd#            ,
+			#addr1#             ,
+			#addr2#             ,
+			#phone_type#        ,
+			#tel1#              ,
+			#tel2#              ,
+			#tel3#              ,
+			#handphone1#        ,
+			#handphone2#        ,
+			#handphone3#        ,
+			#email#             ,
+			#pp_yn#             ,
+			#pp_nat_cd#         ,
+			#pp_no#             ,
+			#pp_termi_day#      ,
+			#visa_yn#           ,
+			#visa_no#           ,
+			#visa_termi_day#    ,
+			#conn_yn#           ,
+			#conn_day#          ,
+			#conn_time#         ,
+			#air_remark#        ,
+			#land_remark#       ,
+			#remark#              ,
+			#pp_remark#           ,
+			#visa_info#           ,
+			#air_card_cd#         ,
+			#air_card_no#         ,
+			#apis_no#             ,
+			#apis_crs#            ,
+			#apis_remark#         ,
+			#contract_send_yn#    ,
+			#send_dt#             ,
+			#contract_accept_yn#  ,
+			#accept_dt#           ,
+			#res_team_no#     ,
+			#res_room_seq#    ,
+			#parlor_cd#           ,
+			#singel_yn#           ,
+			#insu_price#          ,
+			#insu_target_cd#      ,
+			#insu_enter_day#      ,
+			#insu_remark#         ,
+			#air_argn_yn#         ,
+			#lang_argn_yn#        ,
+			#online_yn#           ,
+			#event_amt#       ,
+			#dc_amt#          ,
+			#add_amt#         ,
+			#sale_amt#        ,
+			#site_comm_amt#  ,
+			#site_comm#       ,
+			#coop_comm_rate#  ,
+			#coop_comm#       ,
+			#full_amt_w#      ,
+			#fare_tex_amt#    ,
+			#fare_vat_amt#    ,
+			#fare_surcharse#  ,
+			#fare_charge_yn#      ,
+			#agent_dc_rate#   ,
+			#agent_dc_amt#    ,
+			#air_dc_cd#           ,
+			#prove_remark#        ,
+			'N'        ,
+			sysdate              ,
+			#ins_id#              ,
+			sysdate              ,
+			#upd_id#              ,
+			#canc_desc#           ,
+			#canc_cd#             ,
+			#canc_dt#             ,
+			#canc_id#             ,
+			#comp_comm_rate#  ,
+			#comp_comm#       ,
+			#insu_req_yn#         ,
+			#insu_req_dt#         ,
+			#insu_conf_yn#       ,
+			#insu_conf_dt#        ,
+			#add_site_comm_rate#  ,
+			#add_site_comm#       ,
+			#res_send_seq#        ,
+			#shop_comm_rate#      ,
+			#shop_comm#           ,
+			#shop_conf_day#       ,
+			#pickup_area_cd#   
+		)
+	</insert>		
+
+	<!--  예약 UI > 예약 관련 선택 동의 여부 저장   -->
+	<insert id="ReserveDAO.insertRvPerInfo" parameterClass="RvPerInfoVO">
+		INSERT INTO RV_PER_INFO
+		(
+			RES_CD           ,
+			RES_SEQ          ,
+			SEND_YN          ,
+			SEND_DATE        ,
+			AGREE_YN         ,
+			AGREE_DATE       ,
+			AGREE_TYPE       ,
+			INS_DT           ,
+			INS_ID           ,
+			UPD_DT           ,
+			UPD_ID           ,
+			MKT_AGREE_YN     ,
+			CHILD_AGREE_YN   ,
+			CUST_CD          ,
+			SMS_AGREE_YN     ,
+			EMAIL_AGREE_YN   ,
+			SMS_AGREE_DATE   ,
+			EMAIL_AGREE_DATE			          
+		) VALUES (
+			#resCd#           ,
+			#resSeq#          ,
+			#sendYn#          ,
+			sysdate        ,
+			#agreeYn#         ,
+			sysdate       ,
+			#agreeType#       ,
+			sysdate           ,
+			#insId#           ,
+			sysdate           ,
+			#updId#           ,
+			#mktAgreeYn#     ,
+			#childAgreeYn#   ,
+			#custCd#         ,
+			#smsAgreeYn#	 ,
+			#emailAgreeYn#	 ,
+			sysdate          ,
+			sysdate           
+		)
+	
+	</insert>	
+		
+	<!--  예약 UI > 예약 관련 선택 동의 여부 저장   -->
+	<insert id="ReserveDAO.insertRvPerInfoHis" parameterClass="RvPerInfoHisVO">
+		INSERT INTO RV_PER_INFO_HIS
+		(
+			RES_CD           ,
+			RES_SEQ          ,
+			HIS_NO			 ,
+			SEND_YN          ,
+			SEND_DATE        ,
+			AGREE_YN         ,
+			AGREE_DATE       ,
+			AGREE_TYPE       ,
+			HANDPHONE1       ,
+			HANDPHONE2       ,
+			HANDPHONE3       ,			
+			INS_DT           ,
+			INS_ID           ,
+			UPD_DT           ,
+			UPD_ID           ,
+			MKT_AGREE_YN     ,
+			CHILD_AGREE_YN   ,
+			SMS_AGREE_YN     ,
+			EMAIL_AGREE_YN   ,
+			SMS_AGREE_DATE   ,
+			EMAIL_AGREE_DATE				
+			
+		) VALUES (
+			#resCd#           ,
+			#resSeq#          ,
+			#hisNo#			  ,
+			#sendYn#          ,
+			sysdate        	  ,
+			#agreeYn#         ,
+			sysdate           ,
+			#agreeType#       ,
+			#handphone1#	  ,
+			#handphone2#	  ,
+			#handphone3#	  ,			
+			sysdate           ,
+			#insId#           ,
+			sysdate           ,
+			#updId#           ,
+			#mktAgreeYn#      ,
+			#childAgreeYn#    ,
+			#smsAgreeYn#      ,
+			#emailAgreeYn#    ,			
+			sysdate           ,
+			sysdate           			
+		)
+	
+	</insert>	
+			
+	<!--  예약 UI > 예약 인원 현황  정보 수정  -->
+	<update id="ReserveDAO.updateReserveRoster" parameterClass="ReserveRosterVO">	
+		UPDATE RV_ROSTER SET 
+						RES_DAY                 = #res_day#      	,
+						ETC_RES_CD              = #etc_res_cd#    ,
+						NM_KOR                  = #nm_kor#      	,
+						ENM_FIRST               = #enm_first#     ,
+						ENM_LAST                = #enm_last#      ,
+						JMNO                    = #jmno#      	  ,
+						SEX                     = #sex#      	    ,
+						AGE_CD                  = #age_cd#        ,
+						ROSTER_TITLE            = #roster_title#  ,
+						CUST_CD                 = #cust_cd#       ,
+						HANDPHONE1              = #handphone1#    ,
+						HANDPHONE2              = #handphone2#    ,
+						HANDPHONE3              = #handphone3#    ,
+						EMAIL                   = #email#         ,
+						PP_YN                   = #pp_yn#         ,
+						CONN_YN                 = #conn_yn#       ,
+						CONN_DAY                = #conn_day#      ,
+						CONN_TIME               = #conn_time#     ,
+						REMARK                  = #remark#        ,
+						VISA_YN                 = #visa_yn#       ,
+						VISA_NO                 = #visa_no#       ,
+						VISA_INFO               = #visa_info#     ,
+						CONTRACT_SEND_YN        = #contract_send_yn#,
+						CONTRACT_ACCEPT_YN      = #contract_accept_yn#,
+						RES_TEAM_NO             = #res_team_no#,
+						SINGEL_YN               = #single_yn#,
+						AIR_ARNG_YN             = #air_arng_yn#,
+						LAND_ARNG_YN            = #land_arng_yn#,
+						ONLINE_YN               = #online_yn#,
+						EVENT_AMT               = #event_amt#,
+						DC_AMT                  = #dc_amt#,
+						ADD_AMT                 = #add_amt#,
+						SALE_AMT                = #sale_amt#,
+						SITE_COMM_RATE          = #site_comm_rate#,
+						SITE_COMM               = #site_comm#,
+						FULL_AMT_W              = #full_amt_w#,
+						FARE_TAX_AMT            = #fare_tax_amt#,
+						FARE_VAT_AMT            = #fare_vat_amt#,
+						FARE_SURCHARGE          = #fare_surcharge#,
+						FARE_CHARGE_YN          = #fare_charge_yn#,
+						AGENT_DC_RATE           = #agent_dc_rate#,
+						AGENT_DC_AMT            = #agent_dc_amt#,
+						AIR_DC_CD               = #air_dc_cd#,
+						INS_DT                  = #ins_dt#,
+						INS_ID                  = #ins_id#,
+						PP_REMARK               = #pp_remark#,
+						AIR_ISSUE_YN            = #air_issue_yn#,
+						PROVE_REMARK            = #prove_remark#,
+						COOP_COMM_RATE          = #coop_comm_rate#,
+						COOP_COMM               = #coop_comm#,
+						UPD_DT                  = #upd_dt#,
+						UPD_ID                  = #upd_id#        	
+		
+		WHERE 	RES_CD  = #res_cd#
+		AND RES_SEQ  = #res_seq#	
+	
+	</update>	
+	
+	<!--  예약 UI > EMS 메일 발송   -->
+	<insert id="ReserveDAO.insertEmsMailSend" parameterClass="EmsMailSendVO">
+		INSERT INTO T2EMS.EMS_MAIL_SEND
+		  (SCHD_SEQ,
+		  REG_DT,
+		  MAIL_CODE,
+		  MAIL_NM,
+		  TO_NAME,
+		  TO_EMAIL,
+		  FROM_NAME,
+		  FROM_EMAIL,
+		  SUBJECT,
+		  CONTENTS_MAPPING,
+		  MAIL_URL_MAPPING)
+		VALUES
+		  (T2EMS.EMS_MAIL_SEND_SCHD_SEQ.nextval,
+		  TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		  #mail_code#,
+		  #mail_nm#,
+		  #to_name#,
+		  #to_email#,
+		  #from_name#,
+		  #from_email#,
+		  #subject#,
+		  #contents_mapping#,
+		  #mail_url_mapping#)
+	</insert>
+
+	<!--  예약 UI > EMS 메일 발송   -->
+	<insert id="ReserveDAO.insertSmsSend" parameterClass="SmsVO">
+	    INSERT INTO SMS_WAIT
+	    (
+	    	SERIALNO     	,
+	    	DESTCALLNO   	,
+	    	CALLBACKNO   	,
+	    	TYPE         	,
+	    	SMSDATA      	,
+	    	JEOBSU_TIME  	,
+	    	YEYAK_TIME   	,
+	    	RESERVED     	,
+	    	SUBJECT      	
+	    ) 
+	    VALUES
+	    (
+	    	#serialno#,
+	    	#destcallno#,
+	    	#callbackno#,
+	    	'1',
+	    	#smsdata#,
+	    	sysdate,
+	    	sysdate,
+	    	#reserved#,
+	    	#subject#      	
+	    ) 
+	</insert>
+	
+	<!--  예약 UI > UMS 로그 남기기   -->
+	<insert id="ReserveDAO.insertUmsLog" parameterClass="UmsLogVO">
+	     INSERT INTO UMS_LOG
+	    (
+	    	SEQ       	,
+	    	UMS_FG_CD 	,
+	    	UMSKEY    	,
+	    	UMS_DET_CD	,
+	    	RES_CD    	,
+	    	CUST_CD   	,
+	    	UMS_DESC  	,
+	    	TRANS_CD  	,
+	    	INS_DT    	,
+	    	INS_ID    	
+	    ) 
+	    VALUES
+	    (
+	    	UMS_LOG_SEQ.NEXTVAL,
+	    	#ums_fg_cd#,
+	    	#umskey#,
+	    	#ums_det_cd#,
+	    	#res_cd#,
+	    	#cust_cd#,
+	    	#ums_desc#,
+	    	#trans_cd#,
+	    	sysdate,
+	    	#ins_id#
+	    )  
+	</insert> 
+	
+	<insert id="ReserveDAO.insertKakaoSmsSend" parameterClass="SmsVO">
+	   DECLARE BEGIN
+	   
+	    INSERT INTO kmp_msg 
+		   (
+			MSG_TYPE, 
+			CMID, 
+			REQUEST_TIME, 
+			SEND_TIME, 
+			DEST_PHONE, 
+			SEND_PHONE, 
+			MSG_BODY, 
+			TEMPLATE_CODE, 
+			SENDER_KEY, 
+			NATION_CODE,
+			RE_TYPE, 
+			ATTACHED_FILE, 
+			USER1 ,
+			USER2 
+		   )
+		VALUES
+		   (
+			6,
+			SQ_KMP.NEXTVAL,
+			sysdate,
+			sysdate,
+			#destcallno#, 
+			'0263138000',
+			#smsdata#,
+			'LMSG_20200302134532795194',
+			'bec6ca5aaf65fd8f1c8e3305a0727726a922b143',
+			'82',
+			'MMS',
+			'',
+			'0101',
+			'MOBILEUSER'
+		   );
+			
+		INSERT INTO kmp_msg 
+		  (
+		   MSG_TYPE, 
+		   CMID, 
+		   REQUEST_TIME, 
+		   SEND_TIME, 
+		   DEST_PHONE, 
+		   SEND_PHONE, 
+		   MSG_BODY, 
+		   TEMPLATE_CODE, 
+		   SENDER_KEY, 
+		   NATION_CODE, 
+		   RE_TYPE, 
+		   ATTACHED_FILE,
+		   USER1, 
+		   USER2  
+		  )
+		VALUES 
+		 (
+		  6,
+		  SQ_KMP.NEXTVAL,
+		  sysdate,
+		  sysdate,
+		  '01025435685', 
+		  '0263138000',
+		  #remark#,
+		  'LMSG_20200302134636856515',
+		  'bec6ca5aaf65fd8f1c8e3305a0727726a922b143',
+		  '82',
+		  'MMS',
+		  '',
+		  '0102',
+		  'MOBILEUSER'
+		 );
+			
+		END	;	
+	</insert>
+	             
+	<select id="ReserveDAO.selectKakaoSmsSend"   parameterClass="String" resultClass="String">
+		
+	<![CDATA[	
+		SELECT /*+'RVrv_mstDAOV17.view'*/
+			'[롯데제이티비]'||chr(10)||chr(13)||'안녕하세요. '||A.RES_NM||'님이 예약하신 상품내용입니다.'||chr(10)||chr(13)||'아래 내용은 출발확정유무와 관계없이 예약대기상태에서도 발송되는 예약안내입니다.'||chr(10)||chr(13)||'▶ 예약상품'||chr(10)||chr(13)||'예약번호 : '||A.RES_CD||''||chr(10)||chr(13)||'예약인원 : '||(COUNT(*))||'명'||chr(10)||chr(13)||'총 상품가 : '||TO_CHAR(SUM(C.SALE_AMT), 'Fm999,999,990')||'원'||chr(10)||chr(13)||'현재 예약은 예약대기상태이며, 본 여행은 최소출발요건을 충족하여야 출발 가능합니다.'||chr(10)||chr(13)||'상세 내용은 홈페이지 확인 또는 예약담당자가 유선상으로 안내 드리겠습니다.'||chr(10)||chr(13)||'한국출발 : '||TO_DATE(START_DAY,'YYYYMMDD')||' '||SUBSTR(START_TIME,0,2)||':'||SUBSTR(START_TIME,2,2)||' '|| START_PYUN||''||chr(10)||chr(13)||'한국도착 : '||TO_DATE(END_DAY,'YYYYMMDD')||' '||SUBSTR(END_TIME,0,2)||':'||SUBSTR(END_TIME,2,2)||' '|| END_PYUN||''||chr(10)||chr(13)||'일정확인 : https://m.lottejtb.com/goods/detail_goods.do?ctg=0000&eventCd='||A.EVENT_CD||''||chr(10)||chr(13)||'	예약확인 : https://m.lottejtb.com/sso/loginChk.do?returnUrl=/mytour/mytour.do'||chr(10)||chr(13)||'▶ 계약금'||chr(10)||chr(13)||'예약일 기준 3일 이내에 총액의 10%인 '|| TO_CHAR(ROUND(SUM(C.SALE_AMT)/10+400,-3), 'Fm999,999,990') ||'원을 납입하셔야 합니다.'||chr(10)||chr(13)||'※ 위 계약금은 호텔, 항공, 현지사정 등에 의하여 변경될 수 있으며, 상황에 따라 고객님의 결제시한이 당겨질 수 있습니다.'||chr(10)||chr(13)||'※ 당사가 지정한 계좌 및 결제시스템을 이용하셔야 금전적손해를 보호받으실 수 있습니다.'||chr(10)||chr(13)||'▶ 주의사항'||chr(10)||chr(13)||'안전한 여행거래 및 개인정보보호관련 법령에 따라 여행계약서와 개인정보 취급방침 동의서를 체결합니다.'||chr(10)||chr(13)||'계약서 : https://www.lottejtb.com/mobile/personal/xhtml/indexNew.xhtml?RES_SEQ=1&RES_CD='||A.RES_CD||'&CUST_CD='||A.CUST_CD||'&EVENT_CD='||A.EVENT_CD||''||chr(10)||chr(13)||'☎ 대표번호 : 02-6313-8000' AS REMARK
+		FROM RV_MST A, ET_MST B, RV_ROSTER C
+		WHERE 
+			A.EVENT_CD = B.EVENT_CD
+			AND A.RES_CD = C.RES_CD
+			AND A.RES_CD = #res_cd#
+		GROUP BY A.RES_CD, A.EVENT_CD, A.CUST_CD, A.RES_NM, START_DAY, START_TIME, 
+		START_PYUN, END_DAY, END_TIME, END_PYUN
+		]]>
+	</select>	
+	<select id="ReserveDAO.selectKakaoSmsSend2"   parameterClass="String" resultClass="String">
+	<![CDATA[	
+		SELECT /*+'RVrv_mstDAOV17.view'*/
+			'예약접수 : '||A.EVENT_CD||''||chr(10)||chr(13)||'예약번호 : '||A.RES_CD||''||chr(10)||chr(13)||'예약자 : '||A.RES_NM||''||chr(10)||chr(13)||'총 상품가 : '||TO_CHAR(SUM(C.SALE_AMT), 'Fm999,999,990')||'원 '
+			AS REMARK_AGENT
+			
+		FROM RV_MST A, ET_MST B, RV_ROSTER C
+		WHERE 
+			A.EVENT_CD = B.EVENT_CD
+			AND A.RES_CD = C.RES_CD
+			AND A.RES_CD = #res_cd#
+		GROUP BY A.RES_CD, A.EVENT_CD, A.CUST_CD, A.RES_NM, START_DAY, 
+		START_TIME, START_PYUN, END_DAY, END_TIME, END_PYUN
+		]]>
+	</select>
+	
+</sqlMap>

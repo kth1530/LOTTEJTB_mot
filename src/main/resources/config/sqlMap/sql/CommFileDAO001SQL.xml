@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CommFileDAO">
+
+	<typeAlias  alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="CommFileVO"     type="com.lottejtb.comm.service.CommFileVO"/>
+	
+	<insert id="CommFileDAO.insertFileInfo">
+		<selectKey resultClass="int" keyProperty="uniqueNum">
+			<![CDATA[
+				SELECT NVL(MAX(INTNUM),0)+1 uniqueNum
+			  	FROM CO_ATTFILE 
+			  	WHERE TBL = #tbl# 
+			  	      AND PARENTNUM = #parentNum# 
+			 ]]>
+	    </selectKey>
+		<![CDATA[
+			INSERT INTO CO_ATTFILE (
+				INTNUM, 
+				PARENTNUM, 
+				TBL,
+				ATTORG, 
+				ATTFILE,
+				FILEEXT,
+				VOLUME,
+				FILEPATH,
+				FILESIZE,
+				CREATER,
+				MIMETYPE,
+				WDATE
+			) VALUES (
+				#uniqueNum#,
+				#parentNum#,
+				#tbl#,
+				#attOrg#,
+				#attFile#,
+				#fileExt#,
+				#volume#,
+				#filePath#,
+				#fileSize#,
+				#creater#,
+				#mimeType#,
+				SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<insert id="CommFileDAO.insertFileInfoByIntnum">
+		<![CDATA[
+			INSERT INTO CO_ATTFILE (
+				INTNUM, 
+				PARENTNUM, 
+				TBL,
+				ATTORG, 
+				ATTFILE,
+				FILEEXT,
+				VOLUME,
+				FILEPATH,
+				FILESIZE,
+				CREATER,
+				MIMETYPE,
+				WDATE
+			) VALUES (
+				#uniqueNum#,
+				#parentNum#,
+				#tbl#,
+				#attOrg#,
+				#attFile#,
+				#fileExt#,
+				#volume#,
+				#filePath#,
+				#fileSize#,
+				#creater#,
+				#mimeType#,
+				SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<update id="CommFileDAO.updateFileInfo">
+		MERGE INTO CO_ATTFILE
+		USING DUAL
+		   ON ( TBL = #tbl# AND PARENTNUM = #parentNum# AND INTNUM = #uniqueNum#  )
+		   WHEN MATCHED THEN
+		      UPDATE SET ATTFILE     = #attFile# ,
+                FILEEXT     = #fileExt#,
+                VOLUME      = #volume#,
+                FILEPATH    = #filePath#,
+                FILESIZE    = #fileSize#,
+                CREATER     = #creater#,
+                MIMETYPE    = #mimeType#,
+                WDATE       = SYSDATE 
+		   WHEN NOT MATCHED THEN
+		     INSERT (
+		     	INTNUM, 
+				PARENTNUM, 
+				TBL,
+				ATTORG, 
+				ATTFILE,
+				FILEEXT,
+				VOLUME,
+				FILEPATH,
+				FILESIZE,
+				CREATER,
+				MIMETYPE,
+				WDATE
+		     ) VALUES (
+		     	#uniqueNum#,
+				#parentNum#,
+				#tbl#,
+				#attOrg#,
+				#attFile#,
+				#fileExt#,
+				#volume#,
+				#filePath#,
+				#fileSize#,
+				#creater#,
+				#mimeType#,
+				SYSDATE
+			 )
+	</update>
+	
+	<select id="CommFileDAO.selectFileList"  parameterClass="CommFileVO" resultClass="CommFileVO">
+		<![CDATA[
+			SELECT /* CommFileDAO.selectFileList */
+				INTNUM uniqueNum,
+				PARENTNUM parentNum,
+				TBL tbl,
+				ATTORG attOrg,
+				ATTFILE attFile,
+				FILEEXT fileExt,
+				VOLUME  volume,
+				FILEPATH  filePath,
+				FILESIZE  fileSize,
+				CREATER   creater,
+				MIMETYPE  mimeType,
+				WDATE wdate
+			FROM CO_ATTFILE
+			WHERE 1=1
+			AND TBL = #tbl# 
+			AND PARENTNUM = #parentNum# 
+			ORDER BY INTNUM
+		]]>
+	</select>
+
+	<select id="CommFileDAO.selectFileDetail" parameterClass="CommFileVO" resultClass="CommFileVO">
+		<![CDATA[
+			SELECT /* CommFileDAO.selectFileDetail */
+				*
+			FROM (
+				SELECT 
+					INTNUM uniqueNum,
+					PARENTNUM parentNum,
+					TBL tbl,
+					ATTORG attOrg,
+					ATTFILE attFile,
+					FILEEXT fileExt,
+					VOLUME  volume,
+					FILEPATH  filePath,
+					FILESIZE  fileSize,
+					CREATER   creater,
+					MIMETYPE  mimeType,
+					WDATE wdate
+				FROM 
+					CO_ATTFILE
+				WHERE 1=1
+				AND TBL = #tbl# 
+				AND PARENTNUM = #parentNum# 
+				AND INTNUM = #uniqueNum#
+				ORDER BY WDATE DESC
+			)
+		   	WHERE ROWNUM = 1
+		]]>
+	</select> 
+	
+	<delete id="CommFileDAO.deleteFileInfo">
+		<![CDATA[
+            DELETE FROM  CO_ATTFILE
+            WHERE  TBL = #tbl# AND PARENTNUM = #parentNum# AND INTNUM = #uniqueNum#
+		]]>
+	</delete>
+	
+	<delete id="CommFileDAO.deleteFileInfoRef">
+		<![CDATA[
+            DELETE FROM  CO_ATTFILE
+            WHERE  TBL = #tbl# AND PARENTNUM = #parentNum#
+		]]>
+	</delete>
+	
+	
+
+ </sqlMap>

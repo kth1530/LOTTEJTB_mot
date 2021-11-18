@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/decorators">
+	<!-- ajax bean 및 ... -->
+	<excludes>
+		<pattern>/index.do*</pattern>
+		<pattern>/et.do*</pattern>		
+		<pattern>/googleMap.do*</pattern>
+		<!-- <pattern>/admin/loginForm.do*</pattern> -->
+		<pattern>/admin/logout.do*</pattern>
+		<pattern>/admin/loginForm.do*</pattern>
+		<pattern>/CommFileDownLoad.do*</pattern>
+		<pattern>/common/*.do*</pattern>
+		<pattern>/jfile/*</pattern>
+		<pattern>*DefaultErrorView.jsp</pattern>
+		<pattern>*.js</pattern>
+		<pattern>*.css</pattern>
+		<pattern>*json.do*</pattern>
+		<pattern>*paging.do*</pattern>
+		<pattern>*Ajax.do*</pattern>
+		<pattern>*xml.do</pattern>
+		<pattern>*pop.do</pattern>
+		<pattern>/json/*.json*</pattern>
+		<pattern>/customer/couponPop.do</pattern>
+		<pattern>/goods/pop_mail.do*</pattern>
+		<pattern>/goods/pop_tel.do*</pattern>
+		<pattern>/goods/pop_review.do*</pattern>
+		<pattern>/goods/11st_policy.do*</pattern>
+		<pattern>/goods/11st_detail.do*</pattern>
+		<pattern>/goods/11st_detail2.do*</pattern>
+		<pattern>/goods/11st_detail3.do*</pattern>
+		<pattern>/goods/11st_detail4.do*</pattern>
+		<pattern>/goods/pop_places.do*</pattern>
+		<pattern>/goods/pop_hotel.do*</pattern>	
+		<pattern>/goods/pop_weather_city.do*</pattern>	
+		<pattern>/goods/pop_currency_city.do*</pattern>		
+		<pattern>/goods/pop_hotel_maps.do*</pattern>		
+		<pattern>/goods/pop_other_airlines.do*</pattern>							
+		<pattern>/11st/11st_policy.do*</pattern>
+		<pattern>/11st/11st_detail.do*</pattern>
+		<pattern>/11st/11st_detail2.do*</pattern>
+		<pattern>/11st/11st_detail3.do*</pattern>
+		<pattern>/11st/11st_detail4.do*</pattern>			
+		<pattern>/11st/schedule.do*</pattern>			
+		<pattern>/ebay/schedule.do*</pattern>			
+		<pattern>/wmp/schedule.do*</pattern>			
+		<!-- <pattern>/jsp/sso/loginOut.do*</pattern> -->
+		<pattern>/reserve/reserve_clause_txt1.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt1_1.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt2.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt3.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt4.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt5.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt6.do*</pattern>
+		<pattern>/reserve/reserve_clause_txt7.do*</pattern>
+		<pattern>/commentConfirmPop.do*</pattern>
+		<pattern>/eventAttendPop.do*</pattern>
+		<pattern>/eventVotePop.do*</pattern>
+		<pattern>/pop/pop_lpoint.do*</pattern>
+		
+		<!-- 팝업 페이지는 decorator 를 타지 않도록 설정함  -->
+		
+		<!-- 자유여행 팝업 페이지 -->
+		<pattern>/pop/pop_age_text.do*</pattern>
+		<pattern>/pop/pop_air_ifdetail.do*</pattern>
+		<pattern>/pop/pop_air_viewdetail.do*</pattern>
+		<pattern>/pop/pop_alert.do*</pattern>
+		<pattern>/pop/pop_calendar.do*</pattern>
+		<pattern>/pop/pop_ht_calendar.do*</pattern>
+		<pattern>/pop/pop_rc_calendar.do*</pattern>
+
+		<pattern>/pop/pop_cancel1.do*</pattern>
+		<pattern>/pop/pop_cancel2.do*</pattern>		
+		<pattern>/pop/pop_car_list.do*</pattern>
+		<pattern>/pop/pop_city_select1.do*</pattern>
+		<pattern>/pop/pop_city_select2.do*</pattern>
+	
+		<pattern>/pop/pop_hotel_city_select.do*</pattern>
+
+		<pattern>/pop/pop_city_select3.do*</pattern>
+
+
+		<pattern>/pop/pop_commair.do*</pattern>
+		<pattern>/pop/pop_hotel_ifdetail.do*</pattern>
+		<pattern>/pop/pop_mappos.do*</pattern>
+		<pattern>/pop/pop_pay_guide.do*</pattern>
+		<pattern>/pop/pop_quest.do*</pattern>
+		
+		<pattern>/pop/pop_rentcar_ifdetail.do*</pattern>
+		<pattern>/pop/pop_rentcar_map.do*</pattern>
+		<pattern>/pop/pop_rentcar_viewdetail.do*</pattern>
+		<pattern>/pop/pop_select_air.do*</pattern>
+		<pattern>/pop/pop_select_hotel.do*</pattern>
+		
+		<pattern>/pop/pop_select_rentcar.do*</pattern>		
+		<pattern>/pop/pop_selectok_no.do*</pattern>
+		<pattern>/pop/pop_street.do*</pattern>
+		<pattern>/pop/pop_visa.do*</pattern>
+		
+		<pattern>/pop/pop_mileage.do*</pattern>
+		<pattern>/pop/pop_nightdays.do*</pattern>
+		<pattern>/pop/pop_air_sorting.do*</pattern>
+		<pattern>/pop/pop_hotel_sorting.do*</pattern>
+		<pattern>/pop/pop_rentcar_sorting.do*</pattern>
+		<pattern>/pop/pop_email.do*</pattern>
+		<pattern>/pop/pop_pay_city_select.do*</pattern>
+		
+		<!--  자유여행 항공 결제요청 -->
+		<pattern>/free/account/pop_air_pay.do*</pattern>	
+		<pattern>/free/account/pop_air_passport.do*</pattern>	
+		<pattern>/free/account/pop_hotel_city_select.do*</pattern>
+		<!--  자유여행 결제 취소 요청  -->
+		<!--  pattern>/free/account/pop_paycancel.do*</pattern -->	
+		
+		<!--  결제실패시 이동페이지 -->
+		<pattern>/account/pay_fail_end.do*</pattern>	
+		
+		<!--  자유여행 문의하기 -->
+		<pattern>/mytour/pop_qna_list.do*</pattern>	
+		<pattern>/mytour/pop_qna_write.do*</pattern>	
+			
+		<!-- 예약 약관 관련  -->
+		<pattern>/free_reserve/reserve_clause_txt1.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt1_1.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt2.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt3.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt4.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt5.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt6.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt7.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause_txt8.do*</pattern>	
+			
+		<pattern>/free_reserve/reserve_clause2_txt1.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause2_txt2.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause2_txt3.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause2_txt4.do*</pattern>		
+
+		<pattern>/free_reserve/reserve_clause3_txt1.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause3_txt2.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause3_txt3.do*</pattern>		
+		<pattern>/free_reserve/reserve_clause3_txt4.do*</pattern>
+		<pattern>/free_reserve/reserve_clause3_txt5.do*</pattern>			
+
+		<pattern>/free_reserve/reserve_clause4_txt1.do*</pattern>
+		<pattern>/fit/htl/htl_email.do*</pattern>
+		
+		<!-- 팝업 페이지는 decorator 를 타지 않도록 설정함  -->
+		
+		<!--[JEH]개인정보 처리방침 제외 20180711 -->
+		<pattern>/customer/policy_*.do</pattern>
+		<pattern>/resources/*.jsp</pattern>
+		
+	</excludes>
+	
+	<!-- 사용자화면 데코레이터  -->
+	<decorator name="commonView_new" page="common_decorator_goods.jsp">
+		<pattern>/*_goods.do</pattern>
+	</decorator>
+
+	<decorator name="commonView_domestic" page="common_decorator_domestic.jsp">
+		<pattern>/*_domestic.do</pattern>
+	</decorator>
+	<!-- 제주닷컴 제유사 페이지 -->
+	<decorator name="commonView_header" page="common_decorator_header.jsp">
+		<pattern>/*_dht_header.do</pattern>
+	</decorator>
+	<decorator name="commonView_footer" page="common_decorator_footer.jsp">
+		<pattern>/*_dht_footer.do</pattern>
+	</decorator>
+	
+	<decorator name="commonView_result" page="common_decorator_result.jsp">
+		<pattern>/*_air.do</pattern>
+	</decorator>
+	<decorator name="commonView_result" page="common_decorator_result.jsp">
+		<pattern>/*_hotel.do</pattern>
+	</decorator>	
+	<decorator name="commonView_result" page="common_decorator_result.jsp">
+		<pattern>/*_rentcar.do</pattern>
+	</decorator>	
+		
+	<decorator name="commonView" page="common_decorator.jsp">
+		<pattern>/*.do</pattern>
+	</decorator>
+</decorators>

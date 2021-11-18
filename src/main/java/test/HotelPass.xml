@@ -1,0 +1,11 @@
+<BaseCodeRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xml.hotelpass.com/HTPWS_V04/SCHEMA/Request/BaseCode_Request.xsd">
+<UserInfo>
+	<CompanyCode>2-00226</CompanyCode>
+	<UserID>LJTXML</UserID>
+	<UserPWD>LJTXML</UserPWD>
+</UserInfo>
+<RequestInfo>
+	<CodeKind>HOTEL</CodeKind>
+	<RequestCode>HKHKG</RequestCode>
+</RequestInfo>
+</BaseCodeRequest>

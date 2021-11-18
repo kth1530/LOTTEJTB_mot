@@ -1,0 +1,179 @@
+#=======================================================================
+#
+# common.properties : 시스템 환경파일 
+# 1. key=value 구조
+# 2. key 와 value 공백을 넣지 않습니다. 
+# 3. key 는 한글 변수 사용불가. value 값은 한글 사용 가능
+#=======================================================================
+
+################### OS 종류  WINDOWS,  UNIX ###################
+SYS.OS=UNIX
+
+################### DATABASE SETTING INFO ###################
+DB.DRIVER=net.sf.log4jdbc.DriverSpy
+#DB.DRIVER=core.log.jdbc.driver.OracleDriver
+DB.URL=jdbc:log4jdbc:oracle:thin:@10.141.1.23:1521:T2RL
+#DB.ID=T2DEV
+#DB.PW=t2dev
+DB.ID=t2opr
+DB.PW=l$oprjt8
+#DB.ID=T4DEV
+#DB.PW=t4dev
+#DB.PW=fnxmdkagh
+
+FREE_DB.URL=jdbc:log4jdbc:oracle:thin:@10.141.1.24:1524:T4FIT
+#FREE_DB.ID=T4DEV
+#FREE_DB.PW=t4dev
+FREE_DB.ID=T4OPR
+FREE_DB.PW=l$t4oprjt8
+
+
+################### UPLOAD PATH INFO ###################
+userUplaodPathDev=D:\\J2EE\\workspace\\LOTTEJTB\\UPLOAD
+userUplaodPathReal=/home/lottejtb/UPLOAD
+valid.image.ext=jpg,gif,png,bmp
+valid.ext=doc,xls,ppt,docx,xlsx,pptx
+valid.mimeType=application/msword,application/msexcel,application/mspowerpoint,application/zip
+
+################### EAN API INFO ###################
+#eanAIPURL=http://api.ean.com/ean-services/rs/hotel/v3/list
+eanAPIListURL=http://api.ean.com/ean-services/rs/hotel
+eanAPIReserveURL=https://book.api.ean.com/ean-services/rs/hotel
+eanVersion=v3
+eanMethod=list
+eanCID=500317
+eanAPIKey=42054h3uto03kvli4lpk1ls71f
+eanSecret=2pqlv5i96shso
+
+
+################### 환경 파일 위치  ###################
+# WINDOWS용 쉘파일 정보
+SHELL.WINDOWS.getHostName      = env/prg/sh_001.bat
+SHELL.WINDOWS.getDrctryByOwner = env/prg/getDrctryByOwner.bat
+SHELL.WINDOWS.getDrctryOwner   = env/prg/getDrctryOwner.bat
+SHELL.WINDOWS.moveDrctry       = env/prg/moveDrctry.bat
+SHELL.WINDOWS.compileSchema    = env/prg/compileSchema.bat
+SHELL.WINDOWS.getDiskAttrb     = env/prg/getDiskAttrb.bat
+SHELL.WINDOWS.getDiskCpcty     = env/prg/getDiskCpcty.bat
+SHELL.WINDOWS.getDiskExst      = env/prg/getDiskExst.bat
+
+# UNIX용 쉘파일 정보 - 개발was jeus에서 사용할때 기준
+SHELL.UNIX.getHostName      = env/prg/sh_001.sh
+SHELL.UNIX.getDrctryByOwner = env/prg/getDrctryByOwner.sh
+SHELL.UNIX.getDrctryOwner   = env/prg/getDrctryOwner.sh
+SHELL.UNIX.getDrctryAccess  = env/prg/getDrctryAccess.sh
+SHELL.UNIX.getMountLc       = env/prg/getMountLc.sh
+SHELL.UNIX.getDiskName      = env/prg/getNetWorkInfo.sh
+SHELL.UNIX.moveDrctry       = env/prg/moveDrctry.sh
+SHELL.UNIX.compileSchema    = env/prg/compileSchema.sh
+SHELL.UNIX.getDiskAttrb     = env/prg/getDiskAttrb.sh
+SHELL.UNIX.getDiskCpcty     = env/prg/getDiskCpcty.sh
+SHELL.UNIX.getDiskExst      = env/prg/getDiskExst.sh
+SHELL.UNIX.getProcInfo      = env/prg/getProcInfo.sh
+
+
+################### MAIL INFO ###################
+hostName=smtp.googlemail.com
+port=587
+mailId=egovmailtest@gmail.com
+mailPass=egov2011
+mailName=EgovTest
+subject=[easyCompany2] New Password
+
+################### API INFO ###################
+#api.air.url 		= http://10.141.1.60:28080/rest/
+api.air.url 		= http://10.141.1.65/rest/
+api.air.avail		= Avail
+api.air.fareRule	= FareRuleInfo
+api.air.pricing		= AvailPricing
+api.air.flight		= FlightInfo
+api.air.book		= Book
+api.air.mileage		= AddMileage
+api.air.passport 	= AddPassport
+api.air.contact		= AddContact
+api.air.address		= AddAddress
+api.air.cancel 		= Cancel
+api.air.selldate 	= getAirSellDate
+api.air.pnrFareRule = PnrFareRuleInfo
+api.air.rsvSync 	= RsvSync
+
+#api hotel url################################################
+#api.hotel.url 		= http://10.141.1.60:58080/rest/htl/
+#api.hotel.url 		= http://10.141.1.64:58080/rest/htl/ 
+api.hotel.url 		= http://10.141.1.66/rest/htl/    
+api.hotel.list		= hotelListLocal
+api.hotel.room.info	= hotelInfo
+api.hotel.room.list	= roomAvail
+api.hotel.book      = hotelBooking
+api.hotel.book.cancel = bookingCancel
+api.hotel.room.imgList	= GetHotelRoomImgListAjax.do
+#호텔패스, GTA 취소규정 정보를 아래 api에 의해서 전달 받아야 한다. 2015.05.23
+api.hotel.cancelPolicy = cancelPolicy   
+#rentcar#######################################################
+#api.rental.url 		= http://10.141.1.64:58180/
+api.rental.url 		= http://10.141.1.67/
+api.rental.reserve	= carRSVAjax.do
+api.rental.cancel	= carCancelAjax.do
+api.rental.carList	= carList.do
+
+api.google.map.url 	= https://maps.googleapis.com/maps/api/place/
+api.google.map.rdr	= radarsearch/
+api.google.map.dtl	= details/
+
+api.google.geo.url	= http://maps.googleapis.com/maps/api/geocode/
+
+
+################### SSO #######################
+userDocPathDev		= D:\\J2EE\\workspace\\ROTTEJTB\\LotteJTB\\src\\main\\webapp\\WEB-INF\\classes\\config
+
+################### PAYMENT INFO ##############
+payment.version	= 1.0
+payment.charset = UTF-8
+payment.currency = WON
+payment.logMode = DEBUG
+
+#local
+#payment.inipayHome = C:\keyfolder
+#개발#
+#payment.Vbank.mId	= INIpayTest
+#payment.Card.mId	= INIpayTest
+#payment.signKey	= SU5JTElURV9UUklQTEVERVNfS0VZU1RS
+payment.keyPW = 1111
+
+#상용########################################################
+#########################결제 상점 아이디#########################
+############################################################
+payment.Vbank.mId	= lottejtba1
+payment.Card.mId	= lottejtb00
+#기타카드 signkey
+payment.card_signKey	=  T0hBc1RQck53TEZZN0EwN3ZYeS9Gdz09
+#가상계좌 signkey
+#payment.vbank_signKey	=  WURWaEYvb3pvWnJJd1hVVDFUZ01uUT09
+payment.vbank_signKey	=  RVVPV1hyMGtRc2cwNXBnK2txOFFEZz09
+############################################################
+############################################################
+############################################################
+
+
+## 결제 수단 롯데카드 기타카드로 selectbox로 작업을 해야 함. 퍼블 필요.
+
+#developer
+#payment.inipayHome = /home/MOBILE_WEB/public_html/WEB-INF
+#payment.Vbank.mId	= INIpayTest
+#payment.Card.mId	= INIpayTest
+#payment.signKey		= SU5JTElURV9UUklQTEVERVNfS0VZU1RS
+
+#running
+#[JEH] 이니시스 위치 변경 - 20171129
+payment.inipayHome = /home/inicis/key/
+payment.inipayHomeCancel = /home/inicis/key/
+#payment.inipayHome = c:/inicis/
+#payment.inipayHomeCancel = c:/inicis/
+#payment.Vbank.mId	= INIpayTest
+#payment.Card.mId	= INIpayTest
+#payment.signKey	= SU5JTElURV9UUklQTEVERVNfS0VZU1RS
+
+
+################### AUTO COMPLETE ##############
+autoFst = http://10.141.35.93/resources/file/auto.fst2
+autoTxt = http://10.141.35.93/resources/file/auto.txt

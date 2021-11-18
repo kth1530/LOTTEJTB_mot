@@ -1,0 +1,2 @@
+document.write('<a href="#"  class="go-top"><i class="fa fa-angle-up"></i></a><div  class="gfoot"  data-position="fixed" data-tap-toggle="false" data-role="footer" >');
+document.write('<ul><li style="background:#f7415b"><a href="#"><img src="/resources/images/btn/Footer_goods_calendar.png" alt=""/></a></li><li style="width:80%;background:#353163"><a href="#" class="img"><img src="/resources/images/btn/Footer_goods_reserve.png" alt=""/>예약하기</a></li></ul></div>');

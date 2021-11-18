@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PromotionDAO">
+	<typeAlias alias="egovMap"      	  	type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="PromotionVO"			type="com.lottejtb.prom.service.PromotionVO"/>
+	<typeAlias alias="PromotionMstVO"		type="com.lottejtb.prom.service.PromotionMstVO"/>
+	<typeAlias alias="PromotionAirVO"		type="com.lottejtb.prom.service.PromotionAirVO"/>
+	<typeAlias alias="PromotionHtlVO"		type="com.lottejtb.prom.service.PromotionHtlVO"/>
+	
+	<select id="PromotionDAO.selectPromoAmt" parameterClass="PromotionVO" resultClass="PromotionVO">
+		SELECT CASE WHEN AIR_R.COAL_CARD_GB IS NULL THEN '항공 프로모션' 
+		            ELSE '항공 프로모션 ('|| FN_SCODE_NM_KR('FT009', AIR_R.COAL_CARD_GB) ||')' END AS PROM_NM
+		     , AIR_R.PROM_ID_AIR                        AS PROM_ID
+		     , TO_CHAR(AIR_R.ADT_AMT, 'FM990.999')      AS SALE_AMT
+		     , 'AIR'                                    AS PROM_TYPE
+		  FROM (
+		    SELECT PROM_ID_AIR
+		         , ADT_AMT
+		         , COAL_CARD_GB
+		      FROM FA_PROM_AIR
+		     WHERE NVL(CARRIER_CD, 'NV') = (CASE WHEN CARRIER_CD IS NULL THEN 'NV' ELSE #carrierCd# END)
+		       AND NVL(CABIN, 'NV') = (CASE WHEN CABIN IS NULL THEN 'NV' ELSE #cabin# END)
+		       AND NVL(GDS_TY_GB, 'NV') = (CASE WHEN GDS_TY_GB IS NULL THEN 'NV' ELSE #gdsTyGb# END)
+		       AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		       AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		       AND ADT_DIVI_GB = 'R'
+		     ORDER BY ADT_AMT DESC
+		) AIR_R
+		WHERE ROWNUM = 1
+		
+		UNION ALL 
+		
+		SELECT CASE WHEN AIR_A.COAL_CARD_GB IS NULL THEN '항공 프로모션' 
+		            ELSE '항공 프로모션 ('|| FN_SCODE_NM_KR('FT009', AIR_A.COAL_CARD_GB) ||')' END AS PROM_NM
+		     , AIR_A.PROM_ID_AIR                        AS PROM_ID
+		     , TO_CHAR(AIR_A.ADT_AMT)                   AS SALE_AMT
+		     , 'AIR'                                    AS PROM_TYPE
+		  FROM (
+		    SELECT PROM_ID_AIR
+		         , ADT_AMT
+		         , COAL_CARD_GB
+		      FROM FA_PROM_AIR
+		     WHERE NVL(CARRIER_CD, 'NV') = (CASE WHEN CARRIER_CD IS NULL THEN 'NV' ELSE #carrierCd# END)
+		       AND NVL(CABIN, 'NV') = (CASE WHEN CABIN IS NULL THEN 'NV' ELSE #cabin# END)
+		       AND NVL(GDS_TY_GB, 'NV') = (CASE WHEN GDS_TY_GB IS NULL THEN 'NV' ELSE #gdsTyGb# END)
+		       AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		       AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		       AND ADT_DIVI_GB = 'A'
+		     ORDER BY ADT_AMT DESC
+		) AIR_A
+		WHERE ROWNUM = 1
+		
+		UNION ALL
+		
+		SELECT CASE WHEN HTL_R.COAL_CARD_GB IS NULL THEN '호텔 프로모션' 
+		            ELSE '호텔 프로모션 ('|| FN_SCODE_NM_KR('FT009', HTL_R.COAL_CARD_GB) ||')' END AS PROM_NM
+		     , HTL_R.PROM_ID_HTL                        AS PROM_ID
+		     , TO_CHAR(HTL_R.AMT, 'FM990.999')          AS SALE_AMT
+		     , 'HTL'                                    AS PROM_TYPE
+		  FROM (
+		    SELECT PROM_ID_HTL
+		         , AMT
+		         , COAL_CARD_GB
+		      FROM FA_PROM_HTL
+		     WHERE NVL(SUPLR_ID, 'NV') = (CASE WHEN SUPLR_ID IS NULL THEN 'NV' ELSE #suplrId# END)
+		       AND NVL(HTL_NATION_CD, 'NV') = (CASE WHEN HTL_NATION_CD IS NULL THEN 'NV' ELSE #htlNationCd# END)
+		       AND NVL(HTL_CT_CD, 'NV') = (CASE WHEN HTL_CT_CD IS NULL THEN 'NV' ELSE #htlCtCd# END)
+		       AND NVL(HTL_CD, 'NV') = (CASE WHEN HTL_CD IS NULL THEN 'NV' ELSE #htlCd# END)
+		       AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		       AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		       AND DIVI_GB = 'R'
+		     ORDER BY AMT DESC
+		) HTL_R
+		WHERE ROWNUM = 1
+		
+		UNION ALL
+		
+		SELECT CASE WHEN HTL_A.COAL_CARD_GB IS NULL THEN '호텔 프로모션' 
+		            ELSE '호텔 프로모션 ('|| FN_SCODE_NM_KR('FT009', HTL_A.COAL_CARD_GB) ||')' END AS PROM_NM
+		     , HTL_A.PROM_ID_HTL                        AS PROM_ID
+		     , TO_CHAR(HTL_A.AMT)                       AS SALE_AMT
+		     , 'HTL'                                    AS PROM_TYPE
+		  FROM (
+		    SELECT PROM_ID_HTL
+		         , AMT
+		         , COAL_CARD_GB
+		      FROM FA_PROM_HTL
+		     WHERE NVL(SUPLR_ID, 'NV') = (CASE WHEN SUPLR_ID IS NULL THEN 'NV' ELSE #suplrId# END)
+		       AND NVL(HTL_NATION_CD, 'NV') = (CASE WHEN HTL_NATION_CD IS NULL THEN 'NV' ELSE #htlNationCd# END)
+		       AND NVL(HTL_CT_CD, 'NV') = (CASE WHEN HTL_CT_CD IS NULL THEN 'NV' ELSE #htlCtCd# END)
+		       AND NVL(HTL_CD, 'NV') = (CASE WHEN HTL_CD IS NULL THEN 'NV' ELSE #htlCd# END)
+		       AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		       AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		       AND DIVI_GB = 'A'
+		     ORDER BY AMT DESC
+		) HTL_A
+		WHERE ROWNUM = 1
+		
+		UNION ALL
+		
+		SELECT MST_R.PROM_NM
+		     , MST_R.PROM_ID
+		     , TO_CHAR(MST_R.PROM_RATE, 'FM990.999')    AS SALE_AMT
+		     , 'MIX'                                    AS PROM_TYPE
+		  FROM (
+		    SELECT PROM_NM
+		         , PROM_ID
+		         , PROM_RATE
+		      FROM FA_PROM_MST
+		     WHERE CONC_MIX = #concMix#
+		       AND PROM_RATE <![CDATA[<>]]> '0'
+		       AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN ST_DT AND EN_DT
+		     ORDER BY PROM_RATE DESC
+		) MST_R
+		WHERE ROWNUM = 1
+		 
+		UNION ALL
+		   
+		SELECT MST_A.PROM_NM
+		     , MST_A.PROM_ID
+		     , TO_CHAR(MST_A.PROM_AMT)                  AS SALE_AMT
+		     , 'MIX'                                    AS PROM_TYPE
+		  FROM (
+		    SELECT PROM_NM
+		         , PROM_ID
+		         , PROM_AMT
+		      FROM FA_PROM_MST
+		     WHERE CONC_MIX = #concMix#
+		       AND PROM_AMT <![CDATA[<>]]> 0
+		       AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN ST_DT AND EN_DT
+		     ORDER BY PROM_AMT DESC
+		) MST_A
+		WHERE ROWNUM = 1
+	</select>
+	
+	<select id="PromotionDAO.selectPromoMst" parameterClass="PromotionMstVO" resultClass="PromotionVO">
+		SELECT MST_L.PROM_NM		AS promNm
+		     , MST_L.PROM_ID		AS promId
+		     , MST_L.SALE_AMT		AS saleAmt
+		     , MST_L.PROM_TYPE		AS promType
+		     , MST_L.CONC_MIX		AS concMix
+		     , MST_L.SALE_DIVI		AS saleDivi
+		  FROM (
+		    SELECT MST_R.PROM_NM
+		         , MST_R.PROM_ID
+		         , TO_CHAR(MST_R.PROM_RATE, 'FM990.999')    AS SALE_AMT
+		         , 'MIX'                                    AS PROM_TYPE
+		         , MST_R.CONC_MIX
+		         , MST_R.SALE_DIVI
+		      FROM (
+		        SELECT PROM_NM
+		             , PROM_ID
+		             , PROM_RATE
+		             , CONC_MIX
+		             , 'R'			AS SALE_DIVI
+		          FROM FA_PROM_MST
+		         WHERE CONC_MIX = #concMix#
+		           AND PROM_RATE <![CDATA[<>]]> '0'
+		           AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN ST_DT AND EN_DT
+		         ORDER BY PROM_RATE DESC
+		    ) MST_R
+		    WHERE ROWNUM = 1
+		     
+		    UNION ALL
+		       
+		    SELECT MST_A.PROM_NM
+		         , MST_A.PROM_ID
+		         , TO_CHAR(MST_A.PROM_AMT)                  AS SALE_AMT
+		         , 'MIX'                                    AS PROM_TYPE
+		         , MST_A.CONC_MIX
+		         , MST_A.SALE_DIVI
+		      FROM (
+		        SELECT PROM_NM
+		             , PROM_ID
+		             , PROM_AMT
+		             , 'A'			AS SALE_DIVI
+		             , CONC_MIX
+		          FROM FA_PROM_MST
+		         WHERE CONC_MIX = #concMix#
+		           AND PROM_AMT <![CDATA[<>]]> 0
+		           AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN ST_DT AND EN_DT
+		         ORDER BY PROM_AMT DESC
+		    ) MST_A
+		    WHERE ROWNUM = 1
+		) MST_L
+				
+	</select>
+	
+	<select id="PromotionDAO.selectPromoAir" parameterClass="PromotionAirVO" resultClass="PromotionVO">
+		SELECT AIR_L.PROM_NM		AS promNm
+		     , AIR_L.PROM_ID		AS promId
+		     , AIR_L.SALE_AMT		AS saleAmt
+		     , AIR_L.PROM_TYPE		AS promType
+		  FROM (
+		    SELECT AIR_M.PROM_NM
+		         , AIR_M.PROM_ID
+		         , AIR_M.SALE_AMT
+		         , AIR_M.PROM_TYPE
+		      FROM (
+		        SELECT CASE WHEN AIR_R.COAL_CARD_GB IS NULL THEN '항공 프로모션' 
+		                    ELSE '항공 프로모션 ('|| FN_SCODE_NM_KR('FT009', AIR_R.COAL_CARD_GB) ||')' END AS PROM_NM
+		             , AIR_R.PROM_ID_AIR                        AS PROM_ID
+		             , TO_CHAR(AIR_R.ADT_AMT)      AS SALE_AMT
+		             , 'AIR'                                    AS PROM_TYPE
+		          FROM (
+		            SELECT PROM_ID_AIR
+		                 , #amt# * ADT_AMT AS ADT_AMT
+		                 , COAL_CARD_GB
+		              FROM FA_PROM_AIR
+		             WHERE NVL(CARRIER_CD, 'NV') = (CASE WHEN CARRIER_CD IS NULL THEN 'NV' ELSE #carrierCd# END)
+		               AND NVL(CABIN, 'NV') = (CASE WHEN CABIN IS NULL THEN 'NV' ELSE #cabin# END)
+		               AND NVL(GDS_TY_GB, 'NV') = (CASE WHEN GDS_TY_GB IS NULL THEN 'NV' ELSE #gdsTyGb# END)
+		               AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		               AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		               AND ADT_DIVI_GB = 'R'
+		             ORDER BY ADT_AMT DESC
+		        ) AIR_R
+		        WHERE ROWNUM = 1
+		
+		        UNION ALL 
+		
+		        SELECT CASE WHEN AIR_A.COAL_CARD_GB IS NULL THEN '항공 프로모션' 
+		                    ELSE '항공 프로모션 ('|| FN_SCODE_NM_KR('FT009', AIR_A.COAL_CARD_GB) ||')' END AS PROM_NM
+		             , AIR_A.PROM_ID_AIR                        AS PROM_ID
+		             , TO_CHAR(AIR_A.ADT_AMT)                   AS SALE_AMT
+		             , 'AIR'                                    AS PROM_TYPE
+		          FROM (
+		            SELECT PROM_ID_AIR
+		                 , ADT_AMT
+		                 , COAL_CARD_GB
+		              FROM FA_PROM_AIR
+		             WHERE NVL(CARRIER_CD, 'NV') = (CASE WHEN CARRIER_CD IS NULL THEN 'NV' ELSE #carrierCd# END)
+		               AND NVL(CABIN, 'NV') = (CASE WHEN CABIN IS NULL THEN 'NV' ELSE #cabin# END)
+		               AND NVL(GDS_TY_GB, 'NV') = (CASE WHEN GDS_TY_GB IS NULL THEN 'NV' ELSE #gdsTyGb# END)
+		               AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		               AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		               AND ADT_DIVI_GB = 'A'
+		             ORDER BY ADT_AMT DESC
+		        ) AIR_A
+		        WHERE ROWNUM = 1
+		    ) AIR_M
+		    ORDER BY AIR_M.SALE_AMT DESC
+		) AIR_L
+		WHERE ROWNUM = 1
+	</select>
+	
+	<select id="PromotionDAO.selectPromoHtl" parameterClass="PromotionHtlVO" resultClass="PromotionVO">
+		SELECT HTL_L.PROM_NM		AS promNm
+		     , HTL_L.PROM_ID		AS promId
+		     , HTL_L.SALE_AMT		AS saleAmt
+		     , HTL_L.PROM_TYPE		AS promType
+		     , #targetId#			AS targetId
+		  FROM (
+		    SELECT HTL_M.PROM_NM
+		         , HTL_M.PROM_ID
+		         , HTL_M.SALE_AMT
+		         , HTL_M.PROM_TYPE
+		      FROM (
+		        SELECT CASE WHEN HTL_R.COAL_CARD_GB IS NULL THEN '호텔 프로모션' 
+		                    ELSE '호텔 프로모션 ('|| FN_SCODE_NM_KR('FT009', HTL_R.COAL_CARD_GB) ||')' END AS PROM_NM
+		             , HTL_R.PROM_ID_HTL                        AS PROM_ID
+		             , TO_CHAR(HTL_R.AMT)          AS SALE_AMT
+		             , 'HTL'                                    AS PROM_TYPE
+		          FROM (
+		            SELECT PROM_ID_HTL
+		                 , #amt# * AMT AS AMT
+		                 , COAL_CARD_GB
+		              FROM FA_PROM_HTL
+		             WHERE NVL(SUPLR_ID, 'NV') = (CASE WHEN SUPLR_ID IS NULL THEN 'NV' ELSE #suplrId# END)
+		               AND NVL(HTL_NATION_CD, 'NV') = (CASE WHEN HTL_NATION_CD IS NULL THEN 'NV' ELSE #htlNationCd# END)
+		               AND NVL(HTL_CT_CD, 'NV') = (CASE WHEN HTL_CT_CD IS NULL THEN 'NV' ELSE #htlCityCd# END)
+		               AND NVL(HTL_CD, 'NV') = (CASE WHEN HTL_CD IS NULL THEN 'NV' ELSE #htlCd# END)
+		               AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		               AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		               AND DIVI_GB = 'R'
+		             ORDER BY AMT DESC
+		        ) HTL_R
+		        WHERE ROWNUM = 1
+		
+		        UNION ALL
+		
+		        SELECT CASE WHEN HTL_A.COAL_CARD_GB IS NULL THEN '호텔 프로모션' 
+		                    ELSE '호텔 프로모션 ('|| FN_SCODE_NM_KR('FT009', HTL_A.COAL_CARD_GB) ||')' END AS PROM_NM
+		             , HTL_A.PROM_ID_HTL                        AS PROM_ID
+		             , TO_CHAR(HTL_A.AMT)                       AS SALE_AMT
+		             , 'HTL'                                    AS PROM_TYPE
+		          FROM (
+		            SELECT PROM_ID_HTL
+		                 , AMT
+		                 , COAL_CARD_GB
+		              FROM FA_PROM_HTL
+		             WHERE NVL(SUPLR_ID, 'NV') = (CASE WHEN SUPLR_ID IS NULL THEN 'NV' ELSE #suplrId# END)
+		               AND NVL(HTL_NATION_CD, 'NV') = (CASE WHEN HTL_NATION_CD IS NULL THEN 'NV' ELSE #htlNationCd# END)
+		               AND NVL(HTL_CT_CD, 'NV') = (CASE WHEN HTL_CT_CD IS NULL THEN 'NV' ELSE #htlCityCd# END)
+		               AND NVL(HTL_CD, 'NV') = (CASE WHEN HTL_CD IS NULL THEN 'NV' ELSE #htlCd# END)
+		               AND NVL(COAL_CARD_GB, 'NV') = (CASE WHEN COAL_CARD_GB IS NULL THEN 'NV' ELSE #coalCardGb# END)
+		               AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PROM_STD AND PROM_END
+		               AND DIVI_GB = 'A'
+		             ORDER BY AMT DESC
+		        ) HTL_A
+		        WHERE ROWNUM = 1
+		    ) HTL_M
+		    ORDER BY HTL_M.SALE_AMT DESC
+		)HTL_L
+		WHERE ROWNUM = 1
+	</select>
+	<select id="PromotionDAO.selectPromoIjw" parameterClass="PromotionHtlVO" resultClass="PromotionVO">
+	SELECT
+    (SELECT AR_VAL FROM COM_HTL_MARKUP WHERE SUPLR_CD = 'IJW') AS IJW,
+    (SELECT AR_VAL FROM COM_HTL_MARKUP WHERE SUPLR_CD = 'IJWK') AS IJWK
+	FROM DUAL	
+	</select>
+</sqlMap>

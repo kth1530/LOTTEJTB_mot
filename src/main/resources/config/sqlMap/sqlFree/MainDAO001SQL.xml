@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="MainDAO">
+	
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="mainVO"         type="com.lottejtb.main.service.MainVO"/>
+	
+	<select id="MainDAO.selectDetail" resultClass="mainVO" parameterClass="mainVO">
+		<![CDATA[
+			SELECT /* MainDAO.selectDetail */
+			       USER_TYPE_CD typeCd,USE_EMP_NO empNo,ADMINNAME admnm,JMNO ssn,STAT stat
+			FROM ADM_ADMIN
+			WHERE USERID = #userid#
+		]]>
+	</select>
+	
+	<select id="MainDAO.selectList" resultClass="mainVO" parameterClass="mainVO">
+	   		SELECT *
+	   		FROM (
+					SELECT ROWNUM RN,Z.*
+					FROM ( 
+							<![CDATA[
+							SELECT /* MainDAO.selectDetail */
+							       USERID,USER_TYPE_CD typeCd,USE_EMP_NO empNo,ADMINNAME admnm,JMNO ssn,STAT stat
+							FROM ADM_ADMIN
+							WHERE 1=1
+							ORDER BY USERID
+							]]>
+						 ) Z
+				     <![CDATA[ WHERE ROWNUM <= ( #pagesize# * #gotopage# ) ]]>
+				  )
+		    <![CDATA[ WHERE RN >= ( #pagesize# * ( #gotopage# - 1) ) + 1 ]]>	
+	</select>
+	
+</sqlMap>

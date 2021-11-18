@@ -1,0 +1,1614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="FreeMytourDAO">
+	<typeAlias alias="egovMap"      			type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="loginVO"					type="com.lottejtb.sso.service.LoginVO"/>
+	<typeAlias alias="mytourVO"  				type="com.lottejtb.mytour.service.MytourVO"/>
+	<typeAlias alias="freeMytourVO"				type="com.lottejtb.mytour.service.FreeMytourVO"/>
+	<typeAlias alias="rvCounselVO"				type="com.lottejtb.mytour.service.AirRsvCounselVO"/>
+	<typeAlias alias="faFitCounselQuesVO"  		type="com.lottejtb.mytour.service.FaFitCounselQuesVO"/>
+	<typeAlias alias="faFitCounselAnswVO"  		type="com.lottejtb.mytour.service.FaFitCounselAnswVO"/>	
+	<typeAlias alias="faFitCounselAssortVO"  	type="com.lottejtb.mytour.service.FaFitCounselAssortVO"/>
+	<typeAlias alias="rvPaymentVO"     			type="com.lottejtb.account.service.RvPaymentVO"/>
+	<typeAlias alias="coSettMethVO"     		type="com.lottejtb.account.service.CoSettMethVO"/>
+	<typeAlias alias="coSettFeeVO"     			type="com.lottejtb.account.service.CoSettFeeVO"/>
+	<typeAlias alias="coSettDetVO"     			type="com.lottejtb.account.service.CoSettDetVO"/>
+	<typeAlias alias="paramVO"     				type="com.lottejtb.account.service.paramVO"/>
+	<typeAlias alias="cashVO"     				type="com.lottejtb.account.service.CashVO"/>
+	<typeAlias alias="faFitPaymtInfVO"  		type="com.lottejtb.account.service.FaFitPaymtInfVO"/>
+	<typeAlias alias="faFitRsvMstVO"  			type="com.lottejtb.account.service.FaFitRsvMstVO"/>
+
+	<typeAlias alias="airActPaymtVO"  			type="com.lottejtb.account.service.AirActPaymtVO"/>
+	<typeAlias alias="airRsvPaymtVO"  			type="com.lottejtb.account.service.AirRsvPaymtVO"/>
+	<typeAlias alias="airReceiptReqVO"  		type="com.lottejtb.account.service.AirReceiptReqVO"/>
+	<typeAlias alias="faFitCashReceiptVO"  		type="com.lottejtb.account.service.FaFitCashReceiptVO"/>
+	
+	<typeAlias alias="htlCardPaymtVO"  			type="com.lottejtb.account.service.HtlCardPaymtVO"/>
+	<typeAlias alias="htlActPaymtVO" 	 		type="com.lottejtb.account.service.HtlActPaymtVO"/>
+	<typeAlias alias="htlEtcPaymtVO"  			type="com.lottejtb.account.service.HtlEtcPaymtVO"/>
+	<typeAlias alias="htlGiftPaymtVO"  			type="com.lottejtb.account.service.HtlGiftPaymtVO"/>
+	<typeAlias alias="LPointVO"  				type="com.lottejtb.account.service.LPointVO"/>
+	
+
+	<select id="FreeMytourDAO.selectFitRsvMst" parameterClass="loginVO" resultClass="freeMytourVO">
+		SELECT FIT_RSV_NO AS fitRsvNo
+	 	  FROM FA_FIT_RSV_MST
+		 WHERE FIT_RSV_NO = #res_cd#
+		   AND MST_RSV_NM = #res_nm#
+		   <!--AND MST_RSV_NM_EMAIL = #email#-->
+		   AND MST_RSV_NM_HTEL = #r_phoneno#
+		   AND USE_YN = 'Y'
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeMstReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+	SELECT DISTINCT * FROM
+         (SELECT MST.FIT_RSV_NO 																				AS fitRsvNo
+		     , MST.AIR_RSV_SEQNO																				AS airRsvSeqno
+		     , MST.CONC_MIX																						AS concMix
+		     , MST.MST_RSV_NM																					AS mstRsvNm
+		     , MST.SALE_AMT_TOT																					AS saleAmtTot
+		     , MST.AIR_DISCNT_AMT																				AS airDiscntAmt
+		     , MST.HTL_DISCNT_AMT																				AS htlDiscntAmt
+		     , MST.RNT_DISCNT_AMT																				AS rntDiscntAmt
+		     , SUBSTR(MST.RSV_DT, 0, 4) || '.' || SUBSTR(MST.RSV_DT, 5, 2) || '.' || SUBSTR(MST.RSV_DT, 7, 2) 	AS rsvDt
+		     , PR.PROM_ID																						AS promId
+		     , PR.PROM_NM																						AS promNm
+		     , PR.PROM_AMOUNT																					AS promAmount
+		     , PR.PROM_RATE																						AS promRate
+		     , MST.IJW_DISCNT_AMT																				AS ijwdiscntamt
+		     , NVL((SELECT SUM(PROM_AMT) FROM HTL_RSV_MST WHERE FIT_RSV_NO = MST.FIT_RSV_NO),0)					AS promAmt
+		  FROM FA_FIT_RSV_MST MST LEFT OUTER JOIN (SELECT RV.FIT_RSV_NO
+		                                                , RV.PROM_ID
+		                                                , MT.PROM_NM
+		                                                , RV.PROM_AMOUNT
+		                                                , RV.PROM_RATE
+		                                             FROM FA_FIT_APP_PROM RV LEFT OUTER JOIN FA_PROM_MST MT
+		                                                                                  ON RV.PROM_ID = MT.PROM_ID
+		                                          ) PR
+		                                       ON MST.FIT_RSV_NO = PR.FIT_RSV_NO
+		 WHERE MST.MST_RSV_NM_ID = #custCd#
+		   AND MST.USE_YN = 'Y'
+		   AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB <![CDATA[<>]]>
+		       ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		<!-- 
+		   AND (MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT) <![CDATA[<>]]>
+		        ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		        (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		        (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		-->
+		 ORDER BY MST.FIT_RSV_NO DESC)
+         ORDER BY 1 DESC
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeMstCancelReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+	SELECT DISTINCT * FROM
+         (SELECT MST.FIT_RSV_NO																					AS fitRsvNo
+		     , MST.AIR_RSV_SEQNO																				AS airRsvSeqno
+		     , MST.CONC_MIX																						AS concMix
+		     , MST.MST_RSV_NM																					AS mstRsvNm
+		     , MST.SALE_AMT_TOT																					AS saleAmtTot
+		     , MST.AIR_DISCNT_AMT																				AS airDiscntAmt
+		     , MST.HTL_DISCNT_AMT																				AS htlDiscntAmt
+		     , MST.RNT_DISCNT_AMT																				AS rntDiscntAmt
+		     , SUBSTR(MST.RSV_DT, 0, 4) || '.' || SUBSTR(MST.RSV_DT, 5, 2) || '.' || SUBSTR(MST.RSV_DT, 7, 2) 	AS rsvDt
+		     , PR.PROM_ID																						AS promId
+		     , PR.PROM_NM																						AS promNm
+		     , PR.PROM_AMOUNT																					AS promAmount
+		     , PR.PROM_RATE																						AS promRate
+		     , MST.IJW_DISCNT_AMT																				AS ijwdiscntamt
+		     , NVL((SELECT SUM(PROM_AMT) FROM HTL_RSV_MST WHERE FIT_RSV_NO = MST.FIT_RSV_NO),0)					AS promAmt
+		  FROM FA_FIT_RSV_MST MST LEFT OUTER JOIN (SELECT RV.FIT_RSV_NO
+		                                                , RV.PROM_ID
+		                                                , MT.PROM_NM
+		                                                , RV.PROM_AMOUNT
+		                                                , RV.PROM_RATE
+		                                             FROM FA_FIT_APP_PROM RV LEFT OUTER JOIN FA_PROM_MST MT
+		                                                                                  ON RV.PROM_ID = MT.PROM_ID
+		                                          ) PR
+		                                       ON MST.FIT_RSV_NO = PR.FIT_RSV_NO
+		 WHERE MST.MST_RSV_NM_ID = #custCd#
+		   AND MST.USE_YN = 'Y'
+		   AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB =
+		       ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		<!-- 
+		   AND (MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT) =
+		        ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		        (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		        (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		-->
+		 ORDER BY MST.FIT_RSV_NO DESC)
+         ORDER BY 1 DESC
+	</select>
+	
+	<select id="FreeMytourDAO.selecrFreeAirReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO 	AS fitRsvNo
+			 , MST.SALE_AMT_AIR	AS saleAmtAir
+		     , AIR.airRsvSeqno
+		     , AIR.itinShapeGb
+		     , AIR.rsvNmId
+		     , AIR.rsvStateGb
+		     , AIR.rsvStateNm
+		     , AIR.fareStateGb
+		     , AIR.fareStateNm
+		     , AIR.rsvDtt
+		     , AIR.totSaleAmt
+		     , AIR.totTasfAmt
+		     , AIR.depFltno
+		     , AIR.depCd
+		     , AIR.depNm
+		     , AIR.depDt
+		     , AIR.depHm
+		     , AIR.arrCd
+		     , AIR.firstArrNm
+		     , AIR.arrFltno
+		     , AIR.lastArrNm
+		     , AIR.lastArrDt
+		     , AIR.lastArrHm
+		     , AIR.adt
+		     , AIR.chd
+		     , AIR.inf
+		  FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                            SELECT MT.AIR_RSV_SEQNO                                                                     					AS airRsvSeqno
+		                                 , MT.ITIN_SHAPE_GB                                                               							AS itinShapeGb
+		                                 , MT.RSV_NM_ID                                                                      						AS rsvNmId
+		                                 , MT.RSV_STATE_GB                                                                   						AS rsvStateGb
+		                                 , (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'AR005' AND CD = MT.RSV_STATE_GB) 						AS rsvStateNm
+		                                 , MT.FARE_STATE_GB                                                                   						AS fareStateGb
+		                                 , (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'AR007' AND CD = MT.FARE_STATE_GB) 						AS fareStateNm
+		                                 , TO_CHAR(MT.RSV_DTT, 'YYYY.MM.DD')																		AS rsvDtt
+		                                 , MT.TOT_SALE_AMT                                                                   						AS totSaleAmt
+		                                 , MT.TOT_TASF_AMT																							AS totTasfAmt
+		                                 , ITIN_DEP.FLTNO                                                                    						AS depFltno
+		                                 , ITIN_DEP.DEP_CD                                                                 							AS depCd
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_DEP.DEP_CD)                                              					AS depNm
+		                                 , SUBSTR(ITIN_DEP.DEP_DT,0,4) || '.' || SUBSTR(ITIN_DEP.DEP_DT,5,2) || '.' || SUBSTR(ITIN_DEP.DEP_DT,7,2)	AS depDt
+		                                 , ITIN_DEP.DEP_HM                                                                      					AS depHm
+		                                 , ITIN_DEP.ARR_CD                                                                      					AS arrCd
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_DEP.ARR_CD)                                             						AS firstArrNm
+		                                 , ITIN_ARR.FLTNO                                                                       					AS arrFltno
+		                                 , ITIN_ARR.ARR_CD
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_ARR.ARR_CD)                                              					AS lastArrNm
+		                                 , SUBSTR(ITIN_ARR.ARR_DT,0,4) || '.' || SUBSTR(ITIN_ARR.ARR_DT,5,2) || '.' || SUBSTR(ITIN_ARR.ARR_DT,7,2)	AS lastArrDt
+		                                 , ITIN_ARR.ARR_HM                                                                      					AS lastArrHm
+		                                 , PAX.ADT                                                                              					AS adt
+		                                 , PAX.CHD                                                                              					AS chd
+		                                 , PAX.INF                                                                              					AS inf
+		                              FROM AIR_RSV_MST MT LEFT OUTER JOIN ( SELECT A.AIR_RSV_SEQNO
+		                                                                         , A.FLTNO
+		                                                                         , A.DEP_CD
+		                                                                         , A.DEP_DT
+		                                                                         , A.DEP_HM
+		                                                                         , A.ARR_CD
+		                                                                      FROM AIR_ITIN_INF A INNER JOIN ( SELECT AIR_RSV_SEQNO
+		                                                                                                            , MIN(ITIN_GRP_NO) AS GRP_NO
+		                                                                                                            , MIN(SEG_NO) AS SEG_NO
+		                                                                                                         FROM AIR_ITIN_INF
+		                                                                                                        WHERE DEST_YN = 'Y'
+		                                                                                                        GROUP BY AIR_RSV_SEQNO
+		                                                                                                     ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		                                                                                                        AND A.ITIN_GRP_NO = B.GRP_NO
+		                                                                                                        AND A.SEG_NO = B.SEG_NO
+		                                                                  ) ITIN_DEP ON MT.AIR_RSV_SEQNO = ITIN_DEP.AIR_RSV_SEQNO
+		                                                  LEFT OUTER JOIN ( SELECT A.AIR_RSV_SEQNO
+		                                                                         , A.FLTNO
+		                                                                         , A.ARR_CD
+		                                                                         , A.ARR_DT
+		                                                                         , A.ARR_HM
+		                                                                      FROM AIR_ITIN_INF A INNER JOIN ( SELECT  I1.AIR_RSV_SEQNO
+																			                                         , I1.GRP_NO
+																			                                         , MAX(I2.SEG_NO) AS SEG_NO
+																			                                      FROM (
+																			                                        SELECT AIR_RSV_SEQNO
+																			                                            , MAX(ITIN_GRP_NO) AS GRP_NO
+																			                                         FROM AIR_ITIN_INF
+																			                                        WHERE DEST_YN = 'Y'
+																			                                        GROUP BY AIR_RSV_SEQNO
+																			                                      ) I1 LEFT OUTER JOIN AIR_ITIN_INF I2
+																			                                                        ON I1.AIR_RSV_SEQNO = I2.AIR_RSV_SEQNO
+																			                                                       AND I1.GRP_NO = I2.ITIN_GRP_NO
+																			                                     GROUP BY I1.AIR_RSV_SEQNO, I1.GRP_NO
+		                                                                                                     ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		                                                                                                        AND A.ITIN_GRP_NO = B.GRP_NO
+		                                                                                                        AND A.SEG_NO = B.SEG_NO
+		                                                                                                        AND B.GRP_NO <![CDATA[<>]]> 1
+		                                                                     ORDER BY A.AIR_RSV_SEQNO
+		                                                                  ) ITIN_ARR ON MT.AIR_RSV_SEQNO = ITIN_ARR.AIR_RSV_SEQNO
+		                                                  LEFT OUTER JOIN ( SELECT C.AIR_RSV_SEQNO
+		                                                                         , SUM(C.ADT) AS ADT
+		                                                                         , SUM(C.CHD) AS CHD
+		                                                                         , SUM(C.INF) AS INF
+		                                                                      FROM (
+		                                                                            SELECT AIR_RSV_SEQNO
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'ADT' THEN 1 END) ADT
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'CHD' THEN 1 END) CHD
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'INF' THEN 1 END) INF
+		                                                                              FROM AIR_PAX_INF
+		                                                                             GROUP BY AIR_RSV_SEQNO, PAX_TY_GB
+		                                                                             ORDER BY AIR_RSV_SEQNO 
+		                                                                           ) C
+		                                                                     GROUP BY C.AIR_RSV_SEQNO 
+		                                                                  ) PAX ON MT.AIR_RSV_SEQNO = PAX.AIR_RSV_SEQNO
+		                                WHERE MT.ITIN_SHAPE_GB IN ('OW', 'RT', 'MT', 'OO')
+		                            ) AIR ON MST.AIR_RSV_SEQNO = AIR.airRsvSeqno
+		 WHERE MST.MST_RSV_NM_ID = #custCd#
+		   AND MST.USE_YN = 'Y'
+		   AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB <![CDATA[<>]]>
+		       ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		 <!-- 
+		   AND MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT <![CDATA[<>]]>
+		        ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		        (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		        (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		 -->
+	</select>
+	
+	<select id="FreeMytourDAO.selecrFreeAirCancelReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO AS fitRsvNo
+		 	 , MST.SALE_AMT_AIR	AS saleAmtAir
+		     , AIR.airRsvSeqno
+		     , AIR.itinShapeGb
+		     , AIR.rsvNmId
+		     , AIR.rsvStateGb
+		     , AIR.rsvStateNm
+		     , AIR.fareStateGb
+		     , AIR.fareStateNm
+		     , AIR.rsvDtt
+		     , AIR.totSaleAmt
+		     , AIR.totTasfAmt
+		     , AIR.depFltno
+		     , AIR.depCd
+		     , AIR.depNm
+		     , AIR.depDt
+		     , AIR.depHm
+		     , AIR.arrCd
+		     , AIR.firstArrNm
+		     , AIR.arrFltno
+		     , AIR.lastArrNm
+		     , AIR.lastArrDt
+		     , AIR.lastArrHm
+		     , AIR.adt
+		     , AIR.chd
+		     , AIR.inf
+		  FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                            SELECT MT.AIR_RSV_SEQNO                                                                     					AS airRsvSeqno
+		                                 , MT.ITIN_SHAPE_GB                                                               							AS itinShapeGb
+		                                 , MT.RSV_NM_ID                                                                      						AS rsvNmId
+		                                 , MT.RSV_STATE_GB                                                                   						AS rsvStateGb
+		                                 , (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'AR005' AND CD = MT.RSV_STATE_GB) 						AS rsvStateNm
+		                                 , MT.FARE_STATE_GB                                                                   						AS fareStateGb
+		                                 , (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'AR007' AND CD = MT.FARE_STATE_GB) 						AS fareStateNm
+		                                 , TO_CHAR(MT.RSV_DTT, 'YYYY.MM.DD')																		AS rsvDtt
+		                                 , MT.TOT_SALE_AMT                                                                   						AS totSaleAmt
+		                                 , MT.TOT_TASF_AMT																							AS totTasfAmt
+		                                 , ITIN_DEP.FLTNO                                                                    						AS depFltno
+		                                 , ITIN_DEP.DEP_CD                                                                 							AS depCd
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_DEP.DEP_CD)                                              					AS depNm
+		                                 , SUBSTR(ITIN_DEP.DEP_DT,0,4) || '.' || SUBSTR(ITIN_DEP.DEP_DT,5,2) || '.' || SUBSTR(ITIN_DEP.DEP_DT,7,2)	AS depDt
+		                                 , ITIN_DEP.DEP_HM                                                                      					AS depHm
+		                                 , ITIN_DEP.ARR_CD                                                                      					AS arrCd
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_DEP.ARR_CD)                                             						AS firstArrNm
+		                                 , ITIN_ARR.FLTNO                                                                       					AS arrFltno
+		                                 , ITIN_ARR.ARR_CD
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_ARR.ARR_CD)                                              					AS lastArrNm
+		                                 , SUBSTR(ITIN_ARR.ARR_DT,0,4) || '.' || SUBSTR(ITIN_ARR.ARR_DT,5,2) || '.' || SUBSTR(ITIN_ARR.ARR_DT,7,2)	AS lastArrDt
+		                                 , ITIN_ARR.ARR_HM                                                                      					AS lastArrHm
+		                                 , PAX.ADT                                                                              					AS adt
+		                                 , PAX.CHD                                                                              					AS chd
+		                                 , PAX.INF                                                                              					AS inf
+		                              FROM AIR_RSV_MST MT LEFT OUTER JOIN ( SELECT A.AIR_RSV_SEQNO
+		                                                                         , A.FLTNO
+		                                                                         , A.DEP_CD
+		                                                                         , A.DEP_DT
+		                                                                         , A.DEP_HM
+		                                                                         , A.ARR_CD
+		                                                                      FROM AIR_ITIN_INF A INNER JOIN ( SELECT AIR_RSV_SEQNO
+		                                                                                                            , MIN(ITIN_GRP_NO) AS GRP_NO
+		                                                                                                            , MIN(SEG_NO) AS SEG_NO
+		                                                                                                         FROM AIR_ITIN_INF
+		                                                                                                        WHERE DEST_YN = 'Y'
+		                                                                                                        GROUP BY AIR_RSV_SEQNO
+		                                                                                                     ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		                                                                                                        AND A.ITIN_GRP_NO = B.GRP_NO
+		                                                                                                        AND A.SEG_NO = B.SEG_NO
+		                                                                  ) ITIN_DEP ON MT.AIR_RSV_SEQNO = ITIN_DEP.AIR_RSV_SEQNO
+		                                                  LEFT OUTER JOIN ( SELECT A.AIR_RSV_SEQNO
+		                                                                         , A.FLTNO
+		                                                                         , A.ARR_CD
+		                                                                         , A.ARR_DT
+		                                                                         , A.ARR_HM
+		                                                                      FROM AIR_ITIN_INF A INNER JOIN ( SELECT  I1.AIR_RSV_SEQNO
+																			                                         , I1.GRP_NO
+																			                                         , MAX(I2.SEG_NO) AS SEG_NO
+																			                                      FROM (
+																			                                        SELECT AIR_RSV_SEQNO
+																			                                            , MAX(ITIN_GRP_NO) AS GRP_NO
+																			                                         FROM AIR_ITIN_INF
+																			                                        WHERE DEST_YN = 'Y'
+																			                                        GROUP BY AIR_RSV_SEQNO
+																			                                      ) I1 LEFT OUTER JOIN AIR_ITIN_INF I2
+																			                                                        ON I1.AIR_RSV_SEQNO = I2.AIR_RSV_SEQNO
+																			                                                       AND I1.GRP_NO = I2.ITIN_GRP_NO
+																			                                     GROUP BY I1.AIR_RSV_SEQNO, I1.GRP_NO
+		                                                                                                     ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		                                                                                                        AND A.ITIN_GRP_NO = B.GRP_NO
+		                                                                                                        AND A.SEG_NO = B.SEG_NO
+		                                                                                                        AND B.GRP_NO <![CDATA[<>]]> 1
+		                                                                     ORDER BY A.AIR_RSV_SEQNO
+		                                                                  ) ITIN_ARR ON MT.AIR_RSV_SEQNO = ITIN_ARR.AIR_RSV_SEQNO
+		                                                  LEFT OUTER JOIN ( SELECT C.AIR_RSV_SEQNO
+		                                                                         , SUM(C.ADT) AS ADT
+		                                                                         , SUM(C.CHD) AS CHD
+		                                                                         , SUM(C.INF) AS INF
+		                                                                      FROM (
+		                                                                            SELECT AIR_RSV_SEQNO
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'ADT' THEN 1 END) ADT
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'CHD' THEN 1 END) CHD
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'INF' THEN 1 END) INF
+		                                                                              FROM AIR_PAX_INF
+		                                                                             GROUP BY AIR_RSV_SEQNO, PAX_TY_GB
+		                                                                             ORDER BY AIR_RSV_SEQNO 
+		                                                                           ) C
+		                                                                     GROUP BY C.AIR_RSV_SEQNO 
+		                                                                  ) PAX ON MT.AIR_RSV_SEQNO = PAX.AIR_RSV_SEQNO
+		                                WHERE MT.ITIN_SHAPE_GB IN ('OW', 'RT', 'MT', 'OO')
+		                            ) AIR ON MST.AIR_RSV_SEQNO = AIR.airRsvSeqno
+		 WHERE MST.MST_RSV_NM_ID = #custCd#
+		   AND MST.USE_YN = 'Y'
+		   AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB =
+		       ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		 <!-- 
+		   AND MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT =
+		        ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		        (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		        (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		  -->
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeHtlReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT RSV.HTL_INTNUM           AS htlIntnum
+		     , RSV.FIT_RSV_NO           AS fitRsvNo
+		     , NVL(RSV.HOTEL_NM_KR, RSV.HOTEL_NM_EN) AS htlNm
+		     , RSV.CHECKIN_DT           AS checkinDt
+		     , RSV.CHECKOUT_DT          AS checkoutDt
+		     , RSV.HTL_RSV_SEQNO        AS htlRsvSeqno
+		     , RSV.ADT_QTY              AS adtQty
+		     , RSV.CHILD_QTY            AS childQty
+		     , RSV.SALE_AMT				AS saleAmt
+		     , RSV.SALE_JTB_AMT         AS saleJtbAmt
+		     , RSV.ROOM_CNT             AS roomCnt
+		     , RSV.HTL_RSVSTATE_GB      AS htlRsvstateGb
+     		 , RSV.HTL_RSVSTATE_NM      AS htlRsvstateNm
+     		 , RSV.HTL_PAYMTSTATE_GB    AS htlPaymtstateGb
+     		 , RSV.HTL_PAYMTSTATE_NM    AS htlPaymtstateNm
+     		 , RSV.EXCHANGE_RATE		AS exchangeRate
+     		 , RSV.SALE_CURRENCY		AS saleCurrency
+		  FROM (
+		        SELECT HTL.HTL_INTNUM
+		        	 , HTL.HTL_ID
+		        	 , HTL.HOTEL_NM_KR
+					 , HTL.HOTEL_NM_EN
+		        	 , HTL.SUPLR_GB
+		             , HTL.FIT_RSV_NO
+		             , SUBSTR(HTL.CHECKIN_DT, 0, 4) || '.' || SUBSTR(HTL.CHECKIN_DT, 5, 2) || '.' || SUBSTR(HTL.CHECKIN_DT, 7, 2) AS CHECKIN_DT
+           			 , SUBSTR(HTL.CHECKOUT_DT, 0, 4) || '.' || SUBSTR(HTL.CHECKOUT_DT, 5, 2) || '.' || SUBSTR(HTL.CHECKOUT_DT, 7, 2) AS CHECKOUT_DT
+		             , HTL.HTL_RSV_SEQNO
+		             , HTL.ADT_QTY
+		             , HTL.CHILD_QTY
+		             , HTL.SALE_AMT
+		             , HTL.SALE_JTB_AMT
+		             , HTL.ROOM_CNT
+		             , MST.HTL_RSVSTATE_GB
+             		 , FN_SCODE_NM_KR('HT006', MST.HTL_RSVSTATE_GB) AS HTL_RSVSTATE_NM
+             		 , MST.HTL_PAYMTSTATE_GB
+             		 , FN_SCODE_NM_KR('HT004', MST.HTL_PAYMTSTATE_GB) AS HTL_PAYMTSTATE_NM
+             		 , HTL.EXCHANGE_RATE
+             		 , HTL.SALE_CURRENCY
+		          FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                                    SELECT I1.HTL_INTNUM
+		                                    	 , I1.HTL_ID
+		                                    	 , I1.HOTEL_NM_KR
+												 , I1.HOTEL_NM_EN
+												 , I1.SUPLR_GB
+		                                         , I1.FIT_RSV_NO
+		                                         , I1.CHECKIN_DT
+		                                         , I1.CHECKOUT_DT
+		                                         , I1.HTL_RSV_SEQNO
+		                                         , I1.ADT_QTY
+		                                         , I1.CHILD_QTY
+		                                         , I1.SALE_AMT
+		                                         , I1.SALE_JTB_AMT
+		                                         , I2.ROOM_CNT
+		                                         , I1.EXCHANGE_RATE
+		                                         , I1.SALE_CURRENCY
+		                                      FROM HTL_RSV_MST I1 LEFT OUTER JOIN (
+		                                                                    SELECT HTL_RSV_SEQNO
+		                                                                         , COUNT(1) AS ROOM_CNT
+		                                                                      FROM HTL_RSV_SROOM
+		                                                                     GROUP BY HTL_RSV_SEQNO
+		                                                          ) I2 ON I1.HTL_RSV_SEQNO = I2.HTL_RSV_SEQNO
+		                                 ) HTL ON MST.FIT_RSV_NO = HTL.FIT_RSV_NO
+		         WHERE MST.MST_RSV_NM_ID = #custCd#
+		           AND MST.USE_YN = 'Y'
+		           AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB <![CDATA[<>]]>
+		       		   ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		        <!-- 
+		           AND MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT <![CDATA[<>]]>
+		                ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		                (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		                (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		        -->
+		    ) RSV<!--  LEFT OUTER JOIN VW_HTL_MAPP_MST DTL ON RSV.HTL_INTNUM = DTL.HTL_INTNUM -->
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeHtlCancelReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT RSV.HTL_INTNUM           AS htlIntnum
+		     , RSV.FIT_RSV_NO           AS fitRsvNo
+		     , NVL(RSV.HOTEL_NM_KR, RSV.HOTEL_NM_EN) AS htlNm
+		     , RSV.CHECKIN_DT           AS checkinDt
+		     , RSV.CHECKOUT_DT          AS checkoutDt
+		     , RSV.HTL_RSV_SEQNO        AS htlRsvSeqno
+		     , RSV.ADT_QTY              AS adtQty
+		     , RSV.CHILD_QTY            AS childQty
+		     , RSV.SALE_AMT				AS saleAmt
+		     , RSV.SALE_JTB_AMT 		AS saleJtbAmt
+		     , RSV.ROOM_CNT             AS roomCnt
+		     , RSV.HTL_RSVSTATE_GB      AS htlRsvstateGb
+     		 , RSV.HTL_RSVSTATE_NM      AS htlRsvstateNm
+     		 , RSV.HTL_PAYMTSTATE_GB    AS htlPaymtstateGb
+     		 , RSV.HTL_PAYMTSTATE_NM    AS htlPaymtstateNm
+     		 , RSV.EXCHANGE_RATE		AS exchangeRate
+     		 , RSV.SALE_CURRENCY		AS saleCurrency
+		  FROM (
+		        SELECT HTL.HTL_INTNUM
+		             , HTL.FIT_RSV_NO
+		             , HTL.HTL_ID
+		             , HTL.HOTEL_NM_KR
+					 , HTL.HOTEL_NM_EN
+		             , HTL.SUPLR_GB
+		             , SUBSTR(HTL.CHECKIN_DT, 0, 4) || '.' || SUBSTR(HTL.CHECKIN_DT, 5, 2) || '.' || SUBSTR(HTL.CHECKIN_DT, 7, 2) AS CHECKIN_DT
+           			 , SUBSTR(HTL.CHECKOUT_DT, 0, 4) || '.' || SUBSTR(HTL.CHECKOUT_DT, 5, 2) || '.' || SUBSTR(HTL.CHECKOUT_DT, 7, 2) AS CHECKOUT_DT
+		             , HTL.HTL_RSV_SEQNO
+		             , HTL.ADT_QTY
+		             , HTL.CHILD_QTY
+		             , HTL.SALE_AMT
+		             , HTL.SALE_JTB_AMT
+		             , HTL.ROOM_CNT
+		             , MST.HTL_RSVSTATE_GB
+             		 , FN_SCODE_NM_KR('HT006', MST.HTL_RSVSTATE_GB) AS HTL_RSVSTATE_NM
+             		 , MST.HTL_PAYMTSTATE_GB
+             		 , FN_SCODE_NM_KR('HT004', MST.HTL_PAYMTSTATE_GB) AS HTL_PAYMTSTATE_NM
+             		 , HTL.EXCHANGE_RATE
+             		 , HTL.SALE_CURRENCY
+		          FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                                    SELECT I1.HTL_INTNUM
+		                                    	 , I1.HTL_ID
+		                                    	 , I1.HOTEL_NM_KR
+												 , I1.HOTEL_NM_EN
+												 , I1.SUPLR_GB
+		                                         , I1.FIT_RSV_NO
+		                                         , I1.CHECKIN_DT
+		                                         , I1.CHECKOUT_DT
+		                                         , I1.HTL_RSV_SEQNO
+		                                         , I1.ADT_QTY
+		                                         , I1.CHILD_QTY
+		                                         , I1.SALE_AMT
+		                                         , I1.SALE_JTB_AMT
+		                                         , I2.ROOM_CNT
+		                                         , I1.EXCHANGE_RATE
+		                                         , I1.SALE_CURRENCY
+		                                      FROM HTL_RSV_MST I1 LEFT OUTER JOIN (
+		                                                                    SELECT HTL_RSV_SEQNO
+		                                                                         , COUNT(1) AS ROOM_CNT
+		                                                                      FROM HTL_RSV_SROOM
+		                                                                     GROUP BY HTL_RSV_SEQNO
+		                                                          ) I2 ON I1.HTL_RSV_SEQNO = I2.HTL_RSV_SEQNO
+		                                 ) HTL ON MST.FIT_RSV_NO = HTL.FIT_RSV_NO
+		         WHERE MST.MST_RSV_NM_ID = #custCd#
+		           AND MST.USE_YN = 'Y'
+		           AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB =
+		       		   ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		         <!-- 
+		           AND MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT =
+		                ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		                (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		                (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		         -->
+		    ) RSV<!--  LEFT OUTER JOIN VW_HTL_MAPP_MST DTL ON RSV.HTL_INTNUM = DTL.HTL_INTNUM  -->
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeRntReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO       AS fitRsvNo
+		     , RNT.RNT_RSV_SEQNO    AS rntRsvSeqno
+		     , RNT.CAR_MODEL_NM     AS carModelNm
+		     , RNT.RNT_STATE_GB     AS rntStateGb
+     		 , RNT.RNT_STATE_NM     AS rntStateNm
+		     , RNT.PICKUP_DT        AS pickupDt
+		     , RNT.RT_DT            AS rtDt
+		     , RNT.ORG_AMT          AS orgAmt
+		     , RNT.DISCNT_AMT		AS discntAmt
+		     , RNT.SALE_AMT			AS saleAmt
+     		 , RNT.CURRENCY_CD      AS currencyCd
+		  FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                            SELECT FIT_RSV_NO  
+		                                 , RNT_RSV_SEQNO
+		                                 , CAR_MODEL_NM
+		                                 , RNT_STATE_GB
+                                 		 , FN_SCODE_NM_KR('RT002', RNT_STATE_GB) AS RNT_STATE_NM
+		                                 , SUBSTR(PICKUP_DT, 0, 4) || '.' || SUBSTR(PICKUP_DT, 5, 2) || '.' || SUBSTR(PICKUP_DT, 7, 2) AS PICKUP_DT
+		                                 , SUBSTR(RT_DT, 0, 4) || '.' || SUBSTR(RT_DT, 5, 2) || '.' || SUBSTR(RT_DT, 7, 2) AS RT_DT
+		                                 , ORG_AMT
+		                                 , DISCNT_AMT
+		                                 , SALE_AMT
+                                 		 , CURRENCY_CD
+		                              FROM RNT_RSV_MST
+		                         ) RNT ON MST.FIT_RSV_NO = RNT.FIT_RSV_NO 
+		 WHERE MST.MST_RSV_NM_ID = #custCd#
+		   AND MST.USE_YN = 'Y'
+		   AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB <![CDATA[<>]]>
+		       ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		<!-- 
+		   AND MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT <![CDATA[<>]]>
+		        ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		        (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		        (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		-->
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeRntCancelReserve" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO       AS fitRsvNo
+		     , RNT.RNT_RSV_SEQNO    AS rntRsvSeqno
+		     , RNT.CAR_MODEL_NM     AS carModelNm
+		     , RNT.RNT_STATE_GB     AS rntStateGb
+     		 , RNT.RNT_STATE_NM     AS rntStateNm
+		     , RNT.PICKUP_DT        AS pickupDt
+		     , RNT.RT_DT            AS rtDt
+		     , RNT.ORG_AMT          AS orgAmt
+		     , RNT.DISCNT_AMT		AS discntAmt
+		     , RNT.SALE_AMT			AS saleAmt
+     		 , RNT.CURRENCY_CD      AS currencyCd
+		  FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                            SELECT FIT_RSV_NO  
+		                                 , RNT_RSV_SEQNO
+		                                 , CAR_MODEL_NM
+		                                 , RNT_STATE_GB
+                                 		 , FN_SCODE_NM_KR('RT002', RNT_STATE_GB) AS RNT_STATE_NM
+		                                 , SUBSTR(PICKUP_DT, 0, 4) || '.' || SUBSTR(PICKUP_DT, 5, 2) || '.' || SUBSTR(PICKUP_DT, 7, 2) AS PICKUP_DT
+		                                 , SUBSTR(RT_DT, 0, 4) || '.' || SUBSTR(RT_DT, 5, 2) || '.' || SUBSTR(RT_DT, 7, 2) AS RT_DT
+		                                 , ORG_AMT
+		                                 , DISCNT_AMT
+		                                 , SALE_AMT
+                                 		 , CURRENCY_CD
+		                              FROM RNT_RSV_MST
+		                         ) RNT ON MST.FIT_RSV_NO = RNT.FIT_RSV_NO 
+		 WHERE MST.MST_RSV_NM_ID = #custCd#
+		   AND MST.USE_YN = 'Y'
+		   AND (SELECT RSV_STATE_GB FROM AIR_RSV_MST WHERE AIR_RSV_SEQNO = MST.AIR_RSV_SEQNO) || MST.HTL_RSVSTATE_GB || MST.RNT_RSVSTATE_GB =
+		       ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'XX' ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'XX'ELSE '' END) || (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'CA' ELSE '' END))
+		 <!-- 
+		   AND MST.CANCEL_YN_AIR || MST.CANCEL_YN_HTL || MST.CANCEL_YN_RNT =
+		        ((CASE WHEN MST.CONC_MIX LIKE 'A%' THEN 'Y' ELSE 'N' END) || 
+		        (CASE WHEN MST.CONC_MIX LIKE '%H%' THEN 'Y' ELSE 'N' END) ||
+		        (CASE WHEN MST.CONC_MIX LIKE '%C' THEN 'Y' ELSE 'N' END))
+		  -->
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeMstReserveForReserveNo" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO 																					AS fitRsvNo
+		     , MST.AIR_RSV_SEQNO																				AS airRsvSeqno
+		     , MST.CONC_MIX																						AS concMix
+		     , MST.MST_RSV_NM																					AS mstRsvNm
+		     , MST.SALE_AMT_TOT																					AS saleAmtTot
+		     , SUBSTR(MST.RSV_DT, 0, 4) || '.' || SUBSTR(MST.RSV_DT, 5, 2) || '.' || SUBSTR(MST.RSV_DT, 7, 2) 	AS rsvDt
+		     , MST.CANCEL_YN_AIR																				AS cancelYnAir
+		     , MST.CANCEL_YN_HTL																				AS cancelYnHtl
+		     , MST.CANCEL_YN_RNT																				AS cancelYnRnt
+		     , MST.AIR_DISCNT_AMT																				AS airDiscntAmt
+		     , MST.HTL_DISCNT_AMT																				AS htlDiscntAmt
+		     , MST.RNT_DISCNT_AMT																				AS rntDiscntAmt
+		     , NVL(MST.IJW_DISCNT_AMT,0)																		AS ijwDiscntAmt
+		     , PR.PROM_ID                                                                        		        AS promId
+		     , PR.PROM_NM                                                                    		            AS promNm
+		     , PR.PROM_AMOUNT                                                                   		        AS promAmount
+		     , PR.PROM_RATE                                                                     		        AS promRate
+		     , NVL((SELECT SUM(PROM_AMT) FROM HTL_RSV_MST WHERE FIT_RSV_NO = #resCd#),0)						AS promAmt
+		  FROM FA_FIT_RSV_MST MST LEFT OUTER JOIN (SELECT RV.FIT_RSV_NO
+		                                                , RV.PROM_ID
+		                                                , MT.PROM_NM
+		                                                , RV.PROM_AMOUNT
+		                                                , RV.PROM_RATE
+		                                             FROM FA_FIT_APP_PROM RV LEFT OUTER JOIN FA_PROM_MST MT
+		                                                                                  ON RV.PROM_ID = MT.PROM_ID
+		                                          ) PR
+		                                       ON MST.FIT_RSV_NO = PR.FIT_RSV_NO
+
+		 WHERE MST.FIT_RSV_NO = #resCd#
+		   AND MST.USE_YN = 'Y'
+		 ORDER BY MST.FIT_RSV_NO DESC 
+	</select>
+	
+	<select id="FreeMytourDAO.selecrFreeAirReserveForReserveNo" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO 	AS fitRsvNo
+			 , MST.SALE_AMT_AIR	AS saleAmtAir
+		     , AIR.airRsvSeqno
+		     , AIR.itinShapeGb
+		     , AIR.rsvNmId
+		     , AIR.rsvStateGb
+		     , AIR.rsvStateNm
+		     , AIR.fareStateGb
+		     , AIR.fareStateNm
+		     , AIR.rsvDtt
+		     , AIR.totSaleAmt
+		     , AIR.totTasfAmt
+		     , AIR.depFltno
+		     , AIR.depCd
+		     , AIR.depNm
+		     , AIR.depDt
+		     , AIR.depHm
+		     , AIR.arrCd
+		     , AIR.firstArrNm
+		     , AIR.arrFltno
+		     , AIR.lastArrNm
+		     , AIR.lastArrDt
+		     , AIR.lastArrHm
+		     , AIR.adt
+		     , AIR.chd
+		     , AIR.inf
+		  FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                            SELECT MT.AIR_RSV_SEQNO                                                                     					AS airRsvSeqno
+		                                 , MT.ITIN_SHAPE_GB                                                               							AS itinShapeGb
+		                                 , MT.RSV_NM_ID                                                                      						AS rsvNmId
+		                                 , MT.RSV_STATE_GB                                                                   						AS rsvStateGb
+		                                 , (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'AR005' AND CD = MT.RSV_STATE_GB) 						AS rsvStateNm
+		                                 , MT.FARE_STATE_GB                                                                   						AS fareStateGb
+		                                 , (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'AR007' AND CD = MT.FARE_STATE_GB) 						AS fareStateNm
+		                                 , TO_CHAR(MT.RSV_DTT, 'YYYY.MM.DD')																		AS rsvDtt
+		                                 , MT.TOT_SALE_AMT                                                                   						AS totSaleAmt
+		                                 , MT.TOT_TASF_AMT																							AS totTasfAmt
+		                                 , ITIN_DEP.FLTNO                                                                    						AS depFltno
+		                                 , ITIN_DEP.DEP_CD                                                                 							AS depCd
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_DEP.DEP_CD)                                              					AS depNm
+		                                 , SUBSTR(ITIN_DEP.DEP_DT,0,4) || '.' || SUBSTR(ITIN_DEP.DEP_DT,5,2) || '.' || SUBSTR(ITIN_DEP.DEP_DT,7,2)	AS depDt
+		                                 , ITIN_DEP.DEP_HM                                                                      					AS depHm
+		                                 , ITIN_DEP.ARR_CD                                                                      					AS arrCd
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_DEP.ARR_CD)                                             						AS firstArrNm
+		                                 , ITIN_ARR.FLTNO                                                                       					AS arrFltno
+		                                 , ITIN_ARR.ARR_CD
+		                                 , (SELECT CASE WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                                           ELSE X.AIRPORT_KR_NM END
+		                                      FROM COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y
+		                                                                        ON X.NATION_CD = Y.NATION_CD
+		                                                                       AND X.CT_CD = Y.CT_CD 
+		                                     WHERE X.AIRPORT_CD = ITIN_ARR.ARR_CD)                                              					AS lastArrNm
+		                                 , SUBSTR(ITIN_ARR.ARR_DT,0,4) || '.' || SUBSTR(ITIN_ARR.ARR_DT,5,2) || '.' || SUBSTR(ITIN_ARR.ARR_DT,7,2)	AS lastArrDt
+		                                 , ITIN_ARR.ARR_HM                                                                      					AS lastArrHm
+		                                 , PAX.ADT                                                                              					AS adt
+		                                 , PAX.CHD                                                                              					AS chd
+		                                 , PAX.INF                                                                              					AS inf
+		                              FROM AIR_RSV_MST MT LEFT OUTER JOIN ( SELECT A.AIR_RSV_SEQNO
+		                                                                         , A.FLTNO
+		                                                                         , A.DEP_CD
+		                                                                         , A.DEP_DT
+		                                                                         , A.DEP_HM
+		                                                                         , A.ARR_CD
+		                                                                      FROM AIR_ITIN_INF A INNER JOIN ( SELECT AIR_RSV_SEQNO
+		                                                                                                            , MIN(ITIN_GRP_NO) AS GRP_NO
+		                                                                                                            , MIN(SEG_NO) AS SEG_NO
+		                                                                                                         FROM AIR_ITIN_INF
+		                                                                                                        WHERE DEST_YN = 'Y'
+		                                                                                                        GROUP BY AIR_RSV_SEQNO
+		                                                                                                     ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		                                                                                                        AND A.ITIN_GRP_NO = B.GRP_NO
+		                                                                                                        AND A.SEG_NO = B.SEG_NO
+		                                                                  ) ITIN_DEP ON MT.AIR_RSV_SEQNO = ITIN_DEP.AIR_RSV_SEQNO
+		                                                  LEFT OUTER JOIN ( SELECT A.AIR_RSV_SEQNO
+		                                                                         , A.FLTNO
+		                                                                         , A.ARR_CD
+		                                                                         , A.ARR_DT
+		                                                                         , A.ARR_HM
+		                                                                      FROM AIR_ITIN_INF A INNER JOIN ( SELECT  I1.AIR_RSV_SEQNO
+																			                                         , I1.GRP_NO
+																			                                         , MAX(I2.SEG_NO) AS SEG_NO
+																			                                      FROM (
+																			                                        SELECT AIR_RSV_SEQNO
+																			                                            , MAX(ITIN_GRP_NO) AS GRP_NO
+																			                                         FROM AIR_ITIN_INF
+																			                                        WHERE DEST_YN = 'Y'
+																			                                        GROUP BY AIR_RSV_SEQNO
+																			                                      ) I1 LEFT OUTER JOIN AIR_ITIN_INF I2
+																			                                                        ON I1.AIR_RSV_SEQNO = I2.AIR_RSV_SEQNO
+																			                                                       AND I1.GRP_NO = I2.ITIN_GRP_NO
+																			                                     GROUP BY I1.AIR_RSV_SEQNO, I1.GRP_NO
+		                                                                                                     ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		                                                                                                        AND A.ITIN_GRP_NO = B.GRP_NO
+		                                                                                                        AND A.SEG_NO = B.SEG_NO
+		                                                                                                        AND B.GRP_NO <![CDATA[<>]]> 1
+		                                                                     ORDER BY A.AIR_RSV_SEQNO
+		                                                                  ) ITIN_ARR ON MT.AIR_RSV_SEQNO = ITIN_ARR.AIR_RSV_SEQNO
+		                                                  LEFT OUTER JOIN ( SELECT C.AIR_RSV_SEQNO
+		                                                                         , SUM(C.ADT) AS ADT
+		                                                                         , SUM(C.CHD) AS CHD
+		                                                                         , SUM(C.INF) AS INF
+		                                                                      FROM (
+		                                                                            SELECT AIR_RSV_SEQNO
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'ADT' THEN 1 END) ADT
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'CHD' THEN 1 END) CHD
+		                                                                                 , COUNT(CASE WHEN PAX_TY_GB = 'INF' THEN 1 END) INF
+		                                                                              FROM AIR_PAX_INF
+		                                                                             GROUP BY AIR_RSV_SEQNO, PAX_TY_GB
+		                                                                             ORDER BY AIR_RSV_SEQNO 
+		                                                                           ) C
+		                                                                     GROUP BY C.AIR_RSV_SEQNO 
+		                                                                  ) PAX ON MT.AIR_RSV_SEQNO = PAX.AIR_RSV_SEQNO
+		                                WHERE MT.ITIN_SHAPE_GB IN ('OW', 'RT', 'MT', 'OO')
+		                            ) AIR ON MST.AIR_RSV_SEQNO = AIR.airRsvSeqno
+		 WHERE MST.FIT_RSV_NO = #resCd#
+		   AND MST.USE_YN = 'Y'
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeHtlReserveForReserveNo" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT RSV.HTL_INTNUM           AS htlIntnum
+		     , RSV.FIT_RSV_NO           AS fitRsvNo
+		     , NVL(RSV.HOTEL_NM_KR, RSV.HOTEL_NM_EN) AS htlNm
+		     , RSV.CHECKIN_DT           AS checkinDt
+		     , RSV.CHECKOUT_DT          AS checkoutDt
+		     , RSV.HTL_RSV_SEQNO        AS htlRsvSeqno
+		     , RSV.ADT_QTY              AS adtQty
+		     , RSV.CHILD_QTY            AS childQty
+		     , RSV.SALE_AMT				AS saleAmt
+		     , RSV.SALE_JTB_AMT			AS saleJtbAmt
+		     , RSV.ROOM_CNT             AS roomCnt
+		     , RSV.HTL_RSVSTATE_GB      AS htlRsvstateGb
+     		 , RSV.HTL_RSVSTATE_NM      AS htlRsvstateNm
+     		 , RSV.HTL_PAYMTSTATE_GB    AS htlPaymtstateGb
+     		 , RSV.HTL_PAYMTSTATE_NM    AS htlPaymtstateNm
+     		 , RSV.EXCHANGE_RATE		AS exchangeRate
+     		 , RSV.SALE_CURRENCY		AS saleCurrency
+     		 , RSV.IJW_DISCNT_AMT		AS ijwdiscntamt
+     		 , RSV.PROM_AMT				AS promAmt
+		  FROM (
+		        SELECT HTL.HTL_INTNUM
+		        	 , HTL.HTL_ID
+		        	 , HTL.HOTEL_NM_KR
+					 , HTL.HOTEL_NM_EN
+		        	 , HTL.SUPLR_GB
+		             , HTL.FIT_RSV_NO
+		             , SUBSTR(HTL.CHECKIN_DT, 0, 4) || '.' || SUBSTR(HTL.CHECKIN_DT, 5, 2) || '.' || SUBSTR(HTL.CHECKIN_DT, 7, 2) AS CHECKIN_DT
+           			 , SUBSTR(HTL.CHECKOUT_DT, 0, 4) || '.' || SUBSTR(HTL.CHECKOUT_DT, 5, 2) || '.' || SUBSTR(HTL.CHECKOUT_DT, 7, 2) AS CHECKOUT_DT
+		             , HTL.HTL_RSV_SEQNO
+		             , HTL.ADT_QTY
+		             , HTL.CHILD_QTY
+		             , HTL.SALE_AMT
+		             , HTL.SALE_JTB_AMT
+		             , HTL.ROOM_CNT
+		             , MST.HTL_RSVSTATE_GB
+             		 , FN_SCODE_NM_KR('HT006', MST.HTL_RSVSTATE_GB) AS HTL_RSVSTATE_NM
+             		 , MST.HTL_PAYMTSTATE_GB
+             		 , FN_SCODE_NM_KR('HT004', MST.HTL_PAYMTSTATE_GB) AS HTL_PAYMTSTATE_NM
+             		 , HTL.EXCHANGE_RATE
+             		 , HTL.SALE_CURRENCY
+             		 , MST.IJW_DISCNT_AMT
+             		 , HTL.PROM_AMT
+		          FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                                    SELECT I1.HTL_INTNUM
+		                                    	 , I1.HTL_ID
+		                                    	 , I1.HOTEL_NM_KR
+												 , I1.HOTEL_NM_EN
+												 , I1.SUPLR_GB
+		                                         , I1.FIT_RSV_NO
+		                                         , I1.CHECKIN_DT
+		                                         , I1.CHECKOUT_DT
+		                                         , I1.HTL_RSV_SEQNO
+		                                         , I1.ADT_QTY
+		                                         , I1.CHILD_QTY
+		                                         , I1.SALE_AMT
+		                                         , I1.SALE_JTB_AMT
+		                                         , I2.ROOM_CNT
+		                                         , I1.EXCHANGE_RATE
+		                                         , I1.SALE_CURRENCY
+		                                         , I1.PROM_AMT
+		                                      FROM HTL_RSV_MST I1 LEFT OUTER JOIN (
+		                                                                    SELECT HTL_RSV_SEQNO
+		                                                                         , COUNT(1) AS ROOM_CNT
+		                                                                      FROM HTL_RSV_SROOM
+		                                                                     GROUP BY HTL_RSV_SEQNO
+		                                                          ) I2 ON I1.HTL_RSV_SEQNO = I2.HTL_RSV_SEQNO
+		                                 ) HTL ON MST.FIT_RSV_NO = HTL.FIT_RSV_NO
+		         WHERE MST.FIT_RSV_NO = #resCd#
+		           AND MST.USE_YN = 'Y'
+		    ) RSV <!-- LEFT OUTER JOIN VW_HTL_MAPP_MST DTL ON RSV.HTL_INTNUM = DTL.HTL_INTNUM -->
+	</select>
+	
+	<select id="FreeMytourDAO.selectFreeRntReserveForReserveNo" parameterClass="mytourVO" resultClass="FreeMytourVO">
+		SELECT MST.FIT_RSV_NO       AS fitRsvNo
+		     , RNT.RNT_RSV_SEQNO    AS rntRsvSeqno
+		     , RNT.CAR_MODEL_NM     AS carModelNm
+		     , RNT.RNT_STATE_GB     AS rntStateGb
+     		 , RNT.RNT_STATE_NM     AS rntStateNm
+		     , RNT.PICKUP_DT        AS pickupDt
+		     , RNT.RT_DT            AS rtDt
+		     , RNT.ORG_AMT          AS orgAmt
+		     , RNT.DISCNT_AMT		AS discntAmt
+		     , RNT.SALE_AMT			AS saleAmt
+     		 , RNT.CURRENCY_CD      AS currencyCd
+		  FROM FA_FIT_RSV_MST MST INNER JOIN (
+		                            SELECT FIT_RSV_NO  
+		                                 , RNT_RSV_SEQNO
+		                                 , CAR_MODEL_NM
+		                                 , RNT_STATE_GB
+                                 		 , FN_SCODE_NM_KR('RT002', RNT_STATE_GB) AS RNT_STATE_NM
+		                                 , SUBSTR(PICKUP_DT, 0, 4) || '.' || SUBSTR(PICKUP_DT, 5, 2) || '.' || SUBSTR(PICKUP_DT, 7, 2) AS PICKUP_DT
+		                                 , SUBSTR(RT_DT, 0, 4) || '.' || SUBSTR(RT_DT, 5, 2) || '.' || SUBSTR(RT_DT, 7, 2) AS RT_DT
+		                                 , ORG_AMT
+		                                 , DISCNT_AMT
+		                                 , SALE_AMT
+                                 		 , CURRENCY_CD
+		                              FROM RNT_RSV_MST
+		                         ) RNT ON MST.FIT_RSV_NO = RNT.FIT_RSV_NO 
+		 WHERE MST.FIT_RSV_NO = #resCd#
+		   AND MST.USE_YN = 'Y'
+	</select>
+
+	<select id="FreeMytourDAO.selectLottePointSeq" resultClass="java.util.HashMap">
+		SELECT LPAD(NVL(MAX(TRADE_NO),0),5,0) AS TRADE_NO
+		  FROM CU_POINT_TRNO A
+		 WHERE A.ENTDATE = TO_CHAR(sysdate,'YYYYMMDD')
+	</select>
+	
+	<insert id="FreeMytourDAO.insertLottePointSeq">
+		INSERT INTO CU_POINT_TRNO (
+					  ENTDATE
+					, TRADE_NO
+					, INS_DT
+				   ) VALUES (
+				   	  TO_CHAR(sysdate,'YYYYMMDD')
+				   	, 1
+				   	, SYSDATE
+				   )
+	</insert>
+	
+	<update id="FreeMytourDAO.updateLottePointSeq">
+		UPDATE CU_POINT_TRNO 
+		   SET TRADE_NO = TRADE_NO+1
+			 , INS_DT = SYSDATE
+		 WHERE ENTDATE = TO_CHAR(sysdate,'YYYYMMDD')
+	</update>
+	
+	<insert id="FreeMytourDAO.insertLottePointMst">
+		<![CDATA[
+			INSERT INTO CU_POINT_MST(
+					POINT_TID      		,	ENTDATE        		,	POINT_FG       		,	RES_CD         		,	START_DAY      		,
+					CARD_NO        		,	JMNO           		,	POINT_DESC     		,	SALE_AMT       		,	POINT_NOW      		,
+					POINT_PREV     		,	POINT_SUM      		,	SAVE_DATE      		,	SAVE_POINT     		,	SAVE_APPRNO    		,
+					SAVE_ORG_APPRNO		,	USE_DATE       		,	USE_POINT      		,	USE_APPRNO     		,	USE_ORG_APPRNO 		,
+					INS_FG         		,	INS_ID         		,	INS_DT         		,	UPD_ID         		,	UPD_DT         	
+				) VALUES(
+					#POINT_TID#			,	#ENTDATE#			,	#POINT_FG#    		,	#RES_CD#    		,	#START_DAY#    		,
+					#CARD_NO#    		,	#JMNO#    			,	#POINT_DESC#    	,	nvl(#SALE_AMT#,0)  	,	nvl(#POINT_NOW#,0) 	,
+					nvl(#POINT_PREV#,0) ,	nvl(#POINT_SUM#,0)  ,	#SAVE_DATE#    		,	nvl(#SAVE_POINT#,0) ,	#SAVE_APPRNO#    	,
+					#SAVE_ORG_APPRNO#   ,	#USE_DATE#    		,	nvl(#USE_POINT#,0)  ,	#USE_APPRNO#  		,	#USE_ORG_APPRNO#    ,
+					#INS_FG#    		,	#INS_ID#    		,	sysdate         	,	#UPD_ID#    		,	sysdate) 
+		]]>
+	</insert>
+	
+	
+	<insert id="FreeMytourDAO.insertLottePointHis">
+		<![CDATA[
+				INSERT INTO CU_POINT_HISTORY(
+						POINT_TID 	,	
+						POINT_SEQ 	,	
+						POINT_FG  	,	CARD_NO   	,	JM_NO     	,	POINT_DESC	,	APPRDATE  	,	
+						SALE_AMT  	,	POINT_AMT 	,	APPRNO    	,	ORG_APPRNO
+					) VALUES(
+						#POINT_TID#	,	
+						(SELECT NVL((MAX(POINT_SEQ)+1),1) FROM CU_POINT_HISTORY WHERE POINT_TID = #POINT_TID#) 	,	
+						#POINT_FG# 	,	#CARD_NO#  	,	#JM_NO#    	,	#POINT_DESC#,	TO_CHAR(sysdate,'yyyy-mm-dd am hh:mi:ss'),	
+						#SALE_AMT# ,	#POINT_AMT#	,	#APPRNO#	,	#ORG_APPRNO#) 
+		]]>
+	</insert>
+
+	<select id="FreeMytourDAO.selectIoCd" parameterClass="rvPaymentVO" resultClass="rvPaymentVO">
+		<![CDATA[
+		SELECT	/*+'RVrv_paymentDAOV02.view'*/
+					A.IO_CD 	"IO_CD" 	,
+					A.RES_CD	"RES_CD"	
+		FROM		RV_PAYMENT A
+		WHERE		A.RES_CD = #RES_CD# 
+		AND A.IO_FG = 'I'
+		AND A.IO_CD < TO_CHAR(sysdate, 'YYMMDD')||'-200' and A.IO_CD like TO_CHAR(sysdate, 'YYMMDD')||'%'
+		ORDER BY	A.IO_CD DESC     
+		]]>
+	</select>
+
+	<select id="FreeMytourDAO.selectSettMeth" parameterClass="paramVO" resultClass="coSettMethVO">
+		<![CDATA[
+		SELECT	/*+'COSettmethDAOV01.view'*/
+					A.SETT_CD     	"SETT_CD"     	,
+					A.SETT_DET_CD 	"SETT_DET_CD" 	,
+					A.SETT_DET_NM 	"SETT_DET_NM" 	,
+					A.SETT_TYPE_CD	"SETT_TYPE_CD"	,
+					A.USE_YN      	"USE_YN"      	,
+					A.BUY_SETT_NM 	"BUY_SETT_NM" 	,
+					A.JOIN_CMP_NO 	"JOIN_CMP_NO" 	,
+					A.ONLINE_YN   	"ONLINE_YN"   	,
+					A.REMARK      	"REMARK"      	,
+					A.INS_DT      	"INS_DT"      	,
+					A.INS_ID      	"INS_ID"      	,
+					A.UPD_DT      	"UPD_DT"      	,
+					A.UPD_ID      	"UPD_ID"      	
+		FROM		CO_SETT_METH@T2OPR A
+      	WHERE	A.SETT_CD = #SETT_CD#
+      	AND		A.SETT_DET_CD = #SETT_DET_CD#
+      	AND		A.USE_YN = #USE_YN#
+		]]>
+	</select>
+	
+	<select id="FreeMytourDAO.selectSettFee" parameterClass="paramVO" resultClass="coSettFeeVO">
+		<![CDATA[
+		SELECT	/*+'COSettFeeDAOV00.view'*/
+					A.SETT_CD    	"SETT_CD"    	,
+					A.SETT_DET_CD	"SETT_DET_CD"	,
+					A.FEE_SEQ    	"FEE_SEQ"    	,
+					A.FEE_FR_DTM 	"FEE_FR_DTM" 	,
+					A.FEE_TO_DTM 	"FEE_TO_DTM" 	,
+					A.FEE_RATE   	"FEE_RATE"   	,
+					A.USE_YN     	"USE_YN"     	,
+					A.VAT_YN     	"VAT_YN"     	,
+					A.REMARK     	"REMARK"     	,
+					A.INS_DT     	"INS_DT"     	,
+					A.INS_ID     	"INS_ID"     	,
+					A.UPD_DT     	"UPD_DT"     	,
+					A.UPD_ID     	"UPD_ID"     	
+		FROM		CO_SETT_FEE@T2OPR A
+		WHERE		A.SETT_CD = #SETT_CD#
+		AND			A.USE_YN = #USE_YN#
+		AND			A.SETT_DET_CD = #SETT_DET_CD#
+		AND			A.FEE_FR_DTM <= #CONF_DAY# AND A.FEE_TO_DTM >= #CONF_DAY#
+		
+		ORDER BY A.FEE_FR_DTM DESC
+		]]>
+	</select>
+	
+	<select id="FreeMytourDAO.selectSettDet" parameterClass="paramVO" resultClass="coSettDetVO">
+		<![CDATA[
+		SELECT	/*+'COSettDetDAOV00.view'*/
+					A.SETT_CD        	"SETT_CD"        	,
+					A.SETT_DET_CD    	"SETT_DET_CD"    	,
+					A.DET_SEQ        	"DET_SEQ"        	,
+					A.DET_FR_DT      	"FEE_FR_DTM"      	,
+					A.DET_TO_DT      	"FEE_TO_DTM"      	,
+					A.LIMIT_AMT      	"LIMIT_AMT"      	,
+					A.COMM_YN        	"COMM_YN"        	,
+					A.COMM_RATE      	"COMM_RATE"      	,
+					A.NOINT_MONTH_CNT	"NOINT_MONTH_CNT"	,
+					A.USE_YN         	"USE_YN"         	,
+					A.ACCOUNT_NO     	"ACCOUNT_NO"     	,
+					A.ACCOUNT_DESC   	"ACCOUNT_DESC"   	,
+					A.REMARK         	"REMARK"         	,
+					A.INS_DT         	"INS_DT"         	,
+					A.INS_ID         	"INS_ID"         	,
+					A.UPD_DT         	"UPD_DT"         	,
+					A.UPD_ID         	"UPD_ID"         	
+		FROM		CO_SETT_DET@T2OPR A
+		WHERE		A.SETT_CD = #SETT_CD#
+		AND			A.USE_YN = #USE_YN#
+		AND			A.SETT_DET_CD = #SETT_DET_CD#
+		AND			A.DET_FR_DT <= #CONF_DAY#  AND A.DET_TO_DT >= #CONF_DAY#
+		ORDER BY A.DET_SEQ DESC
+		]]>
+	</select>
+	
+	<insert id="FreeMytourDAO.insertPayment" parameterClass="rvPaymentVO">
+		<![CDATA[
+		INSERT INTO RV_PAYMENT (
+					RES_CD,				IO_CD,					IO_DAY,				IO_FG,
+					STATUS_CD,			IO_FG_CD,				IO_DETAIL_CD,		IO_AMT,
+					CONF_DAY,			INPAY_ID,				IO_DESC,			ALTER_DAY,
+					COUPON_NO,			ACCOUNT_NO,				NM,					CARD_OWNER,
+					CARD_NO,			VALID_YM,				QUOTA_YN,			QUOTA_TERM,
+					AGREE_NO,			AGENT_NM,				PRE_DAY,			REAL_DAY,
+					CP_APPR_CD,			TID,					AGREE_DT,			AGREE_ID,
+					CANC_TID,			CANC_AGREE_DT,			CANC_ID,			REFUND_CD,
+					RFND_CD,			COMP_RATE,				COMP_AMT,			RFND_RATE,
+					RFND_AMT,			NOINT_RATE,				NOINT_AMT,			MISU_YN,
+					SITE_CD,			RES_SEQ,				TICKET_NO,			CARD_OWNER_YN,
+					COM_RATE,			COM_AMT,				INS_DT,				INS_ID,
+					PRE_AMT,			CASH_RECEIPT_FG,		CASH_RECEIPT_CD,	CASH_RECEIPT_INFO,
+					MID,				NOINTEREST_CD
+			) VALUES (
+					#RES_CD#,			#IO_CD#,				#IO_DAY#,			#IO_FG#,
+					#STATUS_CD#,		#IO_FG_CD#,				#IO_DETAIL_CD#,		#IO_AMT#,
+					#CONF_DAY#,			#INPAY_ID#,				#IO_DESC#,			#ALTER_DAY#,
+					#COUPON_NO#,		#ACCOUNT_NO#,			#NM#,				#CARD_OWNER#,
+					#CARD_NO#,			#VALID_YM#,				#QUOTA_YN#,			#QUOTA_TERM#,
+					#AGREE_NO#,			#AGENT_NM#,				#PRE_DAY#,			#REAL_DAY#,
+					#CP_APPR_CD#,		#TID#,					#AGREE_DT#,			#AGREE_ID#,
+					#CANC_TID#,			#CANC_AGREE_DT#,		#CANC_ID#,			#REFUND_CD#,
+					#RFND_CD#,			#COMP_RATE#,			#COMP_AMT#,			#RFND_RATE#,
+					#RFND_AMT#,			#NOINT_RATE#,			#NOINT_AMT#,		#MISU_YN#,
+					#SITE_CD#,			#RES_SEQ#,				#TICKET_NO#,		#CARD_OWNER_YN#,
+					#COM_RATE#,			#COM_AMT#,				SYSDATE,			#INS_ID#,
+					#PRE_AMT#,			#CASH_RECEIPT_FG#,		#CASH_RECEIPT_CD#,	#CASH_RECEIPT_INFO#,
+					#MID#,				#NOINTEREST_CD#
+				)
+		]]>
+	</insert>
+
+	<select id="FreeMytourDAO.selectBusiNo" parameterClass="rvPaymentVO" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT NVL(C.BUSI_NO,'2018602089') "busi_no"
+		  FROM RV_MST A, ADM_ADMIN B, COMPANY_INFO C
+		 WHERE A.SALE_ID = B.USERID(+)
+		   AND B.ADM_POSI_CD = C.SEQ(+)
+		   AND A.RES_CD = #RES_CD#
+		]]>
+	</select>
+	
+	<select id="FreeMytourDAO.selectCashNo" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT	/*+'RVtb_cashDAOV00.view'*/
+				A.CA_SEQ	"CA_SEQ"	
+		  FROM	TB_CASH A
+		 WHERE A.CA_SEQ like TO_CHAR(SYSDATE, 'YYYYMMDD')||'%'
+		ORDER BY A.CA_SEQ DESC
+		]]>
+	</select>
+
+	<insert id="FreeMytourDAO.insertCash" parameterClass="cashVO">
+		<![CDATA[
+		INSERT INTO TB_CASH (
+			  CA_SEQ             ,  TRDDATE            ,  COMPANYNO          ,  JUMCODE            ,
+			  POSNO              ,  TRNO               ,  APPRCODE           ,  SUPPLYAMT          ,
+			  VAT                ,  COVERCHARGE        ,  TOTAMT             ,  USETYPE            ,
+			  TRGU               ,  PERSONAUTHCODE     ,  MANUAL             ,  RETCODE            ,
+			  APPRMSG            ,  SUCCESSFLAG        ,  APPRDATE           ,  CANCELTRDDATE      ,
+			  CANCELAPPRCODE     ,  CANCELRETCODE      ,  CANCELAPPRMSG      ,  CANCELSUCCESSFLAG  ,
+			  CANCELAPPRDATE     ,  RES_CD             ,  CUST_CD            ,  IO_CD              ,
+			  CASH_SEQ           ,  CAN_FG             ,  CAN_CA_SEQ         ,  ORI_TRDDATE        ,
+			  ORI_APPRCODE       ,  CAN_SAYU           
+		) VALUES (
+			  #CA_SEQ#           ,  #TRDDATE#          ,  #COMPANYNO#        ,  #JUMCODE#           ,
+			  #POSNO#            ,  #TRNO#             ,  #APPRCODE#         ,  #SUPPLYAMT#         ,
+			  #VAT#              ,  #COVERCHARGE#      ,  #TOTAMT#           ,  #USETYPE#           ,
+			  #TRGU#             ,  #PERSONAUTHCODE#   ,  #MANUAL#           ,  #RETCODE#           ,
+			  #APPRMSG#          ,  #SUCCESSFLAG#      ,  #APPRDATE#         ,  #CANCELTRDDATE#     ,
+			  #CANCELAPPRCODE#   ,  #CANCELRETCODE#    ,  #CANCELAPPRMSG#    ,  #CANCELSUCCESSFLAG# ,
+			  #CANCELAPPRDATE#   ,  #RES_CD#           ,  #CUST_CD#          ,  #IO_CD#             ,
+			  #CASH_SEQ#         ,  #CAN_FG#           ,  #CAN_CA_SEQ#       ,  #ORI_TRDDATE#       ,
+			  #ORI_APPRCODE#     ,  #CAN_SAYU#           
+		)
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertFitPayment" parameterClass="faFitPaymtInfVO">
+		<![CDATA[
+		INSERT INTO FA_FIT_PAYMT_INF (
+					  PAYMT_SEQNO           ,  FIT_RSV_NO            ,  GOODS_GB              ,
+					  PAYMT_AMT             ,  CARD_KI_GB            ,  CARD_RELAT_GB         ,
+					  CARD_OWN_GB           ,  CARD_NO               ,  CARD_EXPIR_DATE_MN    ,
+					  CARD_EXPIR_DATE_YEAR  ,  CARD_INSTALLMN_MN     ,  CARD_OWNER_NM         ,
+					  CARD_CVS_NO           ,  CARD_APPROVE_NO       ,  BANK_CD_GB            ,
+					  ACT_NO                ,  ACT_PAYMTOR_NM        ,  PAYMT_SCH_DT          ,
+					  NOTE                  ,  UNPAID_NOTE           ,  GIFT_DIVI_GB          ,
+					  GIFT_NO               ,  GIFT_AMT              ,  GIFT_RECP_YN          ,
+					  L_POINT_AMT           ,  REGTOR_ID             ,  REG_DTT               ,
+					  MODTOR_ID             ,  MOD_DTT               ,  PAYMT_CONF_YN         ,
+					  TID_NO				,  CASH_AMT						
+  				) VALUES (
+					  SEQ_FA_FIT_PAYMT_INF.NEXTVAL	,  #FIT_RSV_NO#            ,  #GOODS_GB#              ,
+					  #PAYMT_AMT#             		,  #CARD_KI_GB#            ,  #CARD_RELAT_GB#         ,
+					  #CARD_OWN_GB#           		,  #CARD_NO#               ,  #CARD_EXPIR_DATE_MN#    ,
+					  #CARD_EXPIR_DATE_YEAR#  		,  #CARD_INSTALLMN_MN#     ,  #CARD_OWNER_NM#         ,
+					  #CARD_CVS_NO#           		,  #CARD_APPROVE_NO#       ,  #BANK_CD_GB#            ,
+					  #ACT_NO#                		,  #ACT_PAYMTOR_NM#        ,  #PAYMT_SCH_DT#          ,
+					  #NOTE#                  		,  #UNPAID_NOTE#           ,  #GIFT_DIVI_GB#          ,
+					  #GIFT_NO#               		,  #GIFT_AMT#              ,  #GIFT_RECP_YN#          ,
+					  #L_POINT_AMT#           		,  #REGTOR_ID#             ,  SYSDATE                 ,
+					  #MODTOR_ID#             		,  SYSDATE                 ,  #PAYMT_ACT_YN#          ,
+					  #TID_NO#						,  #CASH_AMT#			
+				)
+		]]>
+	</insert>
+	
+	<update id="FreeMytourDAO.updateRsvMst" parameterClass="faFitRsvMstVO">
+		UPDATE FA_FIT_RSV_MST 
+		   SET HTL_RSVSTATE_GB  = #HTL_RSVSTATE_GB#
+			 , HTL_PAYMTSTATE_GB  = #HTL_PAYMTSTATE_GB#
+		 WHERE FIT_RSV_NO = #FIT_RSV_NO#
+	</update>
+	
+	<select id="FreeMytourDAO.selectAirCounselList" parameterClass="rvCounselVO" resultClass="rvCounselVO">
+			SELECT *
+			FROM   (SELECT /*+ FIRST_ROWS */QUERY.*,
+	
+					SELECT COUNSEL_SEQNO AS counselSeqNo,
+					       AIR_RSV_SEQNO AS airRsvSeqNo,
+					       PREPARED_BY_NM AS preparedByNm,
+					       COUNSEL_ASSORT_GB AS counselAssortGB,
+					       CONT AS cont,
+					       COUNSEL_REQ_DTT AS counselReqDtt,
+					       COUNSEL_STATE_GB AS counselStateGB,
+					       ANSWER_CONT AS answerCont,
+					       ANSWER_DTT AS answerDtt,
+					       PCHARGE_ID AS pChargeID,
+					       REGTOR_ID AS regtorID,
+					       REG_DTT AS regDtt,
+					       MODTOR_ID AS modtorID,
+					       MOD_DTT AS modDtt
+					FROM   
+					    AIR_RSV_COUNSEL
+					WHERE  
+						COUNSEL_SEQNO <![CDATA[ >= ]]> 0
+						<isNotEmpty property="AIR_RSV_SEQNO">
+						AND    
+							AIR_RSV_SEQNO = #AIR_RSV_SEQNO#
+						</isNotEmpty>
+						<isNotEmpty property="COUNSEL_ASSORT_GB">
+						AND    
+						    COUNSEL_ASSORT_GB = #COUNSEL_ASSORT_GB#
+						</isNotEmpty>
+						<isNotEmpty property="COUNSEL_STATE_GB">
+						AND    
+						    COUNSEL_STATE_GB = #COUNSEL_STATE_GB#
+						</isNotEmpty>
+						
+					ORDER BY REG_DTT DESC
+			    ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow#
+	      ) WHERE RN <![CDATA[ >= ]]> #startRow#
+	</select>
+	
+	<select id="FreeMytourDAO.selectAirCounselListCount" parameterClass="rvCounselVO" resultClass="int">
+
+		SELECT 
+			COUNT(*) as totalCnt
+		FROM   
+		    AIR_RSV_COUNSEL
+		WHERE  
+			COUNSEL_SEQNO <![CDATA[ >= ]]> 0
+			<isNotEmpty property="AIR_RSV_SEQNO">
+			AND    
+				AIR_RSV_SEQNO = #AIR_RSV_SEQNO#
+			</isNotEmpty>
+			<isNotEmpty property="COUNSEL_ASSORT_GB">
+			AND    
+			    COUNSEL_ASSORT_GB = #COUNSEL_ASSORT_GB#
+			</isNotEmpty>
+			<isNotEmpty property="COUNSEL_STATE_GB">
+			AND    
+			    COUNSEL_STATE_GB = #COUNSEL_STATE_GB#
+			</isNotEmpty>
+
+	</select>
+	
+	<insert id="FreeMytourDAO.insertAirCounsel" parameterClass="rvCounselVO">
+		<![CDATA[
+		INSERT INTO AIR_RSV_COUNSEL (
+					  COUNSEL_SEQNO         	,  AIR_RSV_SEQNO       	,  PREPARED_BY_NM          	,
+					  COUNSEL_ASSORT_GB     	,  CONT            		,  COUNSEL_REQ_DTT         	,
+					  COUNSEL_STATE_GB      	,  ANSWER_CONT          ,  ANSWER_DTT    			,
+					  PCHARGE_ID  				,  REGTOR_ID     		,  REG_DTT         			,
+					  MODTOR_ID           		,  MOD_DTT        			
+  				) VALUES (
+					  AIR_RSV_COUNSEL.NEXTVAL   ,  #AIR_RSV_SEQNO#      ,  #PREPARED_BY_NM#         ,
+					  #COUNSEL_ASSORT_GB#     	,  #CONT#            	,  sysdate        			,
+					  #COUNSEL_STATE_GB#      	,  #ANSWER_CONT#        ,  #ANSWER_DTT#    			,
+					  #PCHARGE_ID#  			,  #REGTOR_ID#     		,  sysdate         			,
+					  #MODTOR_ID#           	,  #MOD_DTT#        			    			
+				)
+		]]>
+	</insert>
+	
+	<select id="FreeMytourDAO.selectCounselQuesList" parameterClass="faFitCounselQuesVO" resultClass="faFitCounselQuesVO">
+		SELECT *
+		FROM   (SELECT /*+ FIRST_ROWS */QUERY.*,
+		               ROWNUM RN
+		        FROM   (
+		            SELECT Q.QUES_SEQNO AS QUES_SEQNO,
+		                Q.ASSORT_CD AS ASSORT_CD,
+		                Q.TITLE AS TITLE,
+		                Q.CONT AS CONT,
+		                Q.EMAIL AS EMAIL,
+		                Q.HTEL AS HTEL,
+		                Q.USER_ID AS USER_ID,
+		                Q.EMAIL_RECV_YN AS EMAIL_RECV_YN,
+		                Q.SMS_RECV_YN AS SMS_RECV_YN,
+		                Q.REGTOR_ID AS REGTOR_ID,
+		                TO_CHAR(Q.REG_DTT, 'YYYY-MM-DD')  AS REG_DTT,
+		                Q.MODTOR_ID AS MODTOR_ID,
+		                Q.MOD_DTT AS MOD_DTT,
+		                (SELECT A.CONT FROM FA_FIT_COUNSEL_ANSW A WHERE A.QUES_SEQNO = Q.QUES_SEQNO) AS ANSW
+		            FROM 
+		                FA_FIT_COUNSEL_QUES Q
+					WHERE Q.QUES_SEQNO <![CDATA[ >= ]]> 0
+					
+					<isNotEmpty property="USER_ID">				
+						AND Q.USER_ID = #USER_ID#
+					</isNotEmpty>
+					<isEmpty property="USER_ID">				
+						AND Q.USER_ID = ''
+					</isEmpty>					
+		            
+		          	order by QUES_SEQNO desc
+		            
+			    ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow#
+	      ) WHERE RN <![CDATA[ >= ]]> #startRow#
+	</select>
+	
+	<select id="FreeMytourDAO.selectCounselQuesListCount" parameterClass="faFitCounselQuesVO" resultClass="int">
+
+           SELECT 
+           		COUNT(*) AS TOTALCNT
+           FROM 
+               FA_FIT_COUNSEL_QUES
+		   WHERE QUES_SEQNO <![CDATA[ >= ]]> 0
+			
+		   <isNotEmpty property="USER_ID">				
+				AND USER_ID = #USER_ID#
+		   </isNotEmpty>		                 
+	</select>
+	
+	<insert id="FreeMytourDAO.insertCounselQues" parameterClass="faFitCounselQuesVO">
+<![CDATA[
+		INSERT INTO FA_FIT_COUNSEL_QUES (
+					  QUES_SEQNO         		,  ASSORT_CD       		,  TITLE          	,
+					  CONT     					,  EMAIL            	,  HTEL         	,
+					  USER_ID      				,  EMAIL_RECV_YN        ,  SMS_RECV_YN    	,
+					  REGTOR_ID  				,  REG_DTT     			,  MODTOR_ID        ,
+					  MOD_DTT           					
+  				) VALUES (
+					  SEQ_FIT_COUNSEL_QUES.NEXTVAL	,  #ASSORT_CD#       	,  #TITLE#          ,
+					  #CONT#     					,  #EMAIL#            	,  #HTEL#         	,
+					  #USER_ID#      				,  #EMAIL_RECV_YN#      ,  #SMS_RECV_YN#    ,
+					  #REGTOR_ID#  					,  sysdate     			,  #MODTOR_ID#      ,
+					  #MOD_DTT#           					       			    			
+				)
+		]]>
+</insert>
+	
+	<select id="FreeMytourDAO.selectCounselAnswList" parameterClass="faFitCounselAnswVO" resultClass="faFitCounselAnswVO">
+		SELECT QUES_SEQNO,
+		       CONT,
+		       REGTOR_ID,
+		       REG_DTT,
+		       MODTOR_ID,
+		       MOD_DTT
+		FROM   FA_FIT_COUNSEL_ANSW
+		WHERE 
+		       QUES_SEQNO = #QUES_SEQNO#
+		ORDER BY MOD_DTT DESC		
+	</select>
+
+	
+	<select id="FreeMytourDAO.selectCounselAssortList" parameterClass="faFitCounselAssortVO" resultClass="faFitCounselAssortVO">
+		SELECT ASSORT_CD,
+		       ASSORT_NM,
+		       PARENT_ASSORT_CD,
+		       USE_YN,
+		       REGTOR_ID,
+		       REG_DTT,
+		       MODTOR_ID,
+		       MOD_DTT,
+		       ASSORT_LEVEL
+		FROM   FA_FIT_COUNSEL_ASSORT
+		WHERE  USE_YN = 'Y'
+			AND PARENT_ASSORT_CD  = #PARENT_ASSORT_CD#
+		
+		ORDER BY ASSORT_CD, ASSORT_LEVEL	
+	</select>
+	
+	<select id="FreeMytourDAO.selectCounselAssort" parameterClass="faFitCounselAssortVO" resultClass="faFitCounselAssortVO">
+		SELECT ASSORT_CD,
+		       ASSORT_NM,
+		       PARENT_ASSORT_CD,
+		       USE_YN,
+		       REGTOR_ID,
+		       REG_DTT,
+		       MODTOR_ID,
+		       MOD_DTT,
+		       ASSORT_LEVEL
+		FROM   FA_FIT_COUNSEL_ASSORT
+		WHERE ASSORT_CD = #ASSORT_CD#
+	</select>
+									
+	<insert id="FreeMytourDAO.insertAirRsvPaymt" parameterClass="airRsvPaymtVO">
+		<![CDATA[
+		INSERT INTO AIR_RSV_PAYMT (
+					  AIR_RSV_SEQNO     ,  PAYMT_APPROVE_AMT  	,  PAYMT_UNPAID_AMT   ,
+					  TASF_AMT          ,  CARD_USE_YN        	,  CARD_ALL_YN        ,
+					  ACT_USE_YN        ,  GIFT_USE_YN        	,  ETC_USE_YN         ,
+					  REGTOR_ID         ,  REG_DTT            	,  MODTOR_ID          ,
+					  MOD_DTT            
+   				) VALUES (
+					  #AIR_RSV_SEQNO#	,  #PAYMT_APPROVE_AMT#  ,  #PAYMT_UNPAID_AMT# ,
+					  #TASF_AMT#     	,  #CARD_USE_YN#        ,  #CARD_ALL_YN#      ,
+					  #ACT_USE_YN#      ,  #GIFT_USE_YN#      	,  #ETC_USE_YN#    	  ,
+					  #REGTOR_ID#  		,  SYSDATE     			,  #MODTOR_ID#        ,
+					  SYSDATE           					       			    			
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertAirActPaymt" parameterClass="airActPaymtVO">
+		<![CDATA[
+		INSERT INTO AIR_ACT_PAYMT (
+					  AIR_RSV_SEQNO     ,  CASH_AMT             	,  BANK_CD_GB           ,
+					  ACT_NO            ,  ACT_PAYMTOR_NM       	,  PAYMT_SCH_DT         ,
+					  NOTE              ,  CASH_RECEIPT_DIVI_GB 	,  PAYMT_CONF_YN        ,
+					  VIRTUAL_ACT_YN    ,  OID_NO					,  TID_NO               ,
+					  REGTOR_ID         ,  REG_DTT                  ,  MODTOR_ID            ,
+					  MOD_DTT           ,  PAYMT_SCH_HM   
+    				) VALUES (
+					  #AIR_RSV_SEQNO#   ,  #CASH_AMT#             	,  #BANK_CD_GB#         ,
+					  #ACT_NO#          ,  #ACT_PAYMTOR_NM#       	,  #PAYMT_SCH_DT#       ,
+					  #NOTE#            ,  #CASH_RECEIPT_DIVI_GB# 	,  #PAYMT_CONF_YN#      ,
+					  #VIRTUAL_ACT_YN#  ,  #OID_NO#                 ,  #TID_NO#             , 
+					  #REGTOR_ID#       ,  SYSDATE           		,  #MODTOR_ID#          ,
+					  SYSDATE           ,  #PAYMT_SCH_HM#
+				)
+
+		]]>
+	</insert>
+
+	<update id="FreeMytourDAO.updateAirRsvMst" parameterClass="java.util.Map">
+		UPDATE AIR_RSV_MST 
+		   SET RSV_STATE_GB 		=	'WA'
+		     , PAYMTREQ_STATE_GB  	=	'WA'
+		     , MODTOR_ID			=	#MODTOR_ID#
+		     , MOD_DTT				=	SYSDATE  
+		 WHERE AIR_RSV_SEQNO = #AIR_RSV_SEQNO#
+	</update>
+	
+	<insert id="FreeMytourDAO.insertAirReceiptReq" parameterClass="airReceiptReqVO">
+		<![CDATA[
+		INSERT INTO AIR_RECEIPT_REQ (
+					 RECEIPT_SEQNO    				, AIR_RSV_SEQNO    	, RECEIPT_DIVI_GB  ,
+					 ISSUE_HTEL       				, CORP_NO          	, REGTOR_ID        ,
+					 REG_DTT          				, MODTOR_ID        	, MOD_DTT          
+     			) VALUES (
+					 SEQ_AIR_RECEIPT_REQ.NEXTVAL  	,  #AIR_RSV_SEQNO#  ,  #RECEIPT_DIVI_GB#	,
+					 #ISSUE_HTEL#     				,  #CORP_NO#       	,  #REGTOR_ID#       	,
+					 SYSDATE     	  				,  #MODTOR_ID# 		,  SYSDATE     
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertHtlReceiptReq" parameterClass="airReceiptReqVO">
+		<![CDATA[
+		INSERT INTO HTL_RECEIPT_REQ (
+					 RECEIPT_SEQNO    				, FIT_RSV_NO    	, RECEIPT_DIVI_GB  ,
+					 ISSUE_HTEL       				, CORP_NO          	, REGTOR_ID        ,
+					 REG_DTT          				, MODTOR_ID        	, MOD_DTT          
+     			) VALUES (
+					 SEQ_HTL_RECEIPT_REQ.NEXTVAL  	,  #AIR_RSV_SEQNO#  ,  #RECEIPT_DIVI_GB#	,
+					 #ISSUE_HTEL#     				,  #CORP_NO#       	,  #REGTOR_ID#       	,
+					 SYSDATE     	  				,  #MODTOR_ID# 		,  SYSDATE     
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertFitCashReceipt" parameterClass="faFitCashReceiptVO">
+		<![CDATA[
+		INSERT INTO FA_FIT_CASH_RECEIPT (
+					 CASH_RECEIPT_SEQNO    			, FIT_RSV_NO    		, CASH_RECEIPT_DIVI_GB  	,
+					 ORD_CONT       				, APPROVE_STATE_GB  	, REGTOR_ID        			,
+					 REG_DTT          				, MODTOR_ID        		, MOD_DTT          
+     			) VALUES (
+					 SEQ_FA_FIT_CASH_RECEIPT.NEXTVAL,  #FIT_RSV_NO#  		,  #CASH_RECEIPT_DIVI_GB#	,
+					 #ORD_CONT#     				,  #APPROVE_STATE_GB#   ,  #REGTOR_ID#       		,
+					 SYSDATE     	  				,  #MODTOR_ID# 			,  SYSDATE     
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertHtlCardPaymt" parameterClass="htlCardPaymtVO">
+		<![CDATA[
+		INSERT INTO HTL_CARD_PAYMT (
+					CARD_PAYMT_SEQNO     , 	FIT_RSV_NO           , 	PAX_NO               , 
+					CARD_PAYMT_AMT       , 	CARD_KI_GB           , 	CARD_NO              , 
+					CARD_EXPIR_DATE_MN   , 	CARD_EXPIR_DATE_YEAR , 	CARD_INSTALLMN_MN    , 
+					CARD_OWNER_GB        , 	CARD_RELAT_GB        , 	CARD_OWNER_NM        , 
+					CARD_CVS_NO          , 	CARD_APPROVE_NO      ,  TID_NO       		 ,
+					OID_NO   		 , 	APPROVE_CONF_YN      ,  FRONT_PASS           ,
+					REGTOR_ID            , 	REG_DTT              , 	MODTOR_ID            ,
+					MOD_DTT               
+     			) VALUES (
+					SEQ_HTL_CARD_PAYMT.NEXTVAL, 	#FIT_RSV_NO#           , 	#PAX_NO#               , 
+					#CARD_PAYMT_AMT#       		, 	#CARD_KI_GB#           , 	#CARD_NO#              , 
+					#CARD_EXPIR_DATE_MN#   		, 	#CARD_EXPIR_DATE_YEAR# , 	#CARD_INSTALLMN_MN#    , 
+					#CARD_OWNER_GB#        		, 	#CARD_RELAT_GB#        , 	#CARD_OWNER_NM#        , 
+					#CARD_CVS_NO#          		, 	#CARD_APPROVE_NO#      ,    #TID_NO#	  	   , 	
+					#OID_NO#				,   #APPROVE_CONF_YN#      ,    #FRONT_PASS#           ,
+				 	#REGTOR_ID#                 , 	SYSDATE                ,   	#MODTOR_ID#            ,
+				 	SYSDATE               
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertHtlActPaymt" parameterClass="htlActPaymtVO">
+		<![CDATA[
+		INSERT INTO HTL_ACT_PAYMT (
+					FIT_RSV_NO           ,	CASH_AMT             ,BANK_CD_GB           ,
+					ACT_NO               ,	ACT_PAYMTOR_NM       ,PAYMT_SCH_DT         ,
+					NOTE                 ,	CASH_RECEIPT_DIVI_GB ,PAYMT_CONF_YN        ,
+					VIRTUAL_ACT_YN       ,	OID_NO               ,TID_NO               ,
+					REGTOR_ID            ,  REG_DTT              ,MODTOR_ID            ,
+					MOD_DTT              ,  PAYMT_SCH_HM   
+     			) VALUES (
+					#FIT_RSV_NO#         ,	#CASH_AMT#             ,	#BANK_CD_GB#           ,
+					#ACT_NO#             ,	#ACT_PAYMTOR_NM#       ,	#PAYMT_SCH_DT#         ,
+					#NOTE#               ,	#CASH_RECEIPT_DIVI_GB# ,	#PAYMT_CONF_YN#        ,
+					#VIRTUAL_ACT_YN#     ,	#OID_NO#               ,    #TID_NO#               ,
+					#REGTOR_ID#          ,  SYSDATE                ,	#MODTOR_ID#            ,
+					SYSDATE    			 ,  #PAYMT_SCH_HM#
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertHtlEtcPaymt" parameterClass="htlEtcPaymtVO">
+		<![CDATA[
+		INSERT INTO HTL_ETC_PAYMT (
+					FIT_RSV_NO     ,	ETC_USE_YN     ,	ETC_PAYMT_AMT  ,	
+					PAYMT_CONF_YN  ,	NOTE           ,	REGTOR_ID      ,
+					REG_DTT        ,	MODTOR_ID      ,	MOD_DTT        
+     			) VALUES (
+					#FIT_RSV_NO#     ,	#ETC_USE_YN#     ,	#ETC_PAYMT_AMT#  ,	
+					#PAYMT_CONF_YN#  ,	#NOTE#           ,	#REGTOR_ID#      ,
+					SYSDATE        ,	#MODTOR_ID#      ,	SYSDATE        
+				)
+
+		]]>
+	</insert>
+	
+	<insert id="FreeMytourDAO.insertHtlGiftPaymt" parameterClass="htlGiftPaymtVO">
+		<![CDATA[
+		INSERT INTO HTL_GIFT_PAYMT (
+					GIFT_SEQNO     ,	GIFT_DIVI_GB    ,	GIFT_NO  ,	
+					GIFT_AMT       ,	GIFT_RECP_YN    ,	NOTE ,
+					REGTOR_ID      ,	REG_DTT        	,	MODTOR_ID      ,	
+					MOD_DTT        ,	FIT_RSV_NO
+     			) VALUES (
+					SEQ_HTL_GIFT_PAYMT.nextval 	,	#GIFT_DIVI_GB#  ,	#GIFT_NO#  	,	
+					#GIFT_AMT# 					,	#GIFT_RECP_YN#	, 	#NOTE#      ,	
+					#REGTOR_ID#     			,	SYSDATE        	,	#MODTOR_ID# ,	
+					SYSDATE        , 	#FIT_RSV_NO#
+				)
+		]]>
+	</insert>
+	
+	<!-- Lpoint 사용취소를위한 쿼리 -->
+	<select id="FreeMytourDAO.selectUseLPointInfo" parameterClass="String" resultClass="LPointVO">
+		SELECT 
+		      	POINT_TID
+		      	, CARD_NO		 AS cardNum
+		      	, USE_APPRNO	 AS apprNo
+		      	, USE_POINT		 AS usePoint_str
+		      	, USE_ORG_APPRNO AS USE_ORG_APPRNO
+		      	, USE_DATE		 AS USE_ORG_APPRNO_DAY
+		FROM	CU_POINT_MST
+		WHERE	RES_CD = #fitRsvNo#
+	
+	</select>
+	
+	<!-- Payment_TEMP 테이블 결제내용 insert -->
+  <insert id="FreeMytourDAO.insertPopCardPaymt" parameterClass="htlCardPaymtVO">
+  INSERT INTO RV_PAYMENT_TEMP@T2OPR(
+		RES_CD,
+		IO_CD,
+		IO_DAY,
+		IO_FG,
+		STATUS_CD,
+		IO_FG_CD,
+		IO_DETAIL_CD,
+		IO_AMT,
+		PRE_AMT,
+		RFND_RATE,
+		RFND_AMT,
+		NM,
+		CARD_OWNER,
+		CARD_NO,
+		VALID_YM,
+		QUOTA_YN,
+		QUOTA_TERM,
+		AGREE_NO,
+		TID,
+		AGREE_DT,
+		CARD_OWNER_YN,
+		MID,
+		INS_DT,
+		INS_ID,
+		UPD_DT,
+		UPD_ID,
+		IO_DESC
+		) VALUES(
+		#FIT_RSV_NO#,
+		TO_CHAR(SYSDATE, 'YYMMDD') || '-' || LPAD(TO_CHAR((SELECT count(*) + 1 FROM RV_PAYMENT@T2OPR WHERE RES_CD = (SELECT RES_CD FROM RV_MST@T2OPR WHERE ETC_RES_CD = #FIT_RSV_NO#) )), 3, '0'),
+		TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		'I',
+		'OK',
+		'H',
+		(SELECT CD_NM_EN FROM COM_SYS_CD WHERE GRP_CD = 'FT019' AND CD = #CARD_KI_GB#),
+		NVL(#CARD_PAYMT_AMT#, 0),
+		0,
+		NVL((SELECT FEE_RATE FROM CO_SETT_FEE@T2OPR
+		WHERE SETT_CD = 'H'
+		AND SETT_DET_CD = (SELECT CD_NM_EN FROM COM_SYS_CD WHERE GRP_CD = 'FT019'
+		AND CD = '03')
+		AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN FEE_FR_DTM AND FEE_TO_DTM
+		AND USE_YN = 'Y'), 0),
+		(TRUNC(NVL(#CARD_PAYMT_AMT#, 0) * NVL((SELECT FEE_RATE FROM CO_SETT_FEE@T2OPR
+		WHERE SETT_CD = 'H'
+		AND SETT_DET_CD = (SELECT CD_NM_EN FROM COM_SYS_CD WHERE GRP_CD = 'FT019'
+		AND CD = '03')
+		AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN FEE_FR_DTM AND FEE_TO_DTM
+		AND USE_YN = 'Y'), 0) / 100)),
+		#CARD_OWNER_NM#,
+		'',
+		#CARD_NO#,
+		'',
+		CASE
+		WHEN TO_NUMBER(#CARD_INSTALLMN_MN#) = 0 THEN 'N'
+		WHEN TO_NUMBER(#CARD_INSTALLMN_MN#) <![CDATA[>]]>
+		0 THEN 'Y'
+		END,
+		TO_NUMBER(#CARD_INSTALLMN_MN#),
+		#CARD_APPROVE_NO#,
+		#TID_NO#,
+		TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+		CASE
+		WHEN #CARD_INSTALLMN_MN# IS NOT NULL THEN 'Y'
+		END,
+		SUBSTR(#OID_NO#, 0, 10),
+		SYSDATE,
+		'FITADM',
+		SYSDATE,
+		'FITADM',
+		#OID_NO#
+		)
+  </insert>
+	
+</sqlMap>

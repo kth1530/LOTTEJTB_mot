@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="AirDAO">
+
+	<typeAlias alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="ReqReserveVO"		type="com.lottejtb.front.service.ReqReserveVO"/>
+	<typeAlias alias="AirPaxVO"			type="com.lottejtb.front.air.vo.AirPaxVO"/>
+	<typeAlias alias="AirSegmentVO"		type="com.lottejtb.front.air.vo.AirSegmentVO"/>
+	<typeAlias alias="AirTasfVO"		type="com.lottejtb.front.air.vo.AirTasfVO"/>
+	<typeAlias alias="AirRsvMstVO"		type="com.lottejtb.front.air.vo.AirRsvMstVO"/>
+	<typeAlias alias="AirPromotionVO"	type="com.lottejtb.front.vo.PromotionVo"/>
+	<typeAlias alias="AirUSCityVO"		type="com.lottejtb.front.air.vo.AirUSCityVO"/>
+	<typeAlias alias="AirTlVO"			type="com.lottejtb.front.air.vo.AirTlVO"/>
+	<typeAlias alias="AirCarrierCdVO"	type="com.lottejtb.front.air.vo.AirCarrierCdVO"/>
+	
+	 <resultMap id="airCarrierCdVO" class="AirCarrierCdVO">
+	 	<result property="carrierCd" column="CARRIER_CD"/>
+	 	<result property="carrierKrNm" column="CARRIER_KR_NM"/>	 	
+	 	<result property="carrierEnNm" column="CARRIER_EN_NM"/>
+    </resultMap>
+    	
+	<!-- 항공 예약 마스터 업데이트 -->
+	<update id="AirDAO.updateRsvMst" parameterClass="AirRsvMstVO" >
+		UPDATE AIR_RSV_MST
+		SET	MODTOR_ID	= #userId#
+            , MOD_DTT	= SYSDATE 
+		
+		<isNotEmpty property="airRsvSeqno">
+			, AIR_RSV_SEQNO = #airRsvSeqno#
+		</isNotEmpty>
+            
+		WHERE AIR_RSV_SEQNO = #airRsvSeqno#
+  	</update>
+  	
+ 
+	
+	<!-- 마이페이지 - 자유여행 항공 예약자 정보 -->
+  	<select id="AirDAO.selectAirPaxInfo" parameterClass="ReqReserveVO" resultClass="AirPaxVO">
+		<![CDATA[	
+			SELECT  API.KR_NM			krPaxNm		
+					, API.PAX_NO		paxNo
+			    	, API.EN_SUR_NM		enSurNm	     		
+			  		, API.EN_FIRST_NM	enFirstNm                    	
+			   		, API.PAX_TY_GB		paxTy      
+			   		, FN_SCODE_NM_KR('AR012', API.PAX_TY_GB) paxTyNm         
+					, API.YMD			dateOfBirth    
+			        , API.GENDER_GB 	genderGb
+			        , FN_SCODE_NM_KR('AR011', API.GENDER_GB) gender
+        			, API.HTEL 			paxTel
+            		, AII.DEP_DT		depDt
+  					, APF.SALE_AMT		saleAmt
+  					, APF.TASF_AMT		tasfAmt
+			FROM  	AIR_PAX_INF API                       
+			    	, AIR_RSV_MST ARM      
+          			, AIR_ITIN_INF AII
+          			, AIR_PAX_FARE APF
+			WHERE 	API.AIR_RSV_SEQNO = ARM.AIR_RSV_SEQNO 
+		        AND ARM.AIR_RSV_SEQNO = AII.AIR_RSV_SEQNO
+				AND ARM.AIR_RSV_SEQNO = APF.AIR_RSV_SEQNO
+				AND API.PAX_NO = APF.PAX_NO
+		        AND AII.ITIN_GRP_NO = 1
+		        AND AII.SEG_NO = 1
+			  	AND ARM.AIR_RSV_SEQNO = ( SELECT A.AIR_RSV_SEQNO 
+		  								FROM FA_FIT_RSV_MST A 
+		  								WHERE A.FIT_RSV_NO = #fitRsvNo#
+			  						)
+		]]>                                             
+	</select>   
+	
+	<!-- 마이페이지 - 자유여행 항공 SEGMENT 정보 -->
+	<select id="AirDAO.selectAirSegInfo" parameterClass="ReqReserveVO" resultClass="AirSegmentVO">
+		<![CDATA[	
+	
+				SELECT
+				      AII.CARRIER_CD					carrierCd
+				      , (SELECT CARRIER_KR_NM FROM COM_CARRIERCD WHERE CARRIER_CD = AII.CARRIER_CD)	carrierNm
+				      , AII.OP_CARRIER_CD				opCarrierCd
+				      , (SELECT CARRIER_KR_NM FROM COM_CARRIERCD WHERE CARRIER_CD = AII.OP_CARRIER_CD) opCarrierNm
+				      , AII.FLTNO  						fltNo
+				      , AII.CABIN_CLAS  				cabinClas
+				      , NVL(FN_SCODE_NM_KR('AR030', AII.CABIN_CLAS), '이코노미석') cabinClasNm
+				      , FN_AIRPORT_KR_NM(AII.DEP_CD)	depNm
+				      , (SELECT NATION_CD FROM COM_AIRPORTCD WHERE AIRPORT_CD = AII.DEP_CD) AS depNtCd
+				      , AII.DEP_CD  					depCd
+				      , AII.DEP_DT  					depDt
+				      , AII.DEP_HM  					depHm
+				      , FN_AIRPORT_KR_NM(AII.ARR_CD)  	arrNm
+				      , (SELECT NATION_CD FROM COM_AIRPORTCD WHERE AIRPORT_CD = AII.ARR_CD) AS arrNtCd
+				      , AII.ARR_CD  					arrCd
+				      , AII.ARR_DT  					arrDt
+				      , AII.ARR_HM  					arrHm
+				      , AII.SEAT_STATE  				seatState
+				      , ARM.RSV_STATE_GB 				rsvStateGb
+				      , FN_SCODE_NM_KR('AR005', ARM.RSV_STATE_GB)	rsvState
+				FROM  AIR_ITIN_INF AII
+				    , FA_FIT_RSV_MST FRM
+				    , AIR_RSV_MST ARM
+				WHERE AII.AIR_RSV_SEQNO = FRM.AIR_RSV_SEQNO
+				  AND AII.AIR_RSV_SEQNO = ARM.AIR_RSV_SEQNO
+				  AND FRM.FIT_RSV_NO = #fitRsvNo#
+  
+		]]>                                             
+	</select>   
+	
+	<!-- 항공 TASF 조회 -->
+	<select id="AirDAO.selectAirTasf" parameterClass="AirTasfVO" resultClass="AirTasfVO">
+		<![CDATA[	
+			SELECT  
+					AT.CARRIER_CD		carrierCd
+				 	, AT.ADT_TASF_AMT	adtTasfAmt
+				  	, AT.CHD_TASF_AMT	chdTasfAmt
+					, AT.INF_TASF_AMT	infTasfAmt
+			FROM	AIR_TASF AT
+			WHERE	AT.AREA_CD = (SELECT CN.AREA_CD 
+				                  FROM COM_NTCD CN
+				                  WHERE CN.NATION_CD = (SELECT CA.NATION_CD 
+				                                      FROM COM_AIRPORTCD CA
+				                                      WHERE CA.AIRPORT_CD = #airportCd#
+				                                      )
+				                 )
+		]]>                                             
+	</select> 
+	
+	<!-- 항공 예약 총 TASF업데이트 -->
+	<update id="AirDAO.updateAirTotTasf" parameterClass="ReqReserveVO" >
+		<![CDATA[
+			UPDATE 
+				AIR_RSV_MST SET 
+				
+				TOT_TASF_AMT = #totTasfCharge# 
+			WHERE AIR_RSV_SEQNO = #airRsvSeqno#
+		]]>  
+	</update>
+	
+	
+	<!-- 좌석명 가져오기 -->
+	<select id="AirDAO.selectCabinNm" parameterClass="String" resultClass="String">
+		<![CDATA[	
+			SELECT FN_SCODE_NM_KR('AR030', #sVal#) FROM DUAL
+		]]>                                             
+	</select>
+	
+	<!-- 공항명 가져오기 -->
+	<select id="AirDAO.selectAirportNm" parameterClass="String" resultClass="String">
+		<![CDATA[	
+			SELECT FN_AIRPORT_KR_NM(#sVal#) FROM DUAL
+		]]>                                             
+	</select>
+	
+	<!-- 사전입국심사, 비자사용국가 조회 -->
+	<select id="AirDAO.selectApisVisaInfo" parameterClass="String" resultClass="egovMap">
+		<![CDATA[	
+			SELECT 
+			      CN.VISA_USE_YN ,
+			      CN.APIS_YN
+			FROM  COM_AIRPORTCD CA,
+			      COM_NTCD CN
+			WHERE CA.NATION_CD = CN.NATION_CD
+			  AND CA.AIRPORT_CD = #arrCt#
+		]]>                                             
+	</select>
+	
+	<!-- 항공 예약정보 - 취소가능 여부 조회 -->
+	<select id="AirDAO.selectAirMstInfo" parameterClass="AirRsvMstVO" resultClass="AirRsvMstVO">
+		<![CDATA[	
+			SELECT 
+			        AIR_RSV_SEQNO	airRsvSeqno
+			        , RSV_STATE_GB	rsvStateGb
+			        , TKET_STATE_GB tketStateGb
+			FROM AIR_RSV_MST 
+			WHERE AIR_RSV_SEQNO = #airRsvSeqno#
+		]]>                                             
+	</select>
+	
+	<!-- 항공 프로모션 조회 -->
+	<select id="AirDAO.selectAirPromList" parameterClass="AirPromotionVO" resultClass="AirPromotionVO">
+		<![CDATA[	
+			SELECT PM.PROM_ID           promId
+				, PM.PROM_NM			promNm     
+				, PA.GDS_TY_GB			gdsTyGb  
+				, PM.CONC_MIX         	concMix     
+				, PA.CARRIER_CD    		carrierCd      
+				, PA.CABIN        		cabin
+				, PA.ADT_TY_GB          tyGb       
+				, PA.ADT_DIVI_GB        diviGb      
+				, TO_CHAR(PA.ADT_AMT)	amt
+  				, 0 amount
+			FROM FA_PROM_MST PM
+			    , FA_PROM_AIR PA
+			WHERE PM.PROM_ID = PA.PROM_ID
+			  AND PA.GDS_TY_GB = #gdsTyGb#
+			  AND PM.CONC_MIX = #concMix#
+			  AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN PM.ST_DT AND PM.EN_DT
+			  AND PA.ADT_TY_GB IS NOT NULL
+			  AND PA.ADT_DIVI_GB IS NOT NULL
+			  AND PA.ADT_AMT IS NOT NULL
+		]]>                                             
+	</select>
+	
+	<!-- 미주 지역 검색 -->
+	<select id="AirDAO.selectUSCityList" parameterClass="String" resultClass="AirUSCityVO">
+		<![CDATA[	
+			SELECT CT_CD      ctCd
+		            , STATE_CD  stCd
+		            , CT_KR_NM  ctNmKr
+		            , CT_EN_NM  ctNmEn
+		            , NVL(STATE_CD_NM, STATE_CD)  stNm
+		      FROM COM_CTCD 
+		      WHERE NATION_CD = 'US'
+		        AND (
+		          CT_KR_NM LIKE '%' || #sVal# || '%'
+		          OR CT_EN_NM LIKE '%' || #sVal# || '%'
+		          OR NVL(STATE_CD_NM, STATE_CD) LIKE '%' || #sVal# || '%'
+		        )
+		]]>                                             
+	</select>
+	
+	<!-- 결제시한 조회 -->
+	<select id="AirDAO.selectPaymentTl" parameterClass="AirTlVO" resultClass="AirTlVO">
+		<![CDATA[	
+			SELECT  PAYMTTL_DT  paymttlDt
+		          , PAYMTTL_HM  paymttlHm
+		    FROM AIR_RSV_MST 
+		    WHERE AIR_RSV_SEQNO = #airRsvSeqno#
+		]]>                                             
+	</select>
+
+	<!-- 적립 가능 항공사 리스트 조회 -->
+	<select id="AirDAO.selectAirMileageList" parameterClass="AirCarrierCdVO" resultClass="airCarrierCdVO">
+		<![CDATA[	
+			SELECT DISTINCT CARRIER_CD AS carrierCd, CARRIER_KR_NM AS carrierKrNm, CARRIER_EN_NM AS carrierEnNm, USE_YN 
+			FROM COM_CARRIERCD
+			WHERE CARRIER_CD IN (
+			    /** 스타얼라이언스 회원 항공사 **/
+			    'AC', 'AI', 'A3', 'AV', 'BR', 'CA', 'CM', 'ET', 'JP', 'LH', 'LO', 'LX', 'MS', 'NH', 'NZ', 'OS', 'OU', 'OZ', 'O6', 'SA', 'SK', 'SN', 'SQ', 'TG', 'TK', 'TP', 'UA', 'ZH',
+			    /** 스카이팀 항공사 **/
+			    'AF', 'AM', 'AR', 'AZ', 'CI', 'CZ', 'DL', 'GA', 'KE', 'KL', 'KQ', 'ME', 'MF', 'MU', 'OK', 'RO', 'SU', 'SV', 'UX', 'VN',
+			    /**원월드 회원 항공사 **/
+			    'AA', 'AB', 'AY', 'BA', 'CX', 'IB', 'JJ', 'JL', 'LA', 'MH', 'QF', 'QR', 'RJ', 'S7', 'UL'
+			) AND USE_YN = 'Y'
+		]]>                                             
+	</select> 
+		
+</sqlMap>                                                                                                       

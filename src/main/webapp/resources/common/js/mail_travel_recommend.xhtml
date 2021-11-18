@@ -1,0 +1,1232 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:pw="http://www.tmaxsoft.com/prowave"
+xmlns:c="http://java.sun.com/jstl/core"
+xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+xmlns:jtb="http://www.lotte.com/jtb" lang="ko" xml:lang="ko">
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=euc-kr" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta http-equiv="content-language" content="kr" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="imagetoolbar" content="no" />
+<title>Travel&amp;Life LOTTEJTB</title>
+</head>
+<body bgcolor="#ffffff" style="font-family:Dotum, Verdana;font-size:12px; color:#767676; line-height:140%; padding-top:30px;">
+	<table width="806" border="0" cellspacing="0" cellpadding="0" align="center">
+		<tr>
+			<td>
+				<table width="806" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td align="left"><img src="http://www.lottejtb.com/images/img2015/mail/logo.gif" alt="lotte jtb" /></td>
+						<td align="right"><a href="http://lottejtb.com/" target="_blank" title="새창으로 이동"><img src="http://www.lottejtb.com/images/img2015/mail/top_btn.gif" alt="홈페이지 바로가기" style="border:none" usemap="#Map2" /></a></td>
+						<map name="Map2" id="Map2">
+							<area shape="rect" coords="-2,0,106,22" href="http://www.lottejtb.com/" target="_blank" title="새창으로 이동" />
+						</map>      
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td style="border:1px solid #d1d1d1;padding:19px 0" align="center">
+				<table width="764" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td valign="top" style="background:url(http://www.lottejtb.com/images/img2015/mail/mail_bg01.gif) no-repeat left top;height:113px;width:770px;padding:22px 0 0 119px">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td style="font-family: Malgun Gothic, Dotum, Verdana;font-size:16px;font-weight:bold;padding-bottom:10px;line-height:160%;color:#444;text-align:left">
+										#{mailScheduleBean.TO_NAME} 고객님 안녕하세요.<br />LOTTEJTB <span style="color:#b43785">여행상품</span>을 안내해 드리겠습니다.<br />
+										<span style="color:#167bc4"><pw:outputText value="#{mailScheduleBean.FROM_NAME}" escape="false"></pw:outputText></span>님이 <span style="color:#167bc4"><pw:outputText value="#{mailScheduleBean.TO_NAME}" escape="false"></pw:outputText></span>님에게 추천한 여행상품입니다.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7b4eb9;border-bottom:1px solid #aaa;margin-top:15px;text-align:left">
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>제목</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd"><pw:outputText value="#{mailScheduleBean.SUBJECT}" escape="false"></pw:outputText></td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;"><strong>간단메모내용</strong></td>
+									<td style="padding:15px 20px;"><pw:outputText value="#{mailScheduleBean.CONTENTS_MAPPING}" escape="false"></pw:outputText></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-family: Malgun Gothic, Dotum, Verdana;padding-top:30px;color:#444;text-align:left"><strong style="font-size:15px">여행상품</strong></td>
+					</tr>
+					<tr>
+						<td>
+							<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7b4eb9;border-bottom:1px solid #aaa;margin-top:15px;text-align:left">
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>상품명</strong></td>
+									<td style="padding:15px 20px;color:#7a4eb8;font-weight:bold;border-bottom:1px solid #ddd">#{rngdEventDtlJDBCBean.gdEventD[0].DISP_NM}
+										<br/>
+										<pw:panelGroup rendered="#{mailScheduleBean.siteNm != '0'}">
+											<br/>
+											<img src="http://lottejtb.com/images/common/bullet/blank.gif" width="20px" height="1"/>
+											(#{mailScheduleBean.siteNm}) #{mailScheduleBean.siteUser}, #{mailScheduleBean.siteTel}
+										</pw:panelGroup>
+									</td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;;border-bottom:1px solid #ddd"><strong>상품코드</strong></td>
+									<td style="padding:15px 20px;font-weight:bold;;border-bottom:1px solid #ddd">#{rngdEventDtlJDBCBean.gdEventD[0].EVENT_CD}</td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;;border-bottom:1px solid #ddd"><strong>여행기간</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd"><strong>[<pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].EV_NIGHT_CNT}"><pw:convertNumber pattern="#,###"/></pw:outputText>박 <pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].EV_DAY_CNT}"><pw:convertNumber pattern="#,###"/></pw:outputText>일]</strong><br />
+										<strong>출발일</strong> #{rngdEventDtlJDBCBean.startDay} #{rngdEventDtlJDBCBean.gdEventD[0].START_WDAY}요일 #{rngdEventDtlJDBCBean.gdEventD[0].START_TIME}
+										<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.gdEventD[0].OP_CD=='OT'}"> #{rngdEventDtlJDBCBean.gdEventD[0].START_PYUN}</pw:panelGroup>  
+										(현지도착 #{rngdEventDtlJDBCBean.gdEventD[0].END_TIME_FR})                  
+										<br />
+										<strong>도착일</strong> #{rngdEventDtlJDBCBean.endDay} #{rngdEventDtlJDBCBean.gdEventD[0].END_WDAY}요일 #{rngdEventDtlJDBCBean.gdEventD[0].END_TIME}
+										<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.gdEventD[0].OP_CD=='OT'}"> #{rngdEventDtlJDBCBean.gdEventD[0].END_PYUN}</pw:panelGroup>
+										(현지출발 #{rngdEventDtlJDBCBean.gdEventD[0].START_TIME_TO})
+									</td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>확정사항</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd">
+										<!-- 확정일정표 디자인 다시 해야함 start-->
+										<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.gdEventD[0].CONF_YN == 'Y' and  rngdEventDtlJDBCBean.gdEventD[0].CONF_AIR == 'Y' and rngdEventDtlJDBCBean.gdEventD[0].CONF_HOTEL == 'Y' and rngdEventDtlJDBCBean.gdEventD[0].CONF_LAND =='Y'}">
+										<pw:graphicImage value="http://www.lottejtb.com/images/common/bullet/event_conf.gif"></pw:graphicImage>
+										</pw:panelGroup>
+										<!-- 확정일정표 디자인 다시 해야함  end-->
+										<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.gdEventD[0].CONF_YN == 'N' or rngdEventDtlJDBCBean.gdEventD[0].CONF_AIR == 'N' or rngdEventDtlJDBCBean.gdEventD[0].CONF_HOTEL == 'N' or rngdEventDtlJDBCBean.gdEventD[0].CONF_LAND =='N'}">
+											<pw:graphicImage value="http://www.lottejtb.com/images/common/bullet/conf_#{rngdEventDtlJDBCBean.gdEventD[0].CONF_YN}.gif" style="margin-right:10px;"> </pw:graphicImage>
+											<pw:graphicImage value="http://www.lottejtb.com/images/common/bullet/conf_air_#{rngdEventDtlJDBCBean.gdEventD[0].CONF_AIR}.gif" style="margin-right:10px;"> </pw:graphicImage>
+											<pw:graphicImage value="http://www.lottejtb.com/images/common/bullet/conf_hotel_#{rngdEventDtlJDBCBean.gdEventD[0].CONF_HOTEL}.gif" style="margin-right:10px;"> </pw:graphicImage>
+											<pw:graphicImage value="http://www.lottejtb.com/images/common/bullet/conf_land_#{rngdEventDtlJDBCBean.gdEventD[0].CONF_LAND}.gif"> </pw:graphicImage>
+										</pw:panelGroup>
+									</td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>이용교통</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd"><img src="http://www.lottejtb.com/images/common/bullet/airline_logo/#{rngdEventDtlJDBCBean.gdEventD[0].TRFF_CD_SHORT}.gif" alt="#{rngdEventDtlJDBCBean.gdEventD[0].CD_NM}" style="margin-right:5px;vertical-align:-3px" />
+									#{rngdEventDtlJDBCBean.gdEventD[0].CD_NM}
+									</td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>방문지역</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd"><pw:outputText value="#{rngdEventDtlJDBCBean.countryFullPathKr}" escape="false"></pw:outputText></td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>상품가격</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd">
+										<table width="100%" border="0" cellspacing="0" cellpadding="0" style="color:#333">
+											<tr>
+												<td bgcolor="#f8f8f8" style="padding:10px 15px;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">구분</td>
+												<td align="center" bgcolor="#f8f8f8" style="padding:10px 0;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">성인(만 12세 이상)</td>
+												<td align="center" bgcolor="#f8f8f8" style="padding:10px 0;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">아동(만 12세미만)</td>
+												<td align="center" bgcolor="#f8f8f8" style="padding:10px 0;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">유아(만 2세미만)</td>
+											</tr>
+											<tr>
+												<td style="padding:10px 15px;border-bottom:1px solid #e0e0e0">상품가</td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ADULT_PRICE}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].CHILD_PRICE}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].BABY_PRICE}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											</tr>
+											<tr>
+												<td style="padding:10px 15px;border-bottom:1px solid #e0e0e0">유류할증료</td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE1}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE2}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE3}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											</tr>
+											<tr>
+												<td style="padding:10px 15px;border-bottom:1px solid #e0e0e0"><strong>총액</strong></td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><strong><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD_oil[0]}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</strong></td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><strong><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD_oil[1]}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</strong></td>
+												<td align="center" style="padding:10px 0;border-bottom:1px solid #e0e0e0"><strong><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD_oil[2]}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</strong></td>
+											</tr>
+										</table>
+										<p style="font-size:11px;color:#999;letter-spacing:0px">* 아동 기준 : #{rngdEventDtlJDBCBean.childDayFrom} ~ #{rngdEventDtlJDBCBean.childDayTo} 출생 (만 12세 미만) / 유아 기준 : #{rngdEventDtlJDBCBean.babyDayFrom} ~ #{rngdEventDtlJDBCBean.babyDayTo} 출생 (만 2세 미만) <br />
+										* 유류할증료는 유가와 환율에 따라 변동될 수 있습니다.</p>
+									</td>
+								</tr>
+								<tr>
+									<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>예약현황</strong></td>
+									<td style="padding:15px 20px;border-bottom:1px solid #ddd"><strong style="color:#cd1d1f">#{rngdEventDtlJDBCBean.rvStatusStr} </strong>
+									<pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].RV_CNT}"><pw:convertNumber pattern="#,###"/> </pw:outputText>/<pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].EV_INWON}"><pw:convertNumber pattern="#,###"/></pw:outputText>명 (최소출발인원 <strong style="color:#cd1d1f"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].MIN_INWON}"><pw:convertNumber pattern="#,###"/></pw:outputText></strong>명)</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030">
+							<div style="position:relative; width:100%; margin:40px 0 0; padding:10px 0 10px">
+								<span style="display:block; position:absolute; top:0; left:0; width:24px; height:3px; background:#7e72dd"></span>
+								<p style="margin:0; padding:0; font-size:21px; font-weight:bold">중요 확인 정보</p>
+							</div>
+							<div style="margin:0; padding:20px; border:1px solid #e5e5e5; border-top:1px solid #303030; font-size:13px">
+								<ul style="margin:0; padding:0">
+									<li style="position:relative; margin-bottom:10px; padding-left:20px; overflow:hidden; background:url(http://www.lottejtb.com/images/img2015/new_re/bul_circle.png) no-repeat left 3px">본 여행상품은 롯데제이티비 [<pw:outputText value="연합상품" rendered="#{'2'==rngdEventDtlJDBCBean.gdEventD[0].GOODS_JOIN_CD}"/><pw:outputText value="단독상품" rendered="#{'1'==rngdEventDtlJDBCBean.gdEventD[0].GOODS_JOIN_CD}"/>]입니다.</li>
+									<li style="position:relative; margin-bottom:10px; padding-left:20px; overflow:hidden; background:url(http://www.lottejtb.com/images/img2015/new_re/bul_circle.png) no-repeat left 3px">
+									최소 출발인원 및 취소수수료 정보<br />
+									최소출발인원 기준과 미 충족 시 여행계약 해제 규정 고지
+									<p style="margin:5px 0; color:#a7a7a7">최소 출발인원 미 충족 시 여행표준약관 제9조에 따라 여행사는 여행출발 7일전까지 여행계약을 일방적으로 해제하고 소비자에게 통보할 수 있습니다.</p>
+									취소수수료의 발생 시점과 부과 기준 정보
+									<p style="margin:5px 0; color:#a7a7a7">본 여행상품은 계약금 지불 시점부터 계약이 체결되며, 계약해제 요청 시 귀책사유에 따라 취소수수료가 부과됩니다.</p>
+									취소수수료 부과기준은 <span style="color:#7b4eb9">국외여행표준약관</span>에 따릅니다. 최소출발인원 기준과 미 충족 시 여행계약 해제 규정 고지
+									<p style="margin:5px 0; color:#a7a7a7">『출발 7일전까지 : 계약금만 환급』  『 출발 전일까지: 여행요금의 30% 배상 』 『 출발 당일 : 여행요금의 50% 배상 』<br />* 특별약관 적용의 경우, 표준약관보다 높은 취소 수수료가 부과될 수 있으니 취소수수료 부과 세부 기분을 반드시 확인하세요.</p>
+									</li>
+									<li style="position:relative; margin-bottom:10px; padding-left:20px; overflow:hidden; background:url(http://www.lottejtb.com/images/img2015/new_re/bul_circle.png) no-repeat left 3px">여행지의 안전정보
+										<pw:outputText value="&lt;a" escape="false" />
+										href="http://www.0404.go.kr/" style="display:inline-block; margin-left:20px; padding:2px 5px 3px; border-radius:2px; font-size:11px; text-decoration:none; color:#fff; background:#969696" target="_blank"
+										<pw:outputText value="&gt;" escape="false"/>
+										해외안전여행 웹사이트
+										<pw:outputText value="&lt;/a  &gt;" escape="false"/>
+										<c:set var="isBreak" value="false" />
+										<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+											<c:if test="${'3005'==list.SCHD_DET_CD}">
+											<c:choose>
+												<c:when test="${list.SCHD_DET_CD_VAL == null}">
+													<c:set var="tempData" value="${list.SCHD_DET_CNTN}" />	
+												</c:when>
+												<c:otherwise>
+													<p><strong style="color:#cd1d1f"><pw:outputText value="${list.SCHD_DET_NM}" escape="false" /></strong><pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" /></p>
+												</c:otherwise>
+											</c:choose>
+											<c:set var="isBreak" value="true" />						
+											</c:if>						
+										</c:forEach>
+										<c:if test="${false==isBreak}">
+											<p><strong>경보없음 여행 경보가 없는 안전한 여행지역입니다.</strong></p>
+										</c:if>
+										<c:if test="${''!=tempData}">
+											<p><pw:outputText value="${tempData}" escape="false" /></p>
+										<c:set var="tempData" value="" />
+										</c:if>
+										<p style="margin:5px 0; color:#a7a7a7">롯데JTB는 고객의 안전한 해외여행을 위하여 방문하는 국가의 여행경보단계(4단계: 여행유의/여행자제/철수권고/
+										여행금지)를 안내하고 있습니다. 외교부‘ 해외안전여행’ 사이트 (
+										<pw:outputText value="&lt;a" escape="false" />
+										href="http://www.0404.go.kr/" style="text-decoration:underline;color:#cd1d1f;" target="_blank"
+										<pw:outputText value="&gt;" escape="false"/>
+										www.0404.go.kr
+										<pw:outputText value="&lt;/a  &gt;" escape="false"/>
+										)에서 상세정보를 확인할 수 있으
+										니, 여행 목적지의 안전 정보를 꼭 확인하여 주시길 바랍니다. 또한, 출국 전 동 사이트의 해외여행등록제 ‘동행’에 
+										가입하시면 안전정보를 수시로 제공받을 수 있습니다</p>
+									</li>
+									<li style="position:relative; margin-bottom:10px; padding-left:20px; overflow:hidden; background:url(http://www.lottejtb.com/images/img2015/new_re/bul_circle.png) no-repeat left 3px">여행보험 영업보증보험 : <span style="margin-right:20px; color:#7b4eb9"><pw:outputText value="가입" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].BIZ_INSU_YN}"/>
+										<pw:outputText value="미가입" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].BIZ_INSU_YN}"/></span>기획여행 보증보험 : <span style="margin-right:20px; color:#7b4eb9"><pw:outputText value="가입" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].PKG_INSU_YN}"/>
+										<pw:outputText value="미가입" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].PKG_INSU_YN}"/></span>쇼핑정보 쇼핑횟수 : <pw:outputText value="#{rngdEventDtlJDBCBean.rnEtCommSchdOpt[0].SHOPCNT}"><pw:convertNumber pattern="#,###"/></pw:outputText>회</li>
+
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030">
+							<div style="position:relative; width:100%; margin:40px 0 0; padding:10px 0 10px">
+								<span style="display:block; position:absolute; top:0; left:0; width:24px; height:3px; background:#7e72dd"></span>
+								<p style="margin:0; padding:0; font-size:21px; font-weight:bold">여행상품특전</p>
+							</div>
+							<div style="border:1px solid #e5e5e5; border-top:1px solid #303030; background:#f9f9f9">								
+								<div style="padding:20px">
+									<ul style="margin:0; padding:0">
+										<li style="position:relative; margin-bottom:10px; overflow:hidden">
+										<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+										<c:if test="${'3004'==list.SCHD_DET_CD}">
+										<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />
+										</c:if>						
+										</c:forEach>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030">
+							<div style="position:relative; width:100%; margin:40px 0 0; padding:10px 0 10px">
+								<span style="display:block; position:absolute; top:0; left:0; width:24px; height:3px; background:#7e72dd"></span>
+								<p style="margin:0; padding:0; font-size:21px; font-weight:bold">포함/불포함 사항</p>
+							</div>
+							<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #e5e5e5; border-top:1px solid #303030; text-align:left; font-size:13px; font-family:Malgun Gothic">
+								<colgroup>
+								<col style="width:50%" />
+								</colgroup>
+									<tbody>
+										<tr>
+										<th style="padding:10px 20px; font-size:16px; background:#f7f7f7">포함사항</th>
+										<th style="padding:10px 20px; border-left:1px solid #e5e5e5; font-size:16px; background:#f7f7f7">불포함사항</th>
+										</tr>
+										<tr>
+											<td style="padding:15px 20px; line-height:1.6">
+												<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+													<c:if test="${'3002'==list.SCHD_DET_CD}">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />
+													</c:if>						
+												</c:forEach>
+											</td>
+											<td style="padding:15px 20px; border-left:1px solid #e5e5e5; line-height:1.6">
+												<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+													<c:if test="${'3003'==list.SCHD_DET_CD}">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />
+													</c:if>						
+												</c:forEach>
+											</td>
+										</tr>
+										<tr>
+											<th colspan="2" style="padding:10px 20px; border-top:1px solid #303030; font-size:16px; background:#f7f7f7">기타경비안내</th>
+										</tr>
+										<tr>
+											<td colspan="2" style="padding:15px 20px; line-height:1.6">
+												<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+													<c:if test="${'3015'==list.SCHD_DET_CD}">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />
+													</c:if>						
+												</c:forEach>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<!-- 일정표 내용 s -->
+						<tr>
+							<td style="padding-top:30px; font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #dcdcdc; font-family:Malgun Gothic; font-size:14px">
+									<colgroup>
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:17%" />
+									</colgroup>
+									<tr>
+										<td><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#fff; background:#7b4eb9">일정표</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">숙박정보</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">관광지 정보</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">선택관광</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">여행전 준비사항</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">중요정보 일괄표시</a></td>
+									</tr>
+								</table>
+
+								<div style="margin-top:30px; padding:20px; border:1px solid #e5e5e5; background:#f9f9f9">									
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+									<c:if test="${'3017'==list.SCHD_DET_CD}">
+									<div style="text-align:center">
+										<img src="${list.IMG_PATH}" alt="미팅장소 안내입니다." />
+									</div>										
+									<div style="padding:20px; text-align:center; font-size:14px; line-height:1.6">
+										<p style="margin:0; padding:0">
+											<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />
+										</p>
+									</div>									
+									</c:if>						
+									</c:forEach>
+								</div>
+								<!-- 서브 일정표 내용 s -->
+								<pw:outputText value="${rngdEventDtlJDBCBean.strScheduleContent}" escape="false" />
+								<!-- 서브 일정표 내용 e --> 
+							</td>
+						</tr>
+						<!-- 일정표 내용 끝 e --> 
+						<!-- 숙박 정보 s-->
+						<tr>
+							<td style='padding-top:50px; font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030'>
+								<table width='100%' border='0' cellspacing='0' cellpadding='0' style='border:1px solid #dcdcdc; font-family:Malgun Gothic; font-size:14px'>
+									<colgroup>
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:17%' />
+									</colgroup>
+									<tr>
+										<td><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>일정표</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#fff; background:#7b4eb9'>숙박정보</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>관광지 정보</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>선택관광</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>여행전 준비사항</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>중요정보 일괄표시</a></td>
+									</tr>
+								</table>
+								<!-- 숙박 내용 s -->
+								<pw:outputText value="${rngdEventDtlJDBCBean.strHotelContent}" escape="false" />
+								<!-- 숙박 내용 e --> 
+							</td>
+						</tr>
+						<!-- //숙박 정보 e-->
+
+						<!-- 관광지 정보  -->
+						<tr>
+							<td style='padding-top:50px; font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030'>
+								<table width='100%' border='0' cellspacing='0' cellpadding='0' style='border:1px solid #dcdcdc; font-family:Malgun Gothic; font-size:14px'>
+									<colgroup>
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:17%' />
+									</colgroup>
+									<tr>
+										<td><a href='#n' style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>일정표</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>숙박정보</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#fff; background:#7b4eb9'>관광지 정보</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>선택관광</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>여행전 준비사항</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>중요정보 일괄표시</a></td>
+									</tr>
+								</table>
+
+								<!-- 관광지 내용 s -->
+								<pw:outputText value="${rngdEventDtlJDBCBean.strAreaContent}" escape="false" />
+								<!-- 관광지 내용 e --> 
+							</td>
+						</tr>
+						<!-- //관광지 정보  -->
+
+						<!-- 선택관광  -->
+						<tr>
+							<td style='padding-top:50px; font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030'>
+								<table width='100%' border='0' cellspacing='0' cellpadding='0' style='border:1px solid #dcdcdc; font-family:Malgun Gothic; font-size:14px'>
+									<colgroup>
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:16%' />
+										<col style='width:17%' />
+									</colgroup>
+									<tr>
+										<td><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>일정표</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>숙박정보</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>관광지 정보</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#fff; background:#7b4eb9'>선택관광</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>여행전 준비사항</a></td>
+										<td style='border-left:1px solid #dcdcdc'><a href="#none" onclick="return false;" style='display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3'>중요정보 일괄표시</a></td>
+									</tr>
+								</table>
+								<!-- 선택관광 내용 s -->
+								<pw:outputText value="${rngdEventDtlJDBCBean.strOptionContent}" escape="false" />
+								<!-- 선택관광 내용 e --> 
+
+							</td>
+						</tr>
+						<!-- //선택관광  -->
+
+						<!-- 여행전 준비사항 s--> 
+						<tr>
+							<td style="padding-top:30px; font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #dcdcdc; font-family:Malgun Gothic; font-size:14px">
+									<colgroup>
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:16%" />
+										<col style="width:17%" />
+									</colgroup>
+									<tr>
+										<td><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">일정표</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">숙박정보</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="##none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">관광지 정보</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="##none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">선택관광</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="##none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#fff; background:#7b4eb9">여행전 준비사항</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="##none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">중요정보 일괄표시</a></td>
+									</tr>
+								</table>
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px">
+								<!-- 유류할증료 -->
+									<tr>
+										<td>
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">유류할증료</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">국토교통부의 '국제선 항공요금과 유류할증료 확대방안' 또는 'IATA의 ROE 인상 발표'에 따라 국외여행 표준약관에 준하여 여행 비용이 예고없이 인상되거나, 또는 인하된 금액으로 반영될 수 있습니다.</td>
+												</tr>
+											</table>
+										</td>
+									</tr>                    
+									<!-- 약관  -->
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">
+														<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type == null  or rngdEventDtlJDBCBean.clause_type == ''  or rngdEventDtlJDBCBean.clause_type=='B' }">
+														표준약관
+														</pw:panelGroup>
+														<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type=='S' }">
+														특별약관
+														</pw:panelGroup>
+														<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type=='D' }">
+														국내약관
+														</pw:panelGroup>                            	
+													</td>
+												</tr>
+												<!-- 표준 약관 -->
+												<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type == null  or rngdEventDtlJDBCBean.clause_type == ''  or rngdEventDtlJDBCBean.clause_type=='B' }">
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+													
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td style="font-size:15px;color:#cd1d1f;font-weight:bold;font-family:Malgun Gothic, Dotum, Verdana">해외여행 이용약관(공정거래위원회 고시)</td>
+															</tr>
+															<tr>
+																<td style="padding:10px 0;color:#666"><strong>제 15조(여행출발 전 계약해제)</strong></td>
+															</tr>
+															<tr>
+																<td style="padding:10px 0;">여행사 또는 여행자는 여행출발전 이 여행계약을 해제할 수 있습니다.<br />
+																이 경우 발생하는 손해액은 ‘소비자피해보상규정’(공정거래위원회 고시)에 따라 배상합니다.
+																</td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px">1. 여행자의 여행계약 해제 요청이 있는 경우(여행자의 취소 요청시)</td>
+															</tr>
+															<tr>
+																<td style="padding:5px 20px;line-height:180%">- 여행 개시 30일전까지(~30) 통보시: 계약금 환급<br />
+																	- 여행 개시 20일전까지(29~20) 통보시: 여행요금의 10% 배상<br />
+																	- 여행 개시 10일전까지(19~10) 통보시: 여행요금의 15% 배상<br />
+																	- 여행 개시 8일전까지(9~8) 통보시: 여행요금의 20% 배상<br />
+																	- 여행 개시 1일전까지(7~1)통보시: 여행요금의 30% 배상<br />
+																	- 여행 당일 통보시 - 여행요금의 50% 배상
+																</td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px">2. 여행사의 귀책사유로 취소 통보하는 경우</td>
+															</tr>
+															<tr>
+																<td style="padding:5px 20px;line-height:180%">- 여행 개시 30일전까지(~30) 통보시: 계약금 환급<br />
+																- 여행 개시 20일전까지(29~20) 통보시: 여행요금의 10% 배상<br />
+																- 여행 개시 10일전까지(19~10) 통보시: 여행요금의 15% 배상<br />
+																- 여행 개시 8일전까지(9~8) 통보시: 여행요금의 20% 배상<br />
+																- 여행 개시 1일전까지(7~1)통보시: 여행요금의 30% 배상<br />
+																- 여행 당일 통보시 - 여행요금의 50% 배상
+																</td>
+															</tr>
+															<tr>
+																<td style="padding:10px 0;">단, 최저행사인원이 충족되지 않아 불가피하게 기획여행을 실시할 수 없는 경우에는 표준약관 제 9조(최저행사인원 미 충족시 계약해제) 조항에 의거하여 당사가 여행자에게 배상한다.</td>
+															</tr>
+															<tr>
+																<td style="padding:10px 0;color:#666"><strong>제 9조(최저행사인원 미 충족시 계약해제)</strong></td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px">1. 여행사는 최저행사인원이 충족되지 아니하여 여행계약을 해제하는 경우 여행출발 7일전까지 여행자에게 통지하여야 합니다.</td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px">2. 여행사가 여행참가자 수 미달로 전항의 기일내 통지를 하지 아니하고 계약을 해제하는 경우 이미 지급받은 계약금 환급 외에 다음 각 목의 1의 금액을 여행자에게 배상하여야 합니다.</td>
+															</tr>
+															<tr>
+																<td style="padding:5px 20px;line-height:180%">- 여행출발 1일전까지 통지시 : 여행요금의 30%<br />
+																- 여행출발 당일 통지시 : 여행요금의 50%
+																</td>
+															</tr>
+															
+															<tr>
+																<td style="padding-left:10px;line-height:180%">※ 주의사항<br />
+																- 전세기 및 일부 상품은 공정위에서 지정한 여행업 표준약관 제 5조(특약), 제 20조(기타사항)에 의거하여 별도의 보상규정이 적용되오니 상품 구매 시 유의하시기 바랍니다.<br/>
+																- 약관의 전체 내용은 롯데제이티비 홈페이지에서 확인 가능합니다.(<a href="http://www.lottejtb.com/xhtml/lottejtb/lottejtb_over_provision.html" target="_blank">http://www.lottejtb.com/xhtml/lottejtb/lottejtb_over_provision.html</a>)
+																</td>
+															</tr>
+															<tr>
+																<td>&nbsp;</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+												</pw:panelGroup>
+												<!-- 특별약관  -->
+												<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type=='S' }">
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td>
+																	<pw:outputText value="#{rngdEventDtlJDBCBean.clause_desc}" escape="false" />
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+												</pw:panelGroup>    
+												<!-- 국내 약관  -->
+												<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type=='D' }">
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td style="font-size:15px;color:#cd1d1f;font-weight:bold;font-family:Malgun Gothic, Dotum, Verdana">표준약관 규정안내</td>
+															</tr>
+															<tr>
+																<td style="padding:10px 0;color:#666"><strong>여행 취소시 국내여행표준약관 제 13조 소비자분쟁해결규정에 따라 아래의 비율로 취소료가 부과됩니다.<br />(단, 당사의 귀책사유로 여행출발 취소 경우에도 동일한 규정이 적용됩니다.)</strong></td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px;line-height:180%">- 여행개시 5일전까지 통보시 : 계약금 환급<br />- 여행개시 2일전까지 통보시: 상품가격의 10% 배상<br />- 여행개시 1일전까지 통보시: 상품가격의 20% 배상<br />- 여행당일 통보시: 상품가격의 30% 배상</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+												</pw:panelGroup> 
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td style="padding-left:10px;line-height:180%">※ 취소 및 변경 주의사항</td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px;line-height:180%">- 취소 및 변경은 업무시간(평일 09:00 ~ 17:30)내에만 처리 가능합니다.</td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px;line-height:180%">- 토요일, 일요일, 공휴일에는 취소 및 변경이 불가능합니다.</td>
+															</tr>
+															<tr>
+																<td style="padding-left:10px;line-height:180%">- 취소가 아닌 일정 변경, 이름 변경시에도 취소로 처리되오니 참고 바랍니다.</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>    
+									<!-- 여권비자 -->
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+									<c:if test="${'3014'==list.SCHD_DET_CD}">               
+									<tr>
+										<td>
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">여권/비자</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />                         	
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+									</c:forEach>
+									<!-- 필수사항 -->
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+									<c:if test="${'3007'==list.SCHD_DET_CD}">				                
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">필수사항</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />                           
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+									</c:forEach>           
+										<!-- 입금계좌번호 -->
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+									<c:if test="${'3011'==list.SCHD_DET_CD}">             
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">입금계좌번호</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />                    
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+									</c:forEach>               
+									<!-- 기타사항 -->
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+									<c:if test="${'3012'==list.SCHD_DET_CD}">           
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">기타사항</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />
+													</td>										
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+									</c:forEach>
+									<!--동물축산물식물 검역안내  -->	
+									<c:if test="${'OT'==rngdEventDtlJDBCBean.gdEventD[0].OP_CD}">				                    
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">동물축산물식물 검역안내</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td style="line-height:160%">대부분의 축산물(소세지, 육포 등) 및 생과실 열매채소 등은 휴대 반입할 수 없고, 휴대 반입이 가능한 축산물과 식물류를 반입하는 여행객도 농림축산검역본부에 신고하는 검역을 받아야 합니다. 또한 축산물	과 식물류룰 불법 반입하는 경우에는 500만원 이하의 과태료가 부과됩니다.<br />
+																해외 축산농장 또는 가축시장을 방문한 여행객과 가축전염병 발생 국가를 방문한 축산관계자는 농림축산검역본부에 신고하여 소독을 받아야 합니다.<br />
+																<strong>문의: 농림축산검역본부 인천공항지역본부 (동,축산물 032-740-2660 / 식물 032-740-2077)</strong></td>
+															</tr>
+															<tr>
+																<td style="font-size:15px;color:#cd1d1f;font-weight:bold;font-family:Malgun Gothic, Dotum, Verdana;padding:20px 0 0 0">환률 변동으로 인한 여행요금의 변경 안내</td>
+															</tr>
+															<tr>
+																<td style="line-height:160%;padding:5px 0">당사 여행약관에 근거 여행요금의 변경 규정은 다음과 같습니다.</td>
+															</tr>
+															<tr>
+																<td style="line-height:160%;padding-bottom:5px">① 국외여행을 실시함에 있어서 이용운송 숙박기관에 지급하여야 할 요금이 계약체결시보다 5%이상 증감하거나 여행요금에 적용된 외화환율이 계약체결시보다 2% 이상 증감한 경우 당사 또는 여행자는 그 증감된 금액 범위 내에서 여행요금의 증감을 상대방에게 청구할 수 있습니다.</td>
+															</tr>
+															<tr>
+																<td style="line-height:160%;padding-bottom:5px">② 당사는 제1항의 규정에 따라 여행요금을 증액하였을 때에는 여행출발일 15일전에 여행자에게 통지하여야 합니다.</td>
+															</tr>
+															<tr>
+																<td style="line-height:160%;padding-bottom:5px">휴일 및 평일 서울사무소 업무종료 (PM 6:30) 후 취소는 출발일 기준에서 제외.
+																예) 토/일/월요일 출발은 금요일 업무종료 전까지 취소하셔야 하며 업무종료후 취소는 당일 취소로 적용됩니다. (공휴일	포함) 이 점 고객님께서 유의 하시기 바랍니다.</td>
+															</tr>
+															<tr>
+																<td style="line-height:160%;padding-bottom:5px">공정거래위원회의 "국외여행 표준약관" 제 9조<br />
+																	여행업자는 최소출발인원 기준이 충족되지 않았을 경우, 여행출발 일주일 전까지 여행계약을 해제하고 소비자에게 해당 사실을 통보할 수 있습니다. 본 여	행상품의 최소 출발인원 기준은 15명이며, 미충족 시 여행표준약관 제 9조에 따라 여행사는 여행출발 7일전까지 여행계약을 일방적으로 해제하고 소비자에게 통보할 수 있습니다.</td>
+															</tr>
+															<tr>
+																<td style="line-height:160%;padding-bottom:5px"><strong>고객님께서는 예약시 위의 약관을 참조하여 주시고 상품 해약 시 불이익이 없으시길 바랍니다.</strong></td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+									<!-- 예약시 유의사항 -->
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+									<c:if test="${'3008'==list.SCHD_DET_CD}"> 
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">예약시 주의사항</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">
+														<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />                 
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+									</c:forEach>
+									<!-- 쇼핑정보 s-->
+									<tr>
+										<td style='padding-top:15px'>
+											<table width='100%' border='0' cellspacing='0' cellpadding='0' style='border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc'>
+												<tr>
+													<td height='57' valign='middle' style='padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;'>쇼핑정보</td>
+												</tr>
+												<tr>
+													<td style='border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;'>
+														<table width='100%' border='0' cellspacing='0' cellpadding='0'>
+															<tr>
+																<td>
+																	<!-- 쇼핑 서브 정보 s-->
+																	<pw:outputText value="${rngdEventDtlJDBCBean.strShopContent}" escape="false" />
+																	<!-- 쇼핑 서브 정보 e-->
+																</td>
+															</tr>
+															<tr>
+																<td style='line-height:160%'>
+																	<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+																		<c:if test="${'3010'==list.SCHD_DET_CD}">
+																			<c:if test="${'0'==list.SEQ}">
+																			<p class="text_ti"><pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" /></p>
+																			</c:if>
+																		</c:if>
+																	</c:forEach>
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<!-- 쇼핑정보 e-->
+									<!-- 해외여행자보험 -->	
+									<c:if test="${'OT'==rngdEventDtlJDBCBean.gdEventD[0].OP_CD}">                    
+									<tr>
+										<td style="padding-top:15px">
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7c4eba;border-left:1px solid #ccc;border-bottom:1px solid #ccc;border-right:1px solid #ccc">
+												<tr>
+													<td height="57" valign="middle" style="padding-left:10px;color:#444;font-size:20px;font-family:Malgun Gothic, Dotum, Verdana;background:#f4f4f4;border-bottom:1px solid #ccc;text-align:left;">해외여행자보험</td>
+												</tr>
+												<tr>
+													<td style="border-top:2px solid #f5f5f5;padding:20px 10px;text-align:left;">												
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td style="line-height:160%">롯데제이티비의 해외여행보험은 롯데손해보험입니다. 해외여행자보험의 안내 내용은 롯데손해보험의 약관 규정에 근거합니다.<br />2009년 7월 금융위원회의 실손의료보험에 본인부담금제도가 도입되어 2010년 5월 1일 이후 출발부터 적용 됩니다.</td>
+															</tr>
+															<tr>
+																<td>
+																	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																		<tr>
+																			<td style="padding:15px 0">
+																				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																					<tr>
+																						<td style="border-top:2px solid #7b4eb9;background:#f4f4f4;padding:10px;text-align:center;font-size:12px;font-weight:bold;color:#444;border-left:1px solid #ddd;border-bottom:1px solid #ddd">플랜적용나이</td>
+																						<td style="border-top:2px solid #7b4eb9;background:#f4f4f4;padding:10px;text-align:center;font-size:12px;font-weight:bold;color:#444;border-left:1px solid #ddd;border-bottom:1px solid #ddd">(만)0-14세</td>
+																						<td style="border-top:2px solid #7b4eb9;background:#f4f4f4;padding:10px;text-align:center;font-size:12px;font-weight:bold;color:#444;border-left:1px solid #ddd;border-bottom:1px solid #ddd">(만)15-69세</td>
+																						<td style="border-top:2px solid #7b4eb9;background:#f4f4f4;padding:10px;text-align:center;font-size:12px;font-weight:bold;color:#444;border-left:1px solid #ddd;border-bottom:1px solid #ddd">(만)70-79세</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-top:2px solid #e5e5e5;width:46%">해외여행중상해사망후유장해</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-top:2px solid #e5e5e5;text-align:left;width:18%">-</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-top:2px solid #e5e5e5;text-align:left;width:18%">1억원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-top:2px solid #e5e5e5;text-align:left;width:18%">1억원</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">해외여행중상해후유장해</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">1억원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">-</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">-</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">상병/질병의료실비(해외)</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">1,000만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">1,000만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">1,000만원</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">상병/질병의료실비(국내)</td>
+																						<td colspan="3" style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">입원1,000만원 / 외래20만원 / 처방조제10만원</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">해외여행중질병사망및질병80%이상고도후유장해</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">-</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">1천5백만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">-</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">해외여행중배상책임</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">1,000만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">1,000만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">1,000만원</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">해외여행중특별비용</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">500만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">500만원</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">500만원</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">해외여행중휴대품손해</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">총50만원<br />(점별 20만원 한도)</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">총50만원<br />(점별 20만원 한도)</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">총50만원<br />(점별 20만원 한도)</td>
+																					</tr>
+																					<tr>
+																						<td style="padding:10px;text-align:left;color:#444;font-weight:bold;border-bottom:1px solid #ddd;border-right:1px solid #ddd;width:46%">해외여행중항공기납치일당(1-20일)</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">7만원 / 1일</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:left;width:18%">7만원 / 1일</td>
+																						<td style="padding:10px;color:#444;border-bottom:1px solid #ddd;text-align:left;width:18%">7만원 / 1일</td>
+																					</tr>
+																				</table>
+																			</td>
+																		</tr>
+																		<tr>
+																			<td style="padding-top:5px;line-height:160%">의료비 청구인 경우 상기 금융위원회의 개선안에 근거하여 [본인 부담금]을 제외한 치료실비만 보장됩니다.<br />
+																			보험금의 청구 기간은 여행종료일로부터 3년 내로 접수하여야 합니다.<br />
+																			15세 미만자, 심실상실자 또는 심신 박약자의 사망을 보험사고로 한 계약은 무효로 합니다. (상법 732조)<br />
+																			본 롯데손해보험 플랜은 2016년 7월 11일 가입분부터 적용됩니다.<br />
+																			연합 및 일부 상품의 경우 여행자 보험의 보험사 및 보상한도가 다를 수 있사오니 예약 시 확인하시기 바랍니다.<br />
+																			해외 여행 중 상해, 질병 의료비 청구시에는 해외의료기관의 서류가 첨부되어야 합니다.</td>
+																		</tr>
+																	</table>
+																</td>
+															</tr>
+															<tr>
+																<td style="font-size:15px;color:#cd1d1f;font-weight:bold;font-family:Malgun Gothic, Dotum, Verdana;padding:30px 0 0 0">롯데손해보험 해외여행보험 가입자를 위한 24시간 우리말 안내 서비스</td>
+															</tr>
+															<tr>
+																<td style="padding:10px 0"><strong>긴급도움전화:822-3140-1722</strong></td>
+															</tr>
+															<tr>
+																<td style="line-height:160%">해외 여행 중 긴급 상황 시 의료지원, 여행안내, 사고처리안내 서비스를 제공받을 수 있습니다. 해외현지 콜렉트콜(수신자부담) 서비스번호로 전화를 걸어, 교환원에게 수신자부담으로 전화연결을 요청하시면 무료로 이용할 수 있습니다.</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									</c:if>
+								</table>
+							</td>
+						</tr>
+						<!-- 여행전 준비사항 e --> 
+						<!--중요정보일괄표시 s-->
+						<tr>
+							<td style="padding-top:30px; font-family:Malgun Gothic; font-size:13px; line-height:1.4; color:#303030">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #dcdcdc; font-family:Malgun Gothic; font-size:14px">
+									<colgroup>
+									<col style="width:16%" />
+									<col style="width:16%" />
+									<col style="width:16%" />
+									<col style="width:16%" />
+									<col style="width:16%" />
+									<col style="width:17%" />
+									</colgroup>
+									<tr>
+										<td><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">일정표</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">숙박정보</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">관광지 정보</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">선택관광</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#303030; background:#f0f1f3">여행전 준비사항</a></td>
+										<td style="border-left:1px solid #dcdcdc"><a href="#none" onclick="return false;" style="display:block; width:100%; padding:10px 0; text-align:center; text-decoration:none; font-weight:bold; fot-size:14px; color:#fff; background:#7b4eb9">중요정보 일괄표시</a></td>
+									</tr>
+								</table>
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #7b4eb9; text-align:left; color:#303030">
+									<colgroup>
+									<col style="width:150px" />
+									<col style="width:300px" />
+									<col style="width:150px" />
+									<col />
+									</colgroup>
+									<tbody>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; background:#f4f4f4">상품</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6" colspan="3"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].DISP_NM} "/></td>
+										</tr>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; background:#f4f4f4">여행기간</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6">
+												출발 :
+												#{rngdEventDtlJDBCBean.startDay}
+												#{rngdEventDtlJDBCBean.gdEventD[0].START_WDAY}요일
+												#{rngdEventDtlJDBCBean.gdEventD[0].START_TIME}
+												~<br/>
+												도착 :
+												#{rngdEventDtlJDBCBean.endDay}
+												#{rngdEventDtlJDBCBean.gdEventD[0].END_WDAY}요일
+												#{rngdEventDtlJDBCBean.gdEventD[0].END_TIME}
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; background:#f4f4f4">상품종류</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6">
+												<pw:outputText value="연합상품" rendered="#{'2'==rngdEventDtlJDBCBean.gdEventD[0].GOODS_JOIN_CD}"/>
+												<pw:outputText value="단독상품" rendered="#{'1'==rngdEventDtlJDBCBean.gdEventD[0].GOODS_JOIN_CD}"/>
+											</td>
+										</tr>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; background:#f4f4f4">영업보증보험</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6">
+												<pw:panelGroup rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].BIZ_INSU_YN}">
+												가입
+												</pw:panelGroup>
+												<pw:panelGroup rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].BIZ_INSU_YN}">
+												미가입
+												</pw:panelGroup>
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; background:#f4f4f4">기획여행 보증보험</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6">
+												<pw:panelGroup rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].PKG_INSU_YN}">
+												가입
+												</pw:panelGroup>
+												<pw:panelGroup rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].PKG_INSU_YN}">
+												미가입
+												</pw:panelGroup>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div style="margin-top:10px; padding:20px 10px; border:1px solid #ccc; background:#f9f9f9">
+									<strong style="display:block; padding-left:15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center">여행경비 총액</strong>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; text-align:center">
+										<colgroup>
+										<col style="width:130px" />
+										</colgroup>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; text-align:left; background:#f4f4f4" rowspan="4">상품가격</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:left"></td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center">성인(만 12세 이상)</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center">아동(만 12세 미만)</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center">유아(만 2세 미만)</td>
+										</tr>
+										<tr>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:left">기본 상품가격</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:center"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ADULT_PRICE}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:center"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].CHILD_PRICE}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:center"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].BABY_PRICE}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+										</tr>
+										<tr>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:left">유류할증료</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:center"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE1}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:center"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE2}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:center"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE3}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+										</tr>
+										<tr>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:left; color:#cd1d1f">소계</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center; color:#cd1d1f"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD_oil[0]}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center; color:#cd1d1f"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD_oil[1]}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center; color:#cd1d1f"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD_oil[2]}"><pw:convertNumber pattern="#,###"/></pw:outputText>원</td>
+										</tr>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; text-align:left; background:#f4f4f4" rowspan="2">현지 필수 경비</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:left">가이드/기사경비</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center">#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE_TITLE1}</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center">#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE_TITLE2}</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center">#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE_TITLE3}</td>
+										</tr>
+										<tr>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:left; color:#cd1d1f">소계</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center; color:#cd1d1f">#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE_TITLE1}</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center; color:#cd1d1f">#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE_TITLE2}</td>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; font-weight:bold; text-align:center; color:#cd1d1f">#{rngdEventDtlJDBCBean.gdEventD[0].ETC_PRICE_TITLE3}</td>
+										</tr>
+									</table>
+									<p style="margin:5px 0 0 5px; font-size:11px">- 유류할증료는 환율에 따라 요금이 변동될 수 있습니다.</p>
+
+									<strong style="display:block; margin-top:20px; padding-left:15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center">최소출발인원 및 취소수수료 정보</strong>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; color:#303030">
+										<colgroup>
+										<col style="width:130px" />
+										<col style="width:130px" />
+										<col style="width:180px" />
+										</colgroup>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; text-align:left; background:#f4f4f4">최소출발인원 기준</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left"><pw:outputText value="#{rngdEventDtlJDBCBean.gdEventD[0].MIN_INWON}"><pw:convertNumber pattern="#,###"/></pw:outputText> 명</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4">취소수수료 부과 기준</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+
+											<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type == null  or rngdEventDtlJDBCBean.clause_type == ''  or rngdEventDtlJDBCBean.clause_type=='B' }">
+											표준 약관 적용
+											</pw:panelGroup>
+											<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type=='S' }">
+											특별 약관 적용
+											</pw:panelGroup>
+											<pw:panelGroup rendered="#{rngdEventDtlJDBCBean.clause_type=='D' }">
+											국내 약관 적용
+											</pw:panelGroup>          
+
+											</td>
+										</tr>
+									</table>
+									<ul style="margin:0; padding:10px; font-size:11px">
+										<li style="list-style-type:none; padding-left:10px; text-indent:-10px">- 최소출발인원 미충족시 여행약관에 따라 여행출발 7일전까지 여행사는 여행계약을 일방적으로 해제하고 여행자에게 통보할 수 있습니다.</li>
+										<li style="list-style-type:none; padding-left:10px; text-indent:-10px">- 취소수수료는 계약금 입금일 부터 적용됩니다. 취소 수수료 부과 세부 기준을 반드시 확인하세요.</li>
+										<li style="list-style-type:none; padding-left:10px; text-indent:-10px">- 특별약관 적용의 경우, 표준약관보다 높은 취소수수료가 부과될 수 있습니다.</li>
+									</ul>
+									<strong style="display:block; margin-top:20px; padding-left:15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center">주요 확정/ 미정정보</strong>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; color:#303030">
+										<colgroup>
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										<col style="width:12.5%" />
+										</colgroup>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; text-align:left; background:#f4f4f4">출발</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+												<pw:outputText value="미정" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].CONF_YN}"/>
+												<pw:outputText value="확정" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].CONF_YN}"/>
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4">여행일정</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+												<pw:outputText value="미정" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].CONF_LAND}"/>
+												<pw:outputText value="확정" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].CONF_LAND}"/>
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4">상품가격</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">확정</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4">항공</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+												<pw:outputText value="미정" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].CONF_AIR}"/>
+												<pw:outputText value="확정" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].CONF_AIR}"/>
+											</td>
+										</tr>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; text-align:left; background:#f4f4f4">숙박</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+												<pw:outputText value="미정" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].CONF_HOTEL}"/>
+												<pw:outputText value="확정" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].CONF_HOTEL}"/>
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4">가이드</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+												<pw:outputText value="없음" rendered="#{'N'==rngdEventDtlJDBCBean.gdEventD[0].GUIDE_YN}"/>
+												<pw:outputText value="있음" rendered="#{'Y'==rngdEventDtlJDBCBean.gdEventD[0].GUIDE_YN or ''==rngdEventDtlJDBCBean.gdEventD[0].GUIDE_YN}"/>
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4">인솔자</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+												<pw:outputText value="동반" rendered="#{'0'!=rngdEventDtlJDBCBean.gdEventD[0].TC_CNT}"/>
+												<pw:outputText value="미동반" rendered="#{'0'==rngdEventDtlJDBCBean.gdEventD[0].TC_CNT}"/>
+											</td>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left; background:#f4f4f4"></th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left"></td>
+										</tr>
+									</table>
+
+									<strong style="display:block; margin-top:20px; padding-left:15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center">쇼핑정보</strong>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; color:#303030">
+										<colgroup>
+										<col style="width:50%" />
+										</colgroup>
+										<tr>
+											<th style="padding:10px; border-bottom:1px solid #e6e6e6; text-align:left; background:#f4f4f4">쇼핑횟수</th>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left"><pw:outputText value="#{rngdEventDtlJDBCBean.rnEtCommSchdOpt[0].SHOPCNT}"><pw:convertNumber pattern="#,###"/></pw:outputText> 회</td>
+										</tr>
+									</table>
+									<p style="margin:5px 0 0 5px; font-size:11px">- 쇼핑 품목, 장소, 소요시간, 환불여부 등 세부항목은 상세페이지에서 반드시 확인하세요.</p>
+
+									<strong style="display:block; margin-top:20px; padding:4px 0 3px 15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center; position:relative; overflow:hidden">여행지 안전정보
+									
+									
+									
+									<pw:outputText value="&lt;a" escape="false" />
+									href="http://www.0404.go.kr/" style="position:absolute; bottom:0; right:0" target="_blank"
+
+									<pw:outputText value="&gt;" escape="false"/>
+									<img src="http://www.lottejtb.com/images/img2015/content/btn_website01.gif" alt="해외안전여행 웹사이트" style="display:block" />
+									<pw:outputText value="&lt;/a  &gt;" escape="false"/>
+									</strong>
+									
+									
+									
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; color:#303030">
+										
+									<c:set var="isBreak" value="false" />
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdOpt}" varStatus="status">
+										<c:if test="${'3005'==list.SCHD_DET_CD}">
+											<c:choose>
+											<c:when test="${list.SCHD_DET_CD_VAL == null}">
+												<c:set var="tempData" value="${list.SCHD_DET_CNTN}" />	
+											</c:when>
+											<c:otherwise>								
+												<tr>
+													<td style="padding:10px; border-bottom:1px solid #e6e6e6">
+													<strong style="margin-right:10px; padding:3px 5px 2px; font-weight:normal; color:#fff; background:#0717e2"><pw:outputText value="${list.SCHD_DET_NM}" escape="false" /></strong><pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" /></td>		
+												</tr>
+											</c:otherwise>
+											</c:choose>
+											<c:set var="isBreak" value="true" />						
+										</c:if>						
+									 </c:forEach>
+
+									<c:if test="${false==isBreak}">	
+										<tr>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6">
+											<strong style="margin-right:10px; padding:3px 5px 2px; font-weight:normal; color:#fff; background:#0717e2">경보없음</strong>여행 경보가 없는 안전한 여행지역입니다.</td>	
+										</tr>
+									</c:if>
+														
+									<c:if test="${''!=tempData}">
+										<c:if test="${''!=tempData}">
+										<tr>
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6"><pw:outputText value="${tempData}" escape="false" /><c:set var="tempData" value="" /></td>
+										</tr>
+										</c:if>						
+									</c:if>
+
+									</table>
+
+									<strong style="display:block; margin-top:20px; padding-left:15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center">해외여행자등록제 동행</strong>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; color:#303030">
+										
+										<tr>
+										
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+											해외여행자 인터넷 등록제 '동행' 에 가입시, <br />
+											이메일을 통해 국가별 안전정보와 수시로 업데이트되는 안전공지를 받아볼 수 있습니다.  <br />
+											또한, 해외에서 사건사고 발생시, '동행'에 남겨진 연락처로 정부가 신속하게 연락을 취할 수 있습니다. <br /><br />
+
+											●'동행' 이용방법 <br />
+											-해외여행자가 해외안전여행홈페이지에 신상정보·국내비상연락처·현지연락처·일정 등을 등록 <br />
+											-등록된 여행자에게 방문지의 안전정보를 메일로 발송하는 맞춤형 해외여행안전정보제공 <br />
+											-등록된 여행자가 사건·사고에 처했을 때 비상연락처·소재지 등 파악을 용이하게 하여 보다 효율적 영사 조력 제공 가능 <br /> <br />
+
+											●인터넷 등록시 제공받을 수 있는 세 가지 이점<br />
+											1.인터넷등록과 동시에 목적지의 안전정보를 이메일을 통해 받아볼 수 있습니다.<br />
+											이와 함께 수시로 업데이트되는 목적지의 치안상황이나 자연재해 가능성 등의 안전공지 역시 이메일을 통해 확인할 수 있습니다.<br />
+											2.해외에서 대규모 재난· 재해가 발생하여 우리 여행객의 안전을 확인해야하는 경우,<br />
+											미리 등록한 여행정보와 현지 연락처를 바탕으로 소재파악을 할 수 있습니다.<br />
+											3.해외 여행 중 불의의 사고를 당하여 가족에게 사고사실을 알려야 하는 경우,<br />
+											재외공관(대사관)에서 미리 등록한 비상연락처를 바탕으로 신속하게 연락을 취할 수 있습니다.<br /><br />
+
+											●'동행' 회원가입<br />
+											<a href="http://www.0404.go.kr">www.0404.go.kr</a> 접속 -> 동행서비스 -> 동행가입<br />
+											</td>
+										</tr>
+									</table>
+
+									<c:forEach var="list" items="${rngdEventDtlJDBCBean.rnEtCommSchdDTO}" varStatus="status">
+									<c:if test="${'3016'==list.SCHD_DET_CD}">
+									
+									<strong style="display:block; margin-top:20px; padding-left:15px; font-size:14px; font-weight:bold; color:#303030; background:url(http://www.lottejtb.com/images/img2015/common/bul01.gif) no-repeat left center">긴급연락처</strong>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-top:2px solid #aaa; color:#303030">										
+										<tr>
+										
+											<td style="padding:10px; border-bottom:1px solid #e6e6e6; border-left:1px solid #e6e6e6; text-align:left">
+											<pw:outputText value="${list.SCHD_DET_CNTN}" escape="false" />									
+											</td>
+										</tr>
+									</table>
+									</c:if>
+									</c:forEach>
+
+								</div>
+							</td>
+						</tr>
+						<!--중요정보일괄표시 e-->
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:2px solid #7b4eb9;border-bottom:1px solid #aaa;margin-top: 0px;text-align:left">
+						<tbody>
+							<tr>
+								<td width="119" style="background:#f4f4f4;padding:15px 20px;color:#444;border-right:1px solid #ddd;border-bottom:1px solid #ddd;"><strong>예약 및 상담문의</strong></td>
+								<td style="font-size:15px;color:#cd1d1f;font-weight:bold; padding:15px 20px;border-bottom:1px solid #ddd">해외 1577-6511 / 국내 1577-6111</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" height="135"><img src="http://www.lottejtb.com/images/img2015/mail/footer03.gif" alt="" border="0" /></td>
+			</tr>
+		</table>
+<!--TRACKING-->
+</body>
+</html>
+

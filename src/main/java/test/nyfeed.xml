@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<soap12:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
+xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap12='http://www.w3.org/2003/05/soap-envelope'>
+  <soap12:Header>
+    <BaseInfo xmlns='http://webservice.bico.jp/'>
+      <SiteCode></SiteCode>
+      <AgentId>jujutour39</AgentId>
+      <LicenseKey>110825jujutour391020</LicenseKey>
+    </BaseInfo>
+  </soap12:Header>
+  <soap12:Body>
+	<GetSearchHotelList xmlns='http://webservice.bico.jp/'>
+		<_xmldoc>
+			<RequestObject  xmlns=''>
+				<RequestDetails>
+					<SearchHotelList>
+					<Language>en</Language>
+						<Rooms>
+							<Room Code='SGL' Count='' />
+							<Room Code='' Count='' />
+							<Room Code='' Count='' />
+							<Room Code='' Count='' />
+						</Rooms>
+						<CheckInDate></CheckInDate>
+						<Duration></Duration>
+						<HotelName></HotelName>
+						<Class></Class>
+						<Country>JP</Country>
+						<City>TYO</City>
+						<Area></Area>
+					</SearchHotelList>
+				</RequestDetails>
+			</RequestObject>
+		</_xmldoc>
+	</GetSearchHotelList>
+  </soap12:Body>
+</soap12:Envelope>

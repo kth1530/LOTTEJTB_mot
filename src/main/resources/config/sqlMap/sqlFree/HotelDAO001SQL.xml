@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="HotelDAO">
+
+  <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+  <typeAlias alias="RsvHtlInfoVO" type="com.lottejtb.front.hotel.service.RsvHtlInfoVO" />
+  <typeAlias alias="RsvHtlTravlerVO" type="com.lottejtb.front.hotel.service.RsvHtlTravlerVO" />
+  <typeAlias alias="ReqHotelReserveCancelVO" type="com.lottejtb.front.hotel.service.ReqHotelReserveCancelVO" />
+  
+  <typeAlias alias="PromotionHtListVO" type="com.lottejtb.prom.service.PromotionHtListVO" />
+  <typeAlias alias="hotelPaymentVO" type="com.lottejtb.front.hotel.service.HotelPaymentVO"/>
+  <typeAlias alias="HotelLotteVO" type="com.lottejtb.front.hotel.service.HotelLotteVO"/> 
+  <typeAlias alias="EmsMailSendVO" type="com.lottejtb.goods.service.EmsMailSendVO"/>
+   
+  <!-- 예약내역 조회 -->
+  <select id="HotelDAO.selectRsvList" parameterClass="egovMap" resultClass="egovMap">
+		SELECT ROW_NUMBER() OVER (ORDER BY hrm.REGDT ASC) AS ROW_NUMBER,
+           hrm.FIT_RSV_NO,
+           TO_CHAR(hrm.REGDT, 'YYYY-MM-DD') AS RSV_DT,
+           hrd.HOTELNM AS HOTEL_NM,
+           hrm.SVRNO AS SVR_NO,
+           hrm.GUBUN AS RSV_TYPE
+    FROM API_RESVR_MST hrm,
+         API_RESVR_DETAIL hrd
+    WHERE hrm.SVRNO = hrd.SVRNO
+    AND hrm.GUBUN = #rsvType#
+    AND hrm.FIT_RSV_NO = #fitRsvNo#
+  </select>
+  
+  
+  <!-- 환율정보 -->
+  <select id="HotelDAO.selectDestiCurrency" resultClass="float">
+		SELECT NVL(FN_GET_KRW(UPPER(#currency#), 1), 1) 
+		FROM DUAL
+		
+  </select>
+	
+  <!-- 마이투어  예약상세 호텔 정보 -->
+  <select id="HotelDAO.selectRsvHtlInfo" parameterClass="RsvHtlInfoVO" resultClass="RsvHtlInfoVO">
+	 		 SELECT
+				        HRM.HTL_RSV_SEQNO					AS rsvSeqNo,
+				        NVL(HRM.HOTEL_NM_KR,HMM.HTL_NM_KR)  AS htlName ,
+					  	NVL(HRM.HOTEL_NM_EN,HMM.HTL_NM_EN)  AS htlEnName,
+					  	HRM.RN_CNT 							AS rnCnt,
+						HRM.CHECKIN_DT 						AS checkIn,
+						HRM.CHECKOUT_DT 					AS checkOut,
+						HRM.ADT_QTY 						AS adtCnt ,		
+						HRM.CHILD_QTY 						AS chdCnt ,
+						NVL(HRM.SALE_AMT, '') 				AS saleAmt,
+						NVL(HRM.SALE_JTB_AMT, '') 			AS saleJtbAmt,
+						HRM.TAX_SRVFEE_AMT					AS taxAmt,
+						HRS.ROOMTY_NM 						AS roomtyNm ,
+						HRM.CANCEL_DL 						AS cancelDL,
+						HRM.CANCEL_DL_JTB					AS cancelDlJtb,
+						FRM.HTL_RSVSTATE_GB					AS htlRsvstateGb,
+						FN_SCODE_NM_KR('HT006', FRM.HTL_RSVSTATE_GB) rsvState,
+						HRS.RCNT							AS roomCnt,
+					    HRM.SALES_TAX 						AS salesTax,
+                        HRM.CHECKIN_POLICY 					AS chkInPolicy,
+                        HRM.CANCEL_POLICY 					AS cancelPolicy,
+                        HRS.BFAST_YN  						AS breakfastYn,
+                        HRM.SPEC_CHECKIN_POLICY				AS specChiPolicy,
+                        HRM.EXCHANGE_RATE					AS exchangeRate,
+                        HRM.HOTEL_FEE						AS hotelFee,
+                        NVL(PKG_OFF_AMT,0)					AS pkgAmt,
+                        HRM.SALE_CURRENCY					AS saleCurrency
+				FROM  HTL_RSV_MST HRM
+				    , (SELECT  HTL_ID
+					         , HTL_NM_EN
+					         , HTL_NM_KR
+					    FROM HTL_BASE_WHC_HOTELS
+					    UNION ALL
+					    SELECT  HTL_ID_EAN AS HTL_ID
+				          , HTL_NM_EN
+				          , HTL_NM_KR
+				   		FROM HTL_MAPP_MST
+					    UNION ALL
+					    SELECT HOTELCODE  				AS HTL_ID
+					          , HOTELNM 				AS HTL_NM_EN
+					          , '' 						AS HTL_NM_KR
+					    FROM HTL_BASE_GTA_HOTELS) HMM
+			   		, FA_FIT_RSV_MST FRM
+			    	, (SELECT A.ROOMTY_CD
+					        , A.ROOMTY_NM
+					        , A.HTL_RSV_SEQNO
+					        , COUNT(A.HTL_RSV_SEQNO) RCNT 
+			                , A.BFAST_YN
+					    FROM HTL_RSV_SROOM A 
+					    GROUP BY A.HTL_RSV_SEQNO
+					        	, A.ROOMTY_CD
+					          	, A.ROOMTY_NM
+			                  	, A.BFAST_YN) HRS 
+					WHERE HRM.HTL_ID = HMM.HTL_ID(+)
+					  AND HRM.HTL_RSV_SEQNO = HRS.HTL_RSV_SEQNO
+					  AND FRM.FIT_RSV_NO = HRM.FIT_RSV_NO
+					  AND FRM.FIT_RSV_NO = #fitRsvNo#
+					ORDER BY HRM.HTL_RSV_SEQNO
+  </select>	
+  
+  
+  
+  <!-- 마이투어 예약 상세 호텔 숙박자 정보 -->
+  <select id="HotelDAO.selectRsvHtlTravler" parameterClass="RsvHtlTravlerVO" resultClass="RsvHtlTravlerVO">
+		SELECT 
+		    GUEST_NM_KR				AS guestKrName,		/*한글명*/
+		    GUEST_NM_EN				AS guestEnName,		/*영문명*/
+		    YMD						AS ymd,				/*생년월일*/
+		    HTEL					AS htel,			/*연락처*/
+		    GENDER					AS gender			/*성별*/
+		    
+		FROM  HTL_RSV_SROOM A, HTL_RSV_GUEST B, HTL_RSV_MST C
+		WHERE A.SROOM_RSV_SEQNO = B.SROOM_RSV_SEQNO
+		AND   C.HTL_RSV_SEQNO = A.HTL_RSV_SEQNO
+		AND   C.HTL_RSV_SEQNO = #rsvSeqNo#
+  </select> 
+
+  <!-- 호텔 예약 취소를 위한 정보조회  -->
+  <select id="HotelDAO.selectRsvHtlCancelInfo" parameterClass="ReqHotelReserveCancelVO" resultClass="ReqHotelReserveCancelVO">
+		SELECT 
+			    A.CONC_MIX         AS fitMix,			/*조합*/
+			    B.SUPLR_GB         AS suplrCd,			 /*공급사코드*/
+			    B.SUPLR_RSV_NO     AS itineraryId,        /*예약고유ID*/
+			    A.MST_RSV_NM_EMAIL AS email,			/*대표 예약자 이메일*/
+			    A.MST_RSV_NM 	   AS name,
+			    B.HTL_RSV_SEQNO    AS htlRsvSeqno		/*호텔 예약 번호*/
+			    
+		FROM 	FA_FIT_RSV_MST A, HTL_RSV_MST B
+		WHERE	A.FIT_RSV_NO = B.FIT_RSV_NO
+		 AND 	A.FIT_RSV_NO = #fitRsvNo#
+  </select>
+  
+  <select id="HotelDAO.selectHotelEnList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT EANHOTELID AS hotelId
+		     , NAME AS name
+		FROM API_EAN_ACTIVELIST
+		WHERE COUNTRY = #countryCd#
+  </select> 
+  
+  
+	<!-- 호텔 프로모션 조회 -->
+ 	<select id="HotelDAO.getPromoHtl" parameterClass="PromotionHtListVO" resultClass="PromotionHtListVO">
+		SELECT
+	        PROM_ID			promId
+	        , PROM_ID_AIR	promIdAir
+	        , ADT_TY_GB		adtTyGb
+	        , ADT_DIVI_GB	adtDiviGb
+	        , ADT_AMT		adtAmt
+	        , PROM_ID_HTL	promIdHtl
+	        , TY_GB			tyGb
+	        , DIVI_GB		diviGb
+	        , AMT			amt
+           	, HTL_COAL_CARD_GB	htlCoalCardGb
+           	, AIR_COAL_CARD_GB	airCoalCardGb
+           	, ST_DT			stDt
+           	, EN_DT			enDt
+           	, CONC_MIX		concMix
+          	, PROM_NM		promNm
+          	, SUPLR_ID		suplrId
+		FROM VW_PROM_MST
+		WHERE (ST_DT IS NULL OR TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN ST_DT AND EN_DT)
+			<iterate property="startDt">
+              	AND 	(ST_DT1 IS NULL OR #startDt[]# BETWEEN ST_DT1 AND EN_DT1)
+            </iterate>   
+	      	
+	      	AND CONC_MIX = #concMix#
+		  	
+		  	<isNotNull prepend="AND" property="htlNationCd">
+				(HTL_NATION_CD IS NULL OR HTL_NATION_CD = #htlNationCd#)
+	    	</isNotNull>
+	       
+	    	<isNotNull prepend="AND" property="htlCtCd">
+				(HTL_CT_CD IS NULL OR HTL_CT_CD = #htlCtCd#)
+	    	</isNotNull>
+	    	
+	    	<isNotNull prepend="AND" property="htlCd">
+				(HTL_CD IS NULL OR HTL_CD = #htlCd#)
+	    	</isNotNull>
+			
+	</select>
+	
+	<!-- 호텔 결제 내역--> 
+	<!-- 현재는 가상계좌만 내역 볼 수 있다. -->
+	<select id="HotelDAO.selectHtlPaymentInfo" parameterClass="String" resultClass="hotelPaymentVO" >
+		 SELECT 
+			        NVL(HAP.CASH_AMT,0) AS cashAmt
+			        , HAP.ACT_NO  actNo
+			        ,SUBSTR(HAP.PAYMT_SCH_DT, 0, 4) || '-' || SUBSTR(HAP.PAYMT_SCH_DT, 5, 2) || '-' || SUBSTR(HAP.PAYMT_SCH_DT, 7,2) paymtSchDt
+		       		,SUBSTR(HAP.PAYMT_SCH_HM, 0, 2) || ':' || SUBSTR(HAP.PAYMT_SCH_HM, 3, 2) paymtSchHm
+			        , (SELECT NVL(SUM(IVD.AMT_INPUT), 0)
+			            FROM INI_VACCT_DEPOSIT IVD
+			            WHERE  HAP.OID_NO = IVD.NO_OID ) AS amtInput
+        			, FN_SCODE_NM_KR('FT016', BANK_CD_GB) bankNm
+              		, NVL(HCP.CARD_PAYMT_AMT,'')  cardPaymtAmt
+              		, NVL(FN_SCODE_NM_KR('FT019', HCP.CARD_KI_GB),'') cardKiGb
+              		, NVL(HCP.CARD_INSTALLMN_MN,'') cardInstallmnMn
+              		, CPM.USE_POINT 		usePoint
+            		, HGP.USE_AMT		giftAmt
+	    	FROM  FA_FIT_RSV_MST FRM
+	    	    , HTL_ACT_PAYMT HAP
+            	, HTL_CARD_PAYMT HCP
+            	, CU_POINT_MST CPM
+          		, HTL_GIFT_PAYMT HGP
+	    	WHERE   FRM.FIT_RSV_NO = HAP.FIT_RSV_NO(+)
+            AND FRM.FIT_RSV_NO = HCP.FIT_RSV_NO(+)
+            AND FRM.FIT_RSV_NO  = CPM.RES_CD(+)
+      		AND FRM.FIT_RSV_NO  = HGP.FIT_RSV_NO(+)
+            AND FRM.FIT_RSV_NO = #fitRsvNo#
+		                                             
+	</select>  
+	
+	<select id="HotelDAO.selectLotteHtlList" parameterClass="HotelLotteVO" resultClass="HotelLotteVO">
+			
+		SELECT DE.HTL_ID 		AS htlId,
+	      	   HTL_NM_KR 		AS htlNmKr ,
+	           HTL_INFO 		AS htlInfo ,
+	           ADD1 			AS add1 ,
+	           TEL_NO 			AS telNo ,
+	           FILE_NM 			AS fileNm ,
+	           ORG_FILE_NM 		AS orgFileNm
+	       
+		FROM   HTL_BLOCK_CUST_DETAIL 	DE,
+	       	   HTL_BLOCK_CUST_THUMIMG   TH
+	         
+		WHERE  DE.HTL_ID = TH.HTL_ID
+	</select>	
+	
+	 <!-- 호텔 EMAIL -->
+	<select id="HotelDAO.insertEmsMailSend" parameterClass="EmsMailSendVO" >
+			
+		INSERT INTO T2EMS.EMS_MAIL_SEND
+		  (SCHD_SEQ,
+		  REG_DT,
+		  MAIL_CODE,
+		  MAIL_NM,
+		  TO_NAME,
+		  TO_EMAIL,
+		  FROM_NAME,
+		  FROM_EMAIL,
+		  SUBJECT,
+		  CONTENTS_MAPPING,
+		  MAIL_URL_MAPPING)
+		VALUES
+		  (T2EMS.EMS_MAIL_SEND_SCHD_SEQ.nextval,
+		  TO_CHAR(SYSDATE, 'YYYYMMDD'),
+		  #mail_code#,
+		  #mail_nm#,
+		  #to_name#,
+		  #to_email#,
+		  #from_name#,
+		  #from_email#,
+		  #subject#,
+		  #contents_mapping#,
+		  #mail_url_mapping#)
+	</select>
+	
+	
+	<!-- 호텔 패스 맵핑정보 EANID로 교체 -->
+	<select id="HotelDAO.hotelIdMapping" parameterClass="egovMap" resultClass="String">
+		SELECT NVL(HTL_ID_EAN, '') HTL_ID_EAN
+		FROM  ZIMSI_HTL_MAPP_TAB
+		<isEqual property='suplrCd' compareValue="WHC">
+			WHERE HTL_ID_WHC = #hotelId#
+		</isEqual>
+		<isEqual property='suplrCd' compareValue="GTA">
+			WHERE HTL_ID_GTA = #hotelId#
+		</isEqual>
+		<isEqual property='suplrCd' compareValue="JTB">
+			WHERE HTL_ID_JTB = #hotelId#
+		</isEqual>
+		<isEqual property='suplrCd' compareValue="HNJ">
+			WHERE HTL_ID_HNJ = #hotelId#
+		</isEqual>
+		<isEqual property='suplrCd' compareValue="DOTW">
+			WHERE HTL_ID_DOTW = #hotelId#
+		</isEqual>
+	
+	</select>
+	
+	<!-- 연락처,fax정보 가져오기 -->
+    <select id="HotelDAO.selectTelInfo" parameterClass="String" resultClass="egovMap" >
+            <![CDATA[
+            SELECT
+                  TEL_NO
+                  , FAX_NO
+            FROM HTL_BASE_EAN_HOTELS_TEL
+            WHERE HOTEL_ID = #hotelId#
+            ]]>
+     </select>
+      
+	
+  
+</sqlMap>

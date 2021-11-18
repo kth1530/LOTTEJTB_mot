@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PaymtDAO">
+
+	<typeAlias alias="egovMap" 					type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="airActPaymtVO" 			type="com.lottejtb.account.service.AirActPaymtVO"/>
+	<typeAlias alias="airCardPaymtVO" 			type="com.lottejtb.account.service.AirCardPaymtVO"/>
+	<typeAlias alias="airEtcPaymtVO" 			type="com.lottejtb.account.service.AirEtcPaymtVO"/>
+	<typeAlias alias="airGiftPaymtVO" 			type="com.lottejtb.account.service.AirGiftPaymtVO"/> 
+	<typeAlias alias="airRsvPaymtVO" 			type="com.lottejtb.account.service.AirRsvPaymtVO"/> 
+	<typeAlias alias="airReceiptReqVO"  		type="com.lottejtb.account.service.AirReceiptReqVO"/>
+	<typeAlias alias="airRefundMgtVO"  			type="com.lottejtb.account.service.AirRefundMgtVO"/>
+	<typeAlias alias="htlRefundMgtVO"  			type="com.lottejtb.account.service.HtlRefundMgtVO"/>
+	<typeAlias alias="airPaymentVO"  			type="com.lottejtb.account.service.AirPaymentVO"/>
+	
+	<!--  자유여행  결제 > 결제 리스트 조회     -->
+	<select id="PaymtDAO.selectAirPayment" parameterClass="java.lang.String" resultClass="airPaymentVO">
+		SELECT NVL(AAP.CASH_AMT, 0) AS cashAmt ,
+		       AAP.ACT_NO actNo ,
+		       SUBSTR(AAP.PAYMT_SCH_DT, 0, 4) || '-' || SUBSTR(AAP.PAYMT_SCH_DT, 5, 2) || '-' || SUBSTR(AAP.PAYMT_SCH_DT, 7,2) paymtSchDt ,
+		       SUBSTR(AAP.PAYMT_SCH_HM, 0, 2) || ':' || SUBSTR(AAP.PAYMT_SCH_HM, 3, 2) paymtSchHm ,
+		       (SELECT NVL(SUM(IVD.AMT_INPUT), 0)
+		        FROM   INI_VACCT_DEPOSIT IVD
+		       WHERE  AAP.OID_NO = IVD.NO_OID ) AS amtInput ,
+		       FN_SCODE_NM_KR('FT016', BANK_CD_GB) bankNm ,
+		       NVL(ACP.CARD_PAYMT_AMT, 0) cardPaymtAmt ,
+<!-- 		       FN_SCODE_NM_KR('FT019', ACP.CARD_KI_GB) cardKiGb , -->
+		       (SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'FT009' AND CD = ACP.CARD_KI_GB) cardKiGb
+<!-- 		       ACP.CARD_INSTALLMN_MN cardInstallmnMn -->
+               ,(SELECT CD_NM_KR FROM COM_SYS_CD WHERE GRP_CD = 'FT017' AND CD = ACP.CARD_INSTALLMN_MN) AS cardInstallmnMn
+               ,ACP.CARD_PAYMT_SEQNO AS cardPaymtSeqno
+		FROM   FA_FIT_RSV_MST FRM ,
+		       AIR_ACT_PAYMT AAP ,
+		       AIR_CARD_PAYMT ACP
+		WHERE  FRM.AIR_RSV_SEQNO = AAP.AIR_RSV_SEQNO(+)
+		AND    FRM.AIR_RSV_SEQNO = ACP.AIR_RSV_SEQNO(+)
+		AND    FRM.FIT_RSV_NO = #fitRsvNo#
+	</select> 
+		
+	<!--  자유여행  결제 > 결제 정보 저장    -->
+	<insert id="PaymtDAO.insertAirRsvPaymt" parameterClass="AirRsvPaymtVO">
+			INSERT INTO AIR_RSV_PAYMT 
+			(
+				AIR_RSV_SEQNO       ,
+				PAYMT_APPROVE_AMT   ,
+				PAYMT_UNPAID_AMT    ,
+				TASF_AMT            ,
+				CARD_USE_YN         ,
+				CARD_ALL_YN         ,
+				ACT_USE_YN          ,
+				GIFT_USE_YN         ,
+				ETC_USE_YN          ,
+				REGTOR_ID           ,
+				REG_DTT             ,
+				MODTOR_ID           ,
+				MOD_DTT             
+			) VALUES (
+				#AIR_RSV_SEQNO#       ,
+				#PAYMT_APPROVE_AMT#   ,
+				#PAYMT_UNPAID_AMT#    ,
+				#TASF_AMT#            ,
+				#CARD_USE_YN#         ,
+				#CARD_ALL_YN#         ,
+				#ACT_USE_YN#          ,
+				#GIFT_USE_YN#         ,
+				#ETC_USE_YN#          ,
+				#REGTOR_ID#           ,
+				SYSDATE               ,
+				#MODTOR_ID#           ,
+				SYSDATE             
+			)
+	</insert> 
+
+	<!--  자유여행  결제 > 무통장 입금 내역     -->
+	<insert id="PaymtDAO.insertAirActPaymt" parameterClass="AirActPaymtVO">
+		INSERT INTO AIR_ACT_PAYMT 
+		(
+			AIR_RSV_SEQNO          ,
+			CASH_AMT               ,
+			BANK_CD_GB             ,
+			ACT_NO                 ,
+			ACT_PAYMTOR_NM         ,
+			PAYMT_SCH_DT           ,
+			NOTE                   ,
+			CASH_RECEIPT_DIVI_GB   ,
+			PAYMT_CONF_YN          ,
+			VIRTUAL_ACT_YN         ,
+			TID_NO                 ,
+			REGTOR_ID              ,
+			REG_DTT                ,
+			MODTOR_ID              ,
+			MOD_DTT                
+		) VALUES (
+			#AIR_RSV_SEQNO#          ,
+			#CASH_AMT#               ,
+			#BANK_CD_GB#             ,
+			#ACT_NO#                 ,
+			#ACT_PAYMTOR_NM#         ,
+			#PAYMT_SCH_DT#           ,
+			#NOTE#                   ,
+			#CASH_RECEIPT_DIVI_GB#   ,
+			#PAYMT_CONF_YN#          ,
+			#VIRTUAL_ACT_YN#         ,
+			#TID_NO#                 ,
+			#REGTOR_ID#              ,
+			SYSDATE                	 ,
+			#MODTOR_ID#              ,
+			SYSDATE                
+		)
+
+	</insert> 		
+
+	<!--  자유여행  결제 > 카드 결제 내역     -->
+	<insert id="PaymtDAO.insertAirCardPaymt" parameterClass="AirCardPaymtVO">
+		INSERT INTO AIR_CARD_PAYMT 
+		(
+			CARD_PAYMT_SEQNO       ,
+			AIR_RSV_SEQNO          ,
+			PAX_NO                 ,
+			CARD_PAYMT_AMT         ,
+			CARD_KI_GB             ,
+			CARD_USE_YN            ,
+			CARD_NO                ,
+			CARD_EXPIR_DATE_MN     ,
+			CARD_EXPIR_DATE_YEAR   ,
+			CARD_INSTALLMN_MN      ,
+			CARD_OWNER_GB          ,
+			CARD_RELAT_GB          ,
+			CARD_OWNER_NM          ,
+			CARD_CVS_NO            ,
+			CARD_APPROVE_NO        ,
+			APPROVE_CONF_YN        ,
+			FRONT_PASS             ,
+			TASF_AMT               ,
+			REGTOR_ID              ,
+			REG_DTT                ,
+			MODTOR_ID              ,
+			MOD_DTT                
+		) VALUES (
+			SEQ_AIR_CARD_PAYMT.NEXTVAL       ,
+			#AIR_RSV_SEQNO#          ,
+			#PAX_NO#                 ,
+			#CARD_PAYMT_AMT#         ,
+			#CARD_KI_GB#             ,
+			#CARD_USE_YN#            ,
+			#CARD_NO#                ,
+			#CARD_EXPIR_DATE_MN#     ,
+			#CARD_EXPIR_DATE_YEAR#   ,
+			#CARD_INSTALLMN_MN#      ,
+			#CARD_OWNER_GB#          ,
+			#CARD_RELAT_GB#          ,
+			#CARD_OWNER_NM#          ,
+			#CARD_CVS_NO#            ,
+			#CARD_APPROVE_NO#        ,
+			#APPROVE_CONF_YN#        ,
+			#FRONT_PASS#             ,
+			#TASF_AMT#               ,
+			#REGTOR_ID#              ,
+			SYSDATE                  ,
+			#MODTOR_ID#              ,
+			SYSDATE                   
+		)
+
+	</insert> 	
+	
+	<!--  자유여행  결제 > 기타 결제 내역     -->
+	<insert id="PaymtDAO.insertAirEtcPaymt" parameterClass="AirEtcPaymtVO">
+		INSERT INTO AIR_ETC_PAYMT 
+		(
+			AIR_RSV_SEQNO   ,
+			ETC_USE_YN      ,
+			ETC_PAYMT_AMT   ,
+			PAYMT_CONF_YN   ,
+			NOTE            ,
+			REGTOR_ID       ,
+			REG_DTT         ,
+			MODTOR_ID       ,
+			MOD_DTT         
+		) VALUES (
+			#AIR_RSV_SEQNO#   ,
+			#ETC_USE_YN#      ,
+			#ETC_PAYMT_AMT#   ,
+			#PAYMT_CONF_YN#   ,
+			#NOTE#            ,
+			#REGTOR_ID#       ,
+			SYSDATE           ,
+			#MODTOR_ID#       ,
+			SYSDATE         
+		)
+
+	</insert> 	
+
+	<!--  자유여행  결제 > 상품권  결제 내역     -->
+	<insert id="PaymtDAO.insertAirGiftPaymt" parameterClass="AirGiftPaymtVO">
+		INSERT INTO AIR_GIFT_PAYMT 
+		(
+			GIFT_SEQNO      ,
+			AIR_RSV_SEQNO   ,
+			GIFT_DIVI_GB    ,
+			GIFT_NO         ,
+			GIFT_AMT        ,
+			GIFT_RECP_YN    ,
+			NOTE            ,
+			REGTOR_ID       ,
+			REG_DTT         ,
+			MODTOR_ID       ,
+			MOD_DTT         
+		) VALUES (
+			SEQ_AIR_GIFT_PAYMT.NEXTVAL,
+			#AIR_RSV_SEQNO#   ,
+			#GIFT_DIVI_GB#    ,
+			#GIFT_NO#         ,
+			#GIFT_AMT#        ,
+			#GIFT_RECP_YN#    ,
+			#NOTE#            ,
+			#REGTOR_ID#       ,
+			SYSDATE           ,
+			#MODTOR_ID#       ,
+			SYSDATE        
+		)
+	</insert> 			
+	
+	<!--  자유여행 결제 > 현금 영수증 / 소득 증빙용 정보 저장  -->
+	<insert id="PaymtDAO.insertAirReceiptReq" parameterClass="airReceiptReqVO">
+		<![CDATA[
+		INSERT INTO AIR_RECEIPT_REQ (
+					 RECEIPT_SEQNO    				, AIR_RSV_SEQNO    	, RECEIPT_DIVI_GB  ,
+					 ISSUE_HTEL       				, CORP_NO          	, REGTOR_ID        ,
+					 REG_DTT          				, MODTOR_ID        	, MOD_DTT          
+     			) VALUES (
+					 SEQ_AIR_RECEIPT_REQ.NEXTVAL  	,  #AIR_RSV_SEQNO#  ,  #RECEIPT_DIVI_GB#	,
+					 #ISSUE_HTEL#     				,  #CORP_NO#       	,  #REGTOR_ID#       	,
+					 SYSDATE     	  				,  #MODTOR_ID# 		,  SYSDATE     
+				)
+
+		]]>
+	</insert>	
+	
+	<!--  자유여행 결제 > 항공 결제 취소 요청  -->
+	<insert id="PaymtDAO.insertAirRefundMgt" parameterClass="airRefundMgtVO">
+		<![CDATA[
+			INSERT INTO AIR_REFUND_MGT (
+				REFUND_SEQNO, AIR_RSV_SEQNO, REFUND_TY_GB, 
+				REFUND_AMT, CARRIER_PENALTY, AGENCY_PENALTY, 
+				ACCTOR, BANK_CD_GB, ACT_NO, 
+				REFUND_STATE_GB, REFUND_DTT, REQ_DTT, 
+				REGTOR_ID, REG_DTT, MODTOR_ID, 
+				MOD_DTT
+			) VALUES ( 
+				SEQ_AIR_REFUND_MGT.NEXTVAL  /* REFUND_SEQNO */,
+				#airRsvSeqno# /* 항공예약번호 */,
+				'001'/* 환불 고정 REFUND_TY_GB */,
+				0 /* REFUND_AMT */,
+				0 /* CARRIER_PENALTY */,
+				0 /* AGENCY_PENALTY */,
+				#acctor# /* 예금주 */,
+				#bankCdGb# /* 은행코드 */,
+				#actNo# /* ACT_NO */,
+				'RQ'/* 환불요청 REFUND_STATE_GB */,
+				null /* REFUND_DTT */,
+				sysdate /* 요청일시 REQ_DTT */,
+				#regtorId# /* REGTOR_ID */,
+				sysdate /* REG_DTT */,
+				#modtorId# /* MODTOR_ID */,
+				sysdate /* MOD_DTT */ 
+			)
+		]]>
+	</insert>
+	
+	<!--  자유여행 결제 > 항공 결제 취소 요청  -->
+	<update id="PaymtDAO.updateCancelYnAirFitRsvMst" parameterClass="airRefundMgtVO">
+		<![CDATA[
+			UPDATE FA_FIT_RSV_MST SET 
+				CANCEL_YN_AIR = 'Y'
+			WHERE FIT_RSV_NO = #resCd#
+		]]>
+	</update>					
+	
+	<!--  자유여행 결제 > 항공 결제 요청 상태 업데이트   -->
+	<update id="PaymtDAO.updateAirRsvMst" parameterClass="int">
+		<![CDATA[
+			UPDATE AIR_RSV_MST SET 
+				PAYMTREQ_STATE_GB = 'RQ',
+				RSV_STATE_GB = 'WA'
+			WHERE AIR_RSV_SEQNO = #airRsvSeqno#
+		]]>
+	</update>
+	
+	<!--  자유여행 호텔 결제  취소 요청  -->
+	<update id="PaymtDAO.updateCancelYnHotelFitRsvMst" parameterClass="htlRefundMgtVO">
+		<![CDATA[
+			UPDATE FA_FIT_RSV_MST SET 
+				CANCEL_YN_HTL = 'Y'
+			WHERE FIT_RSV_NO = #resCd#
+		]]>
+	</update>
+	
+	<!-- 롯데 포인트 일련번호 조회 -->
+	<select id="PaymtDAO.selectPaymentInfo" parameterClass="htlRefundMgtVO" resultClass="htlRefundMgtVO">
+		<![CDATA[ 
+		SELECT FRM.MST_RSV_NM 	mstRsvNm
+		     , HCP.TID_NO		tidNo
+             , HAP.TID_NO		actNo
+		  FROM FA_FIT_RSV_MST FRM
+		     , HTL_CARD_PAYMT HCP
+        	 , HTL_ACT_PAYMT HAP
+		 WHERE FRM.FIT_RSV_NO = HCP.FIT_RSV_NO(+)
+      	   AND FRM.FIT_RSV_NO = HAP.FIT_RSV_NO(+)
+		   AND FRM.FIT_RSV_NO = #fitRsvNo#
+		   AND ROWNUM =1
+		]]>
+	</select>
+	
+	<update id="PaymtDAO.updateCancelHtlPay" parameterClass="htlRefundMgtVO">
+		UPDATE FA_FIT_RSV_MST
+		   SET HTL_PAYMTSTATE_GB = #htlPaymtstateGb#
+		 WHERE FIT_RSV_NO = #fitRsvNo#
+	</update>
+</sqlMap>

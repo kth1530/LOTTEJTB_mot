@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="NoticeDAO">
+	
+		
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="NoticeVO"         type="com.lottejtb.customer.service.NoticeVO"/>
+   
+	<resultMap id="notice" class="NoticeVO">
+	    <result property="rn" column="RN"/>
+	 	<result property="noticeSeq" column="NOTICE_SEQ"/>
+	 	<result property="noticeTitle" column="NOTICE_TITLE"/>
+	 	<result property="startDt" column="START_DT"/>
+	 	<result property="endDt" column="END_DT"/>
+		<result property="noticeCnts" column="NOTICE_CNTS" jdbcType="CLOB" javaType="String" />
+		<result property="insDt" column="INS_DT"/>
+		<result property="insId" column="INS_ID"/>
+		<result property="cnt" column="CNT"/>
+		<result property="preUrl" column="PRE_URL"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="webYn" column="WEB_YN"/>
+		<result property="updDt" column="UPD_DT"/>
+		<result property="updId" column="UPD_ID"/>
+    </resultMap>
+	
+	<select id="NoticeDAO.selectNoticeListCount" parameterClass="NoticeVO" resultClass="int">
+		SELECT
+				COUNT(*) totalCnt
+		  FROM	DI_NOTICE_MST 
+		 WHERE DEL_YN = 'N'
+			   AND DISP_YN = 'Y'
+			   AND START_DT <![CDATA[ <= ]]> sysdate
+			   AND END_DT >= sysdate
+			   AND NOTICE_CLS_CD = #noticeClsCd#
+			   AND NOTICE_DET_CLS_CD = #noticeDetClsCd#
+			  <isNotEmpty property="searchKeyword">
+			  AND (NOTICE_TITLE LIKE '%' || #searchKeyword# || '%' OR  NOTICE_CNTS LIKE '%' || #searchKeyword# || '%')
+			  </isNotEmpty>
+			 
+	</select>	
+    
+	<select id="NoticeDAO.selectNoticeList" parameterClass="NoticeVO" resultMap="notice">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (
+			 SELECT
+					NOTICE_SEQ,													/* 공지번호 */
+					NOTICE_TITLE,												/* 공지제목 */
+					NOTICE_CNTS,
+					NOTICE_CLS_CD,
+					FN_SY_CD_DET_S01('NTTYPE', NOTICE_CLS_CD ) CD_NM01,				
+					NOTICE_DET_CLS_CD,											/* 공지분류코드[[NTCCLS] */
+					FN_SY_CD_DET_S01('NTDETTYPE', NOTICE_DET_CLS_CD ) CD_NM02,		
+					DISP_YN,													/* 전시여부 */
+					POPUP_NOTIFY_YN,											/* 팝업알림여부 */
+					TO_CHAR(START_DT, 'yyyy-mm-dd')       	START_DT,			/* 시작일시 */
+					TO_CHAR(END_DT, 'yyyy-mm-dd')          	END_DT,				/* 종료일시 */
+					CNT,														/* 조회수 */
+					DEL_YN,
+					INS_DT,														/* 등록일시 */
+					INS_ID,														/* 등록자번호 */
+					PRE_URL,
+					FILE_PATH,
+					WEB_YN,
+					UPD_DT,														/* 최종수정일시 */
+					UPD_ID,
+					fn_usernm_s01(INS_ID) INS_NM,								/* 수정자명 */		
+					fn_usernm_s01(UPD_ID) UPD_NM,								/* 수정자명 */		
+					NOTICE_ALL			,
+					DECODE(NOTICE_ALL,'Y','전체공지','') CD_NM03     			
+			FROM	DI_NOTICE_MST 
+			WHERE DEL_YN = 'N'
+			AND DISP_YN = 'Y'
+			AND START_DT <![CDATA[ <= ]]> sysdate
+			AND END_DT >= sysdate
+			AND NOTICE_CLS_CD = '10'
+			AND NOTICE_DET_CLS_CD = '10'
+			<isNotEmpty property="searchKeyword">
+			AND (NOTICE_TITLE LIKE '%' || #searchKeyword# || '%' OR  NOTICE_CNTS LIKE '%' || #searchKeyword# || '%')
+			</isNotEmpty> 
+			ORDER BY NOTICE_ALL DESC, NOTICE_SEQ DESC
+	    ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+	</select>
+
+	<select id="NoticeDAO.selectNoticeDetail" parameterClass="NoticeVO" resultMap="notice">
+			SELECT
+					0 RN,
+					NOTICE_SEQ,													/* 공지번호 */
+					NOTICE_TITLE,												/* 공지제목 */
+					NOTICE_CNTS,
+					NOTICE_CLS_CD,
+					FN_SY_CD_DET_S01('NTTYPE', NOTICE_CLS_CD ) CD_NM01,				
+					NOTICE_DET_CLS_CD,											/* 공지분류코드[[NTCCLS] */
+					FN_SY_CD_DET_S01('NTDETTYPE', NOTICE_DET_CLS_CD ) CD_NM02,		
+					DISP_YN,													/* 전시여부 */
+					POPUP_NOTIFY_YN,											/* 팝업알림여부 */
+					TO_CHAR(START_DT, 'yyyy-mm-dd')       	START_DT,			/* 시작일시 */
+					TO_CHAR(END_DT, 'yyyy-mm-dd')          	END_DT,				/* 종료일시 */
+					CNT,														/* 조회수 */
+					DEL_YN,
+					INS_DT,														/* 등록일시 */
+					INS_ID,														/* 등록자번호 */
+					PRE_URL,
+					FILE_PATH,
+					WEB_YN,
+					UPD_DT,														/* 최종수정일시 */
+					UPD_ID,
+					fn_usernm_s01(INS_ID) INS_NM,								/* 수정자명 */		
+					fn_usernm_s01(UPD_ID) UPD_NM,								/* 수정자명 */		
+					NOTICE_ALL			,
+					DECODE(NOTICE_ALL,'Y','전체공지','') CD_NM03     			
+			FROM	DI_NOTICE_MST 
+			WHERE DEL_YN = 'N'
+			AND DISP_YN = 'Y'
+			AND NOTICE_CLS_CD = '10'
+			AND NOTICE_DET_CLS_CD = '10'
+			AND NOTICE_SEQ = #noticeSeq#
+	</select>
+	
+	<update id="NoticeDAO.updateNoticeCount" parameterClass="NoticeVO">
+			UPDATE DI_NOTICE_MST 
+			SET    CNT = NVL(CNT,0) + 1
+			WHERE  NOTICE_SEQ = #noticeSeq#
+	</update>
+</sqlMap>

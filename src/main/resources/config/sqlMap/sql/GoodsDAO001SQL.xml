@@ -1,0 +1,1146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="GoodsDAO">
+	
+		
+	<typeAlias alias="egovMap"        	type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="GoodsCtgVO"       type="com.lottejtb.goods.service.GoodsCtgVO"/>
+	<typeAlias alias="GoodsVO"         	type="com.lottejtb.goods.service.GoodsVO"/>
+	<typeAlias alias="GoodsMstVO"       type="com.lottejtb.goods.service.GoodsMstVO"/>
+	<typeAlias alias="EventMstVO"       type="com.lottejtb.goods.service.EventMstVO"/>
+	<typeAlias alias="EventListDTO"       type="com.lottejtb.goods.service.EventListDTO"/>
+	<typeAlias alias="GoodsImgVO"       type="com.lottejtb.goods.service.GoodsImgVO"/>
+    <typeAlias alias="EventCommSchdVO"       type="com.lottejtb.goods.service.EventCommSchdVO"/>
+    <typeAlias alias="GoodsEvalVO"       type="com.lottejtb.goods.service.GoodsEvalVO"/>
+    
+    <!-- 상품리스트 UI >  사이트 지역별 상품 카테고리 조회 ==> 상품리스트에서 사용하는 쿼리  -->
+	<resultMap id="goodsCtg" class="GoodsCtgVO">
+	    <result property="ctg_seq" column="CTG_SEQ"/>
+	 	<result property="ctg_nm" column="CTG_NM"/>
+	 	<result property="ctg_upr_seq" column="CTG_UPR_SEQ"/>
+    </resultMap>
+    
+    <!-- 상품리스트 UI >  사이트 지역별 상품 리스트 조회 ==> 상품리스트에서 사용하는 쿼리  -->
+	<resultMap id="goods" class="GoodsVO">
+		<result property="rn" column="RN"/>
+		
+	    <result property="comp_cd" column="COMP_CD"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>
+	 	<result property="goods_nm" column="GOODS_NM"/>
+	 	<result property="short_goods_nm" column="SHORT_GOODS_NM"/>
+	 	<result property="emp_rate" column="EMP_RATE" nullValue="0"/>
+	 	
+	 	<result property="str_adult_price" column="STR_ADULT_PRICE"/>
+	 	<result property="adult_price" column="ADULT_PRICE"/>
+	 	<result property="et_days" column="ET_DAYS"/>
+	 	<result property="goods_night_cnt" column="GOODS_NIGHT_CNT"/>
+	 	<result property="goods_day_cnt" column="GOODS_DAY_CNT"/>
+	 	<result property="goods_desc" column="GOODS_DESC"/>
+
+	 	<result property="img_path" column="IMG_PATH"/>
+	 	<result property="save_file_nm" column="SAVE_FILE_NM"/>
+	 	<result property="homeshopping_yn" column="HOMESHOPPING_YN"/>
+	 	<result property="plan_yn" column="PLAN_YN"/>
+	 	
+	 	<result property="event_yn" column="EVENT_YN"/>
+	 	<result property="premium_yn" column="PREMIUM_YN"/>
+	 	<result property="classic_yn" column="CLASSIC_YN"/>
+	 	<result property="save_yn" column="SAVE_YN"/>
+	 	<result property="disp_order" column="DISP_ORDER"/>
+	 	
+	 	<result property="disp_yn" column="DISP_YN"/>
+	 	<result property="goods_nights" column="GOODS_NIGHTS"/>
+	 	
+	 	<result property="adult_price2" column="ADULT_PRICE2"/>
+	 	<result property="etc_price1" column="ETC_PRICE1"/>
+	 	
+	 	
+    </resultMap>
+    
+    <!-- /** 상품마스터  UI > 사이트 상품 정보 조회 **/-->
+	<resultMap id="goodsDTO" class="GoodsVO">
+	    <result property="comp_cd" column="COMP_CD"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>
+	 	<result property="goods_nm" column="GOODS_NM"/>
+	 	<result property="short_goods_nm" column="SHORT_GOODS_NM"/>
+	 	<result property="str_et_price1" column="ETC_PRICE1"/>
+	 	<result property="str_et_price2" column="ETC_PRICE2"/>
+	 	<result property="air_remark" column="AIR_REMARK" nullValue=""/>
+	 	<result property="et_days" column="ET_DAYS"/>
+	 	<result property="bus_time" column="BUS_TIME"/>
+	 	<result property="goods_desc" column="GOODS_DESC"/>
+	 	<result property="homeshopping_yn" column="HOMESHOPPING_YN"/>
+	 	<result property="plan_yn" column="PLAN_YN"/>
+	 	<result property="event_yn" column="EVENT_YN"/>
+	 	<result property="premium_yn" column="PREMIUM_YN"/>
+	 	<result property="classic_yn" column="CLASSIC_YN"/>
+	 	<result property="save_yn" column="SAVE_YN"/>
+	 	<result property="emp_rate" column="EMP_RATE"/>
+    </resultMap>
+    
+    <!-- /** 상품 마스터 UI > 행사 마스터 일정 조회 **/  -->        
+	<resultMap id="goodsEvent" class="EventMstVO">
+	    <result property="comp_cd" column="COMP_CD"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>
+	 	<result property="event_desc" column="EVENT_DESC"/>
+    </resultMap>
+    
+    <!-- /** 상품마스터  UI > 사이트 상품 종류 정보 조회 **/-->
+	<resultMap id="goodsMst" class="GoodsMstVO">	
+	    <result property="op_cd" column="OP_CD"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>
+	 	<result property="comp_cd" column="COMP_CD"/>
+    </resultMap>
+
+    <!-- /** 상품 마스터 UI > 행사 마스터 리스트 조회  **/  -->        
+	<resultMap id="eventListDTO" class="EventListDTO">
+	    <result property="rn" column="RN"/>
+	    	    
+	    <result property="event_cd" column="EVENT_CD"/>
+	 	<result property="comp_cd" column="COMP_CD"/>
+	 	<result property="disp_nm" column="DISP_NM"/>
+	 	<result property="ev_day_cnt" column="EV_DAY_CNT"/>	 	
+	 	<result property="ev_night_cnt" column="EV_NIGHT_CNT"/>
+	 	
+	 	<result property="start_day" column="START_DAY"/>
+	 	<result property="start_wday" column="START_WDAY"/>
+	 	<result property="start_time" column="START_TIME"/>
+	 	<result property="start_pyun" column="START_PYUN"/>
+	 	
+	 	<result property="end_day_fr" column="END_DAY_FR"/>
+	 	<result property="end_time_fr" column="END_TIME_FR"/>
+	 	<result property="end_day" column="END_DAY"/>
+	 	<result property="end_wday" column="END_WDAY"/>	 	
+	 	<result property="end_time" column="END_TIME"/>
+
+	 	<result property="end_pyun" column="END_PYUN"/>
+	 	<result property="end_day_to" column="START_DAY_TO"/>
+	 	<result property="start_time_to" column="START_TIME_TO"/>
+	 	<result property="trff_cd" column="TRFF_CD"/>
+	 	<result property="cd_nm" column="CD_NM" nullValue=""/>
+
+	 	<result property="trff_cd_short" column="TRFF_CD_SHORT"/>	
+	 	<result property="fee_seq" column="FEE_SEQ"/>	 
+	 	<result property="adult_price" column="ADULT_PRICE"/>	 
+	 	<result property="child_price" column="CHILD_PRICE"/>	 	
+	 	<result property="baby_price" column="BABY_PRICE"/>	 	
+
+	 	<result property="str_adult_price" column="STR_ADULT_PRICE"/>	 	
+	 	<result property="str_child_price" column="STR_CHILD_PRICE"/>	 	
+	 	<result property="str_baby_price" column="STR_BABY_PRICE"/>	 	
+	 	
+	 	<result property="etc_price_title1" column="ETC_PRICE_TITLE1"/>	 		 	 			 		 	 		 	
+	 	<result property="etc_price1" column="ETC_PRICE1"/>	 		 	 			 		 	 		 	
+	 	<result property="etc_price_title2" column="ETC_PRICE_TITLE2"/>	 
+	 	<result property="etc_price2" column="ETC_PRICE2"/>	 
+	 	<result property="etc_price_title3" column="ETC_PRICE_TITLE3"/>	 
+
+	 	<result property="etc_price3" column="ETC_PRICE3"/>	 
+	 	<result property="ev_inwon" column="EV_INWON"/>	 
+	 	<result property="min_inwon" column="MIN_INWON"/>	 	 	
+	 	<result property="proc_cd" column="PROC_CD"/>	 	 		 	
+	 	<result property="lock_unit" column="LOCK_UNIT"/>	 	 		 	
+
+	 	<result property="tc_cnt" column="TC_CNT"/>	 	 		 	
+	 	<result property="point_rate" column="POINT_RATE"/>	 	
+	 	<result property="point_amt" column="POINT_AMT"/>	
+	 	<result property="et_adm_cd" column="ET_ADM_CD"/>	
+	 	<result property="rv_cnt" column="RV_CNT"/>	
+
+	 	<result property="img_url" column="IMG_URL"/>	
+	 	<result property="goods_tag_text" column="GOODS_TAG_TEXT"/>	
+	 	<result property="conf_yn" column="CONF_YN"/>	
+	 	<result property="conf_land" column="CONF_LAND"/>	
+	 	<result property="conf_air" column="CONF_AIR"/>	
+
+	 	<result property="conf_insu" column="CONF_INSU"/>
+	 	<result property="conf_hotel" column="CONF_HOTEL"/>
+	 	<result property="goods_type_cd" column="GOODS_TYPE_CD"/>
+	 	<result property="emp_rate" column="EMP_RATE" nullValue="0"/>
+	 	<result property="goods_join_cd" column="GOODS_JOIN_CD"/>
+
+	 	<result property="biz_insu_yn" column="BIZ_INSU_YN"/>
+	 	<result property="pkg_insu_yn" column="PKG_INSU_YN"/>
+	 	<result property="guide_yn" column="GUIDE_YN"/>
+	 	<result property="desc_file_path" column="DESC_FILE_PATH"/>
+	 	<result property="desc_file_nm" column="DESC_FILE_NM"/>	 	
+	 	
+	 	<result property="goods_cd" column="GOODS_CD"/>	 	
+	 	<result property="opt_desc" column="OPT_DESC"/>	 		
+	 	<result property="pro_desc" column="PRO_DESC"/>	 		
+	 	<result property="tot_amt1" column="TOT_AMT1"/>	 		
+	 	<result property="tot_amt2" column="TOT_AMT2"/>	 
+	 			
+	 	<result property="tot_amt3" column="TOT_AMT3"/>	 		
+	 	<result property="str_tot_amt1" column="STR_TOT_AMT1"/>	 		
+	 	<result property="str_tot_amt2" column="STR_TOT_AMT2"/>	 		
+	 	<result property="str_tot_amt3" column="STR_TOT_AMT3"/>	 		
+	 	 		 			 		 		 	 	 		 		 		 			 	 			 		 	 		 		 	 		 		 		 			 	 			 		 	 		 	
+    </resultMap>
+   
+    <!-- /** 상품 마스터 UI > 예약 가능 행사  리스트 조회  **/  -->        
+	<resultMap id="eventListDTO2" class="EventListDTO">
+	    	    
+	    <result property="event_cd" column="EVENT_CD"/>
+	 	<result property="comp_cd" column="COMP_CD"/>
+	 	<result property="disp_nm" column="DISP_NM"/>
+	 	<result property="ev_day_cnt" column="EV_DAY_CNT"/>	 	
+	 	<result property="ev_night_cnt" column="EV_NIGHT_CNT"/>
+	 	
+	 	<result property="start_day" column="START_DAY"/>
+	 	<result property="start_wday" column="START_WDAY"/>
+	 	<result property="start_time" column="START_TIME"/>
+	 	<result property="start_pyun" column="START_PYUN"/>
+	 	
+	 	<result property="end_day_fr" column="END_DAY_FR"/>
+	 	<result property="end_time_fr" column="END_TIME_FR"/>
+	 	<result property="end_day" column="END_DAY"/>
+	 	<result property="end_wday" column="END_WDAY"/>	 	
+	 	<result property="end_time" column="END_TIME"/>
+
+	 	<result property="end_pyun" column="END_PYUN"/>
+	 	<result property="end_day_to" column="START_DAY_TO"/>
+	 	<result property="start_time_to" column="START_TIME_TO"/>
+	 	<result property="trff_cd" column="TRFF_CD"/>
+	 	<result property="cd_nm" column="CD_NM" nullValue=""/>
+
+	 	<result property="trff_cd_short" column="TRFF_CD_SHORT"/>	
+	 	<result property="fee_seq" column="FEE_SEQ"/>	 
+	 	<result property="adult_price" column="ADULT_PRICE"/>	 
+	 	<result property="child_price" column="CHILD_PRICE"/>	 	
+	 	<result property="baby_price" column="BABY_PRICE"/>	 	
+
+	 	<result property="str_adult_price" column="STR_ADULT_PRICE"/>	 	
+	 	<result property="str_child_price" column="STR_CHILD_PRICE"/>	 	
+	 	<result property="str_baby_price" column="STR_BABY_PRICE"/>	 	
+	 	
+	 	<result property="etc_price_title1" column="ETC_PRICE_TITLE1"/>	 		 	 			 		 	 		 	
+	 	<result property="etc_price1" column="ETC_PRICE1"/>	 		 	 			 		 	 		 	
+	 	<result property="etc_price_title2" column="ETC_PRICE_TITLE2"/>	 
+	 	<result property="etc_price2" column="ETC_PRICE2"/>	 
+	 	<result property="etc_price_title3" column="ETC_PRICE_TITLE3"/>	 
+
+	 	<result property="etc_price3" column="ETC_PRICE3"/>	 
+	 	<result property="ev_inwon" column="EV_INWON"/>	 
+	 	<result property="min_inwon" column="MIN_INWON"/>	 	 	
+	 	<result property="proc_cd" column="PROC_CD"/>	 	 		 	
+	 	<result property="lock_unit" column="LOCK_UNIT"/>	 	 		 	
+
+	 	<result property="tc_cnt" column="TC_CNT"/>	 	 		 	
+	 	<result property="point_rate" column="POINT_RATE"/>	 	
+	 	<result property="point_amt" column="POINT_AMT"/>	
+	 	<result property="et_adm_cd" column="ET_ADM_CD"/>	
+	 	<result property="rv_cnt" column="RV_CNT"/>	
+
+	 	<result property="img_url" column="IMG_URL"/>	
+	 	<result property="goods_tag_text" column="GOODS_TAG_TEXT"/>	
+	 	<result property="conf_yn" column="CONF_YN"/>	
+	 	<result property="conf_land" column="CONF_LAND"/>	
+	 	<result property="conf_air" column="CONF_AIR"/>	
+
+	 	<result property="conf_insu" column="CONF_INSU"/>
+	 	<result property="conf_hotel" column="CONF_HOTEL"/>
+	 	<result property="goods_type_cd" column="GOODS_TYPE_CD"/>
+	 	<result property="emp_rate" column="EMP_RATE" nullValue="0"/>
+	 	<result property="goods_join_cd" column="GOODS_JOIN_CD"/>
+
+	 	<result property="biz_insu_yn" column="BIZ_INSU_YN"/>
+	 	<result property="pkg_insu_yn" column="PKG_INSU_YN"/>
+	 	<result property="guide_yn" column="GUIDE_YN"/>
+	 	<result property="desc_file_path" column="DESC_FILE_PATH"/>
+	 	<result property="desc_file_nm" column="DESC_FILE_NM"/>	 	
+	 	
+	 	<result property="goods_cd" column="GOODS_CD"/>	 	
+	 	<result property="opt_desc" column="OPT_DESC"/>	 		
+	 	<result property="pro_desc" column="PRO_DESC"/>	 		
+	 	<result property="tot_amt1" column="TOT_AMT1"/>	 		
+	 	<result property="tot_amt2" column="TOT_AMT2"/>	 
+	 			
+	 	<result property="tot_amt3" column="TOT_AMT3"/>	 		
+	 	<result property="str_tot_amt1" column="STR_TOT_AMT1"/>	 		
+	 	<result property="str_tot_amt2" column="STR_TOT_AMT2"/>	 		
+	 	<result property="str_tot_amt3" column="STR_TOT_AMT3"/>	 
+	 	 		 			 		 		 	 	 		 		 		 			 	 			 		 	 		 		 	 		 		 		 			 	 			 		 	 		 	
+    </resultMap>
+       
+	<!--  상품리스트 UI > 사이트 상품 카테고리 조회  -->
+	<select id="GoodsDAO.selectSiteCtgSrch" parameterClass="GoodsCtgVO" resultMap="goodsCtg">
+		SELECT
+			CTG_SEQ,
+			CTG_NM,
+			CTG_UPR_SEQ		
+		FROM CTG
+		WHERE CTG_UPR_SEQ = #ctg_seq# AND DISP_YN = 'Y'
+		  AND (MBL_YN IS NULL OR MBL_YN <![CDATA[ <> ]]> 'N') 
+		ORDER BY CTG_DISP_ORDER ASC
+	</select>
+ 
+ 	<!--  상품리스트 UI > 사이트 상품 카테고리 조회  -->
+	<select id="GoodsDAO.selectSiteCtgSrch02" parameterClass="GoodsCtgVO" resultMap="goodsCtg">
+		SELECT
+			CTG_SEQ,
+			CTG_NM,
+			CTG_UPR_SEQ		
+		FROM CTG
+		WHERE CTG_UPR_SEQ = (SELECT CTG_UPR_SEQ FROM CTG WHERE CTG_SEQ = #ctg_seq#) AND DISP_YN = 'Y'
+		  AND (MBL_YN IS NULL OR MBL_YN <![CDATA[ <> ]]> 'N') 
+		ORDER BY CTG_DISP_ORDER ASC
+	</select>
+	          	
+	<!--  상품리스트 UI > 사이트 상품 카테고리 DEPTH별 조회  조회  -->
+	<select id="GoodsDAO.selectSiteCtgByDepthSrch" parameterClass="GoodsCtgVO"  resultMap="goodsCtg">
+		SELECT
+			CTG_SEQ,
+			CTG_NM,
+			CTG_UPR_SEQ	
+		FROM CTG
+		WHERE CTG_UPR_SEQ = (SELECT CTG_UPR_SEQ FROM CTG WHERE CTG_SEQ = #ctg_seq#)
+		AND DISP_YN = 'Y'
+		AND (MBL_YN IS NULL OR MBL_YN <![CDATA[ <> ]]> 'N') 
+		ORDER BY CTG_DISP_ORDER ASC
+	</select>
+		
+	<!--  상품리스트 UI > 사이트 상품 카테고리 DEPTH별 조회  조회  -->
+	<select id="GoodsDAO.selectSiteCtgByDepthSrch2" parameterClass="GoodsCtgVO"  resultMap="goodsCtg">
+		SELECT
+			CTG_SEQ,
+			CTG_NM,
+			CTG_UPR_SEQ	
+		FROM CTG
+		WHERE CTG_UPR_SEQ = #ctg_seq#
+		AND DISP_YN = 'Y'
+		AND (MBL_YN IS NULL OR MBL_YN <![CDATA[ <> ]]> 'N') 
+		ORDER BY CTG_DISP_ORDER ASC
+	</select>
+
+	<!-- 상품리스트 UI >  사이트 지역별 상품 리스트 조회 ==> 상품리스트에서 사용하는 쿼리  -->
+	<select id="Goods.selectSiteGoodsSrchsByAreaList" parameterClass="GoodsVO" resultMap="goods">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (
+				SELECT  
+				        COMP_CD
+				      , GOODS_CD
+				      , GOODS_NM
+				      , SHORT_GOODS_NM
+				      , NVL(EMP_RATE, 0) EMP_RATE
+				      , TO_CHAR(ADULT_PRICE,  'Fm999,999,999,990') AS STR_ADULT_PRICE
+				      , ADULT_PRICE 
+				      , ET_DAYS
+				      , GOODS_NIGHT_CNT
+				      , GOODS_DAY_CNT
+				      , FN_SCHD_NIGHT_DAYS(GOODS_CD, COMP_CD, #start_day#, 1) GOODS_NIGHTS
+				      , GOODS_DESC
+				      , CONCAT(CONCAT(CONCAT(CONCAT('/upload/common/goods/',SUBSTR(SAVE_FILE_NM, 0, 2)),'/'),SUBSTR(SAVE_FILE_NM, 0, 7)),'/') AS IMG_PATH  
+				      , SAVE_FILE_NM
+				      , CTG_SEQ
+				      , HOMESHOPPING_YN
+				      , PLAN_YN
+				      , EVENT_YN
+				      , PREMIUM_YN
+				      , CLASSIC_YN
+				      , SAVE_YN
+				      , DISP_ORDER
+				      , DISP_YN
+			          , ETC_PRICE1
+			          , ADULT_PRICE2
+				FROM    ( SELECT  B.COMP_CD
+				        , B.GOODS_CD
+				        , B.GOODS_NM
+				        , B.SHORT_GOODS_NM
+				        , NVL(B.EMP_RATE, 0) EMP_RATE
+				        , B.ADULT_PRICE
+				        , ET_DAYS
+				        , NVL(B.GOODS_NIGHT_CNT, 0) AS GOODS_NIGHT_CNT
+				        , NVL(B.GOODS_DAY_CNT, 0) AS GOODS_DAY_CNT
+				        , ( SELECT  GOODS_DESC
+				            FROM    GD_IMG_UNI
+				            WHERE   GD_IMG_GB = 'MIN'
+				                AND GOODS_CD = B.GOODS_CD
+				                AND COMP_CD  = B.COMP_CD )  AS GOODS_DESC
+				        , ( SELECT  SAVE_FILE_NM
+				            FROM    GD_IMG_UNI
+				            WHERE   GD_IMG_GB = 'MIN'
+				                AND GOODS_CD  = B.GOODS_CD
+				                AND COMP_CD   = B.COMP_CD ) AS SAVE_FILE_NM
+				        , ( SELECT  MAX(CTG.CTG_SEQ)
+				            FROM    CTG_GOODS CTG
+				                  , ( SELECT  CTG_SEQ
+				                      FROM    CTG_HEADER
+				                      WHERE   DISP_YN = 'Y'
+				                          AND CTG_TYPE_CD IN ('000', '100')
+				                      START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 2)
+				                      CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ ) HE
+				            WHERE   CTG.GOODS_CD = B.GOODS_CD
+				                AND CTG.CTG_SEQ  = HE.CTG_SEQ )   AS CTG_SEQ
+				        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '001' )  AS HOMESHOPPING_YN
+				        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '002' )  AS PLAN_YN
+				        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '003' )  AS EVENT_YN
+				        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '004' )  AS PREMIUM_YN
+				        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '005' )  AS CLASSIC_YN
+				        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '006' )  AS SAVE_YN
+				        , B.DISP_ORDER
+				        , B.DISP_YN
+				        , B.ETC_PRICE1
+				        , B.ADULT_PRICE2
+				  FROM    ( SELECT  GOODS_CD
+				                  , COMP_CD
+				                  , MIN(GOODS_NM)          GOODS_NM
+				                  , MIN(SHORT_GOODS_NM)    SHORT_GOODS_NM
+				                  , MIN(NVL(EMP_RATE, 0))          EMP_RATE
+				                  , MIN(GOODS_NIGHT_CNT)   GOODS_NIGHT_CNT
+				                  , MIN(GOODS_DAY_CNT)     GOODS_DAY_CNT
+				                  , MIN(ADULT_PRICE)       ADULT_PRICE
+				                  , MIN(DISP_ORDER)        DISP_ORDER
+				                  , MIN(DISP_YN)           DISP_YN
+				                  , ltrim(XMLAGG(XMLELEMENT(ET_DAYS, '|' || ET_DAYS) ORDER BY ET_DAYS_SORT).EXTRACT('//text()').GetStringVal(), '|')  AS ET_DAYS
+                                  , MIN(ETC_PRICE1) ETC_PRICE1
+                                  , MIN(ADULT_PRICE2) ADULT_PRICE2
+				            FROM    ( SELECT  GOODS_CD
+				                            , COMP_CD
+				                            , MIN(GOODS_NM)          GOODS_NM
+				                            , MIN(SHORT_GOODS_NM)    SHORT_GOODS_NM
+				                            , MIN(NVL(EMP_RATE, 0))          EMP_RATE
+				                            , MIN(GOODS_NIGHT_CNT)   GOODS_NIGHT_CNT
+				                            , MIN(GOODS_DAY_CNT)     GOODS_DAY_CNT
+				                            , MIN(DISP_ORDER)        DISP_ORDER
+				                            , MIN(DISP_YN)           DISP_YN
+				                            , MIN(ADULT_PRICE)       ADULT_PRICE
+				                            , ET_DAYS
+				                            , ET_DAYS_SORT
+                                            , MIN(ETC_PRICE1) ETC_PRICE1
+                                            , MIN(ADULT_PRICE2) ADULT_PRICE2
+				                      FROM    ( SELECT  A.GOODS_CD
+				                                      , A.COMP_CD
+				                                      , MIN(A.GOODS_NM)          GOODS_NM
+				                                      , MIN(A.SHORT_GOODS_NM)    SHORT_GOODS_NM
+				                                      , MIN(NVL(A.EMP_RATE, 0))          EMP_RATE
+				                                      , MIN(E.GOODS_NIGHT_CNT)   GOODS_NIGHT_CNT
+				                                      , MIN(E.GOODS_DAY_CNT)     GOODS_DAY_CNT
+				                                      , MIN(D.DISP_ORDER)        DISP_ORDER
+				                                      , MIN(D.DISP_YN)           DISP_YN
+				                                      , MIN(C.ADULT_PRICE + C.ETC_PRICE1)   ADULT_PRICE
+                                                      , TO_CHAR(TO_DATE(B.START_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') ET_DAYS 
+                                                      , TO_CHAR(TO_DATE(B.START_DAY, 'yyyyMMdd'), 'D') ET_DAYS_SORT
+                                                      , MIN(C.ETC_PRICE1) ETC_PRICE1
+                                                      , MIN(C.ADULT_PRICE) ADULT_PRICE2
+				                                FROM    GD_MST            A
+				                                      , ET_MST_USE    B
+				                                      , ET_PRICE_USE  C
+				                                      , CTG_GOODS         D
+				                                      , GD_SCHD       E
+				                                WHERE   D.DISP_YN = 'Y'
+				                                    AND D.CTG_SEQ IN ( SELECT  CTG_SEQ
+				                                                       FROM    CTG_HEADER
+				                                                       WHERE   CTG_TYPE_CD IN ('000', '100')
+				                                                           AND DISP_YN = 'Y'
+				                                                       START WITH CTG_SEQ = #ctg_seq#
+				                                                       CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+				                                    AND B.DISP_YN = 'Y'
+				                                    AND ( B.EV_CAN_CD IS NULL OR B.EV_CAN_CD != '99' )
+				                                    <isNotEmpty property="start_day">
+				                                    AND B.START_DAY <![CDATA[ >= ]]> #start_day#
+				                                    </isNotEmpty>
+				                                    
+				                                    AND C.ADULT_PRICE > 0
+				                                    AND D.GOODS_CD = A.GOODS_CD
+				                                    AND D.COMP_CD  = A.COMP_CD
+				                                    AND D.GOODS_CD = B.GOODS_CD
+				                                    AND D.COMP_CD  = B.COMP_CD
+				                                    AND D.GOODS_CD = E.GOODS_CD (+)
+				                                    AND D.COMP_CD  = E.COMP_CD (+)
+				                                    AND B.EVENT_CD = C.EVENT_CD
+				                                    AND B.FEE_SEQ  = C.FEE_SEQ
+				                                    AND B.START_DAY > (CASE WHEN A.OP_CD = 'DO' THEN TO_CHAR(SYSDATE + 2, 'yyyyMMdd') ELSE TO_CHAR(SYSDATE + 4, 'yyyyMMdd') END)
+				                                GROUP BY A.GOODS_CD, A.COMP_CD, B.START_DAY, A.OP_CD
+				                                )
+				                      GROUP BY GOODS_CD, COMP_CD, ET_DAYS, ET_DAYS_SORT )
+				            GROUP BY GOODS_CD, COMP_CD ) B
+					)
+					<!--  정렬방식 : 01. 추천상품순, 02. 낮은가격순, 03. 높은 가격순 -->	
+					<isNotEmpty property="orderby">
+						<isEqual property="orderby" compareValue="01" > 
+							ORDER BY DISP_ORDER ASC
+						</isEqual>
+						<isEqual property="orderby" compareValue="02" > 
+							ORDER BY ADULT_PRICE ASC
+						</isEqual>
+						<isEqual property="orderby" compareValue="03" > 
+							ORDER BY ADULT_PRICE DESC
+						</isEqual>
+					</isNotEmpty>	
+														 
+		    ) QUERY  
+      ) WHERE RN <![CDATA[ >= ]]> #startRow#	
+		  AND RN <![CDATA[ <= ]]> #endRow#
+
+		                                    
+	</select>	
+
+	<!-- 상품리스트 UI >  사이트 지역별 상품 리스트 조회 ==> 상품리스트에서 사용하는 쿼리  -->
+	<select id="GoodsDAO.selectSiteGoodsSrchsByAreaListCount" parameterClass="GoodsVO"  resultClass="int">
+	SELECT  
+		COUNT(*)
+	FROM    ( SELECT  B.COMP_CD
+	        , B.GOODS_CD
+	        , B.GOODS_NM
+	        , B.SHORT_GOODS_NM
+	        , NVL(B.EMP_RATE, 0) EMP_RATE
+	        , B.ADULT_PRICE
+	        , ET_DAYS
+	        , B.GOODS_NIGHT_CNT
+	        , B.GOODS_DAY_CNT
+	        , ( SELECT  GOODS_DESC
+	            FROM    GD_IMG_UNI
+	            WHERE   GD_IMG_GB = 'MIN'
+	                AND GOODS_CD = B.GOODS_CD
+	                AND COMP_CD  = B.COMP_CD )  AS GOODS_DESC
+	        , ( SELECT  SAVE_FILE_NM
+	            FROM    GD_IMG_UNI
+	            WHERE   GD_IMG_GB = 'MIN'
+	                AND GOODS_CD  = B.GOODS_CD
+	                AND COMP_CD   = B.COMP_CD ) AS SAVE_FILE_NM
+	        , ( SELECT  MAX(CTG.CTG_SEQ)
+	            FROM    CTG_GOODS CTG
+	                  , ( SELECT  CTG_SEQ
+	                      FROM    CTG_HEADER
+	                      WHERE   DISP_YN = 'Y'
+	                          AND CTG_TYPE_CD IN ('000', '100')
+	                      START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 2)
+	                      CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ ) HE
+	            WHERE   CTG.GOODS_CD = B.GOODS_CD
+	                AND CTG.CTG_SEQ  = HE.CTG_SEQ )   AS CTG_SEQ
+	        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '001' )  AS HOMESHOPPING_YN
+	        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '002' )  AS PLAN_YN
+	        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '003' )  AS EVENT_YN
+	        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '004' )  AS PREMIUM_YN
+	        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '005' )  AS CLASSIC_YN
+	        , ( SELECT  DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD AND COMP_CD = B.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '006' )  AS SAVE_YN
+	        , B.DISP_ORDER
+	        , B.DISP_YN
+	  FROM    ( SELECT  GOODS_CD
+	                  , COMP_CD
+	                  , MIN(GOODS_NM)          GOODS_NM
+	                  , MIN(SHORT_GOODS_NM)    SHORT_GOODS_NM
+	                  , MIN(NVL(EMP_RATE, 0))          EMP_RATE
+	                  , MIN(GOODS_NIGHT_CNT)   GOODS_NIGHT_CNT
+	                  , MIN(GOODS_DAY_CNT)     GOODS_DAY_CNT
+	                  , MIN(ADULT_PRICE)       ADULT_PRICE
+	                  , MIN(DISP_ORDER)        DISP_ORDER
+	                  , MIN(DISP_YN)           DISP_YN
+	                  , ltrim(XMLAGG(XMLELEMENT(ET_DAYS, '|' || ET_DAYS) ORDER BY ET_DAYS_SORT).EXTRACT('//text()').GetStringVal(), '|')  AS ET_DAYS
+	            FROM    ( SELECT  GOODS_CD
+	                            , COMP_CD
+	                            , MIN(GOODS_NM)          GOODS_NM
+	                            , MIN(SHORT_GOODS_NM)    SHORT_GOODS_NM
+	                            , MIN(NVL(EMP_RATE, 0))          EMP_RATE
+	                            , MIN(GOODS_NIGHT_CNT)   GOODS_NIGHT_CNT
+	                            , MIN(GOODS_DAY_CNT)     GOODS_DAY_CNT
+	                            , MIN(DISP_ORDER)        DISP_ORDER
+	                            , MIN(DISP_YN)           DISP_YN
+	                            , MIN(ADULT_PRICE)       ADULT_PRICE
+	                            , ET_DAYS
+	                            , ET_DAYS_SORT
+	                      FROM    ( SELECT  A.GOODS_CD
+	                                      , A.COMP_CD
+	                                      , MIN(A.GOODS_NM)          GOODS_NM
+	                                      , MIN(A.SHORT_GOODS_NM)    SHORT_GOODS_NM
+	                                      , MIN(NVL(A.EMP_RATE, 0))          EMP_RATE
+	                                      , MIN(E.GOODS_NIGHT_CNT)   GOODS_NIGHT_CNT
+	                                      , MIN(E.GOODS_DAY_CNT)     GOODS_DAY_CNT
+	                                      , MIN(D.DISP_ORDER)        DISP_ORDER
+	                                      , MIN(D.DISP_YN)           DISP_YN
+	                                      , MIN(C.ADULT_PRICE + C.ETC_PRICE1)   ADULT_PRICE
+                                                   , TO_CHAR(TO_DATE(B.START_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') ET_DAYS 
+                                                   , TO_CHAR(TO_DATE(B.START_DAY, 'yyyyMMdd'), 'D') ET_DAYS_SORT
+	                                FROM    GD_MST            A
+	                                      , ET_MST_USE    B
+	                                      , ET_PRICE_USE  C
+	                                      , CTG_GOODS         D
+	                                      , GD_SCHD       E
+	                                WHERE   D.DISP_YN = 'Y'
+	                                    AND D.CTG_SEQ IN ( SELECT  CTG_SEQ
+	                                                       FROM    CTG_HEADER
+	                                                       WHERE   CTG_TYPE_CD IN ('000', '100')
+	                                                           AND DISP_YN = 'Y'
+	                                                       START WITH CTG_SEQ = #ctg_seq#
+	                                                       CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+	                                    AND B.DISP_YN = 'Y'
+	                                    AND ( B.EV_CAN_CD IS NULL OR B.EV_CAN_CD != '99' )
+	                                    <isNotEmpty property="start_day">
+	                                    AND B.START_DAY <![CDATA[ >= ]]> #start_day#
+	                                    </isNotEmpty>
+	                                    
+	                                    AND C.ADULT_PRICE > 0
+	                                    AND D.GOODS_CD = A.GOODS_CD
+	                                    AND D.COMP_CD  = A.COMP_CD
+	                                    AND D.GOODS_CD = B.GOODS_CD
+	                                    AND D.COMP_CD  = B.COMP_CD
+	                                    AND B.EVENT_CD = C.EVENT_CD
+	                                    AND B.FEE_SEQ  = C.FEE_SEQ
+	                                    AND D.GOODS_CD = E.GOODS_CD (+)
+	                                    AND D.COMP_CD  = E.COMP_CD (+)
+	                                    AND B.START_DAY > (CASE WHEN A.OP_CD = 'DO' THEN TO_CHAR(SYSDATE + 2, 'yyyyMMdd') ELSE TO_CHAR(SYSDATE + 4, 'yyyyMMdd') END)
+	                                GROUP BY A.GOODS_CD, A.COMP_CD, B.START_DAY, A.OP_CD )
+	                      GROUP BY GOODS_CD, COMP_CD, ET_DAYS, ET_DAYS_SORT )
+	            GROUP BY GOODS_CD, COMP_CD ) B
+		)
+		 
+	</select>		
+
+	<!-- /** 상품마스터  UI > 사이트 상품 종류 정보 조회 **/-->
+	<select id="GoodsDAO.selectSiteGoodsCtgSrch" parameterClass="GoodsMstVO" resultMap="goodsMst">
+		SELECT	
+			A.OP_CD AS OP_CD,		
+			A.GOODS_CD AS GOODS_CD,		
+			A.COMP_CD AS COMP_CD			
+		FROM		GD_MST A
+		WHERE		A.GOODS_CD =  #goods_cd#
+		
+        <isNotEmpty property="comp_cd">
+			AND A.COMP_CD = #comp_cd#
+        </isNotEmpty>
+		                                    		
+	</select>
+	
+	<!-- /** 상품마스터  UI > 사이트 상품 정보 조회 **/-->
+	<select id="GoodsDAO.selectSiteGoodsInfo" parameterClass="GoodsVO" resultMap="goodsDTO">
+
+			  
+		SELECT /*+ 'lottejtb.t2.pw.goods.dbio.RNPwGd_mstDAOV01'*/GD.COMP_CD ,
+		       GD.GOODS_CD ,
+		       GD.GOODS_NM ,
+		       GD.SHORT_GOODS_NM ,
+		       ETC_PRICE1 ,
+		       ETC_PRICE2 ,
+		       AIR_REMARK ,
+		       ET_DAYS ,
+		       CDAY.ET_DAY_CNTS "BUS_TIME" ,
+		       GD.GOODS_DESC ,
+		       NVL(GD.EMP_RATE, 0) EMP_RATE ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   GD_DET_TAG
+		        WHERE  GOODS_CD = GD.GOODS_CD
+		        AND    COMP_CD = GD.COMP_CD
+		        AND    USE_YN = 'Y'
+		        AND    GOODS_TAG = '001') AS HOMESHOPPING_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   GD_DET_TAG
+		        WHERE  GOODS_CD = GD.GOODS_CD
+		        AND    COMP_CD = GD.COMP_CD
+		        AND    USE_YN = 'Y'
+		        AND    GOODS_TAG = '002') AS PLAN_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   GD_DET_TAG
+		        WHERE  GOODS_CD = GD.GOODS_CD
+		        AND    COMP_CD = GD.COMP_CD
+		        AND    USE_YN = 'Y'
+		        AND    GOODS_TAG = '003') AS EVENT_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   GD_DET_TAG
+		        WHERE  GOODS_CD = GD.GOODS_CD
+		        AND    COMP_CD = GD.COMP_CD
+		        AND    USE_YN = 'Y'
+		        AND    GOODS_TAG = '004') AS PREMIUM_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   GD_DET_TAG
+		        WHERE  GOODS_CD = GD.GOODS_CD
+		        AND    COMP_CD = GD.COMP_CD
+		        AND    USE_YN = 'Y'
+		        AND    GOODS_TAG = '005') AS CLASSIC_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   GD_DET_TAG
+		        WHERE  GOODS_CD = GD.GOODS_CD
+		        AND    COMP_CD = GD.COMP_CD
+		        AND    USE_YN = 'Y'
+		        AND    GOODS_TAG = '006') AS SAVE_YN
+		FROM   GD_MST "GD" ,
+		       (SELECT A.GOODS_CD,
+		               A.COMP_CD ,
+		               MIN(B.ADULT_PRICE+B.ETC_PRICE1) "ETC_PRICE1" ,
+		               MAX(B.ADULT_PRICE+B.ETC_PRICE1) "ETC_PRICE2"
+		        FROM   GD_MST "A",
+		               ET_PRICE "B",
+		               (SELECT ETM.*
+		                FROM   ET_MST ETM,
+		                       (SELECT EVENT_CD
+		                        FROM   CTG_EVENT
+		                        WHERE  CTG_SEQ=#ctg_seq#) EVC
+		                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                        AND    EVC.EVENT_CD IS NULL
+		                        AND    ETM.DISP_YN='Y')
+		                AND    (ETM.EV_CAN_CD IS NULL
+		                        OR     ETM.EV_CAN_CD != '99') ) "C"
+		        WHERE  A.GOODS_CD=C.GOODS_CD
+		        AND    A.COMP_CD=C.COMP_CD
+		        AND    C.EVENT_CD=B.EVENT_CD
+		        AND    C.FEE_SEQ=B.FEE_SEQ
+		        AND    A.GOODS_CD=#goods_cd#
+		        AND    A.COMP_CD =#comp_cd#
+		        AND    B.ADULT_PRICE <![CDATA[ > ]]> 0
+		        AND    C.START_DAY <![CDATA[ >= ]]> #start_day#
+		        GROUP BY A.GOODS_CD, A.COMP_CD ) PRICE ,
+		       (SELECT GOODS_CD,
+		               COMP_CD,
+		               ltrim(XMLAGG(XMLELEMENT(ET_DAYS, '|'||ET_DAYS)
+		                        ORDER BY ET_DAYS_SORT).EXTRACT('//text()').GetStringVal(), '|') AS ET_DAYS
+		        FROM   (SELECT GOODS_CD,
+		                       COMP_CD,
+		                       ET_DAYS,
+		                       ET_DAYS_SORT,
+		                       ROWNUM "ROW_ID"
+		                FROM   (SELECT DISTINCT GOODS_CD ,
+		                               COMP_CD ,
+		                               TO_CHAR(TO_DATE(START_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "ET_DAYS" ,
+		                               TO_CHAR(TO_DATE(START_DAY, 'yyyyMMdd'), 'D') "ET_DAYS_SORT"
+		                        FROM   (SELECT ETM.*
+		                                FROM   ET_MST ETM,
+		                                       (SELECT EVENT_CD
+		                                        FROM   CTG_EVENT
+		                                        WHERE  CTG_SEQ=#ctg_seq#) EVC
+		                                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                                        AND    EVC.EVENT_CD IS NULL
+		                                        AND    ETM.DISP_YN='Y')
+		                                AND    (ETM.EV_CAN_CD IS NULL
+		                                        OR     ETM.EV_CAN_CD != '99') ) "TEMP_ET_MST"
+		                        WHERE  GOODS_CD=#goods_cd#
+		                        AND    COMP_CD =#comp_cd#
+		                        AND    START_DAY <![CDATA[ >= ]]> #start_day#
+		                        ORDER BY ET_DAYS_SORT ASC ) )
+		        GROUP BY GOODS_CD, COMP_CD ) WDAY ,
+		       (SELECT GOODS_CD,
+		               COMP_CD,
+		               ltrim(XMLAGG(XMLELEMENT(EV_DAY_CNT, '|'||EV_DAY_CNT)
+		                        ORDER BY EV_DAY_CNT).EXTRACT('//text()').GetStringVal(), '|') AS ET_DAY_CNTS
+		        FROM   (SELECT GOODS_CD,
+		                       COMP_CD,
+		                       EV_DAY_CNT
+		                FROM   (SELECT DISTINCT GOODS_CD,
+		                               COMP_CD,
+		                               EV_DAY_CNT
+		                        FROM   (SELECT ETM.*
+		                                FROM   ET_MST ETM,
+		                                       (SELECT EVENT_CD
+		                                        FROM   CTG_EVENT
+		                                        WHERE  CTG_SEQ=#ctg_seq#) EVC
+		                                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                                        AND    EVC.EVENT_CD IS NULL
+		                                        AND    ETM.DISP_YN='Y')
+		                                AND    (ETM.EV_CAN_CD IS NULL
+		                                        OR     ETM.EV_CAN_CD != '99') ) "TEMP_ET_MST"
+		                        WHERE  GOODS_CD=#goods_cd#
+		                        AND    COMP_CD = #comp_cd#
+		                        AND    START_DAY <![CDATA[ >= ]]> #start_day# ) )
+		        GROUP BY GOODS_CD, COMP_CD ) CDAY ,
+		       (SELECT GOODS_CD,
+		               COMP_CD,
+		               XMLAGG(XMLELEMENT(TRFF_KNM, '|'||TRFF_KNM)
+		                ORDER BY TRFF_KNM).EXTRACT('//text()').GetStringVal() AS AIR_REMARK
+		        FROM   (SELECT DISTINCT GOODS_CD,
+		                       COMP_CD,
+		                       TRFF_KNM "TRFF_KNM",
+		                       ROWNUM "ROW_ID"
+		                FROM   (SELECT DISTINCT GOODS_CD,
+		                               COMP_CD,
+		                               TRFF_KNM
+		                        FROM   (SELECT ETM.*
+		                                FROM   ET_MST ETM,
+		                                       (SELECT EVENT_CD
+		                                        FROM   CTG_EVENT
+		                                        WHERE  CTG_SEQ=#ctg_seq#) EVC
+		                                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                                        AND    EVC.EVENT_CD IS NULL
+		                                        AND    ETM.DISP_YN='Y')
+		                                AND    (ETM.EV_CAN_CD IS NULL
+		                                        OR     ETM.EV_CAN_CD != '99') ) ET,
+		                               CO_CD_TRAFFIC TR
+		                        WHERE  ET.GOODS_CD=#goods_cd#
+		                        AND    ET.COMP_CD =#comp_cd#
+		                        AND    (ET.TRFF_CD_SHORT IS NOT NULL
+		                                OR     ET.TRFF_CD_SHORT != '')
+		                        AND    ET.START_DAY <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+		                        AND    ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT ) )
+		        GROUP BY GOODS_CD, COMP_CD ) ET
+		WHERE  GD.GOODS_CD=PRICE.GOODS_CD
+		AND    GD.GOODS_CD=WDAY.GOODS_CD
+		AND    GD.GOODS_CD=CDAY.GOODS_CD(+)
+		AND    GD.GOODS_CD=ET.GOODS_CD(+)
+		AND    GD.COMP_CD=ET.COMP_CD(+)
+		AND    GD.GOODS_CD=#goods_cd#
+		AND    GD.COMP_CD=#comp_cd# 
+
+	</select>
+	
+	<!-- /** 상품 마스터 UI > 행사 마스터 일정 조회 **/ -->
+	<select id="GoodsDAO.selectSiteGoodsEvntDays" parameterClass="EventMstVO" resultMap="goodsEvent">
+		SELECT 
+		        GOODS_CD
+		      , COMP_CD
+		      , ltrim(XMLAGG(XMLELEMENT(START_DAY, '|' || START_DAY) ORDER BY START_DAY).EXTRACT('//text()').GetStringVal(),'|')  AS EVENT_DESC
+		FROM    ( SELECT  GOODS_CD
+		                , COMP_CD
+		                , START_DAY
+		                , ROWNUM    "ROW_ID"
+		          FROM    ( SELECT  DISTINCT  GD.GOODS_CD
+		                          , GD.COMP_CD
+		                          , SUBSTR(ET.START_DAY, 1, 6)  START_DAY
+		                    FROM    ( SELECT  ETM.*
+		                              FROM    ET_MST_USE  ETM
+		                                    , ( SELECT  EVENT_CD
+		                                        FROM    CTG_EVENT
+		                                        WHERE   CTG_SEQ = #ctg_seq# )  EVC
+		                              WHERE   ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                                  AND ETM.GOODS_CD = #goods_cd#
+		                                  AND ETM.COMP_CD  = #comp_cd#
+		                                  AND ETM.DISP_YN = 'Y'
+		                                  AND ( ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99' )
+		                                  AND EVC.EVENT_CD IS NULL ) ET
+		                          , GD_MST GD
+		                    WHERE   ET.GOODS_CD = GD.GOODS_CD
+		                        AND ET.COMP_CD  = GD.COMP_CD
+		                        AND GD.GOODS_CD = #goods_cd#
+		                        AND GD.COMP_CD  = #comp_cd#
+		                        
+		                    ORDER BY START_DAY ASC )
+		)
+		GROUP BY GOODS_CD, COMP_CD
+
+	</select>		
+	
+	<!-- /** 상품 마스터 UI > 행사 마스터 리스트 조회 **/ -->	
+	<select id="GoodsDAO.selectSiteGoodsEvntList" parameterClass="EventListDTO" resultMap="eventListDTO">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (
+				SELECT      
+				              ET.EVENT_CD
+				            , ET.COMP_CD
+				            , ET.DISP_NM
+				            , ET.EV_DAY_CNT
+				            , ET.EV_NIGHT_CNT
+                       		, NVL(ET.START_DAY, '')  "START_DAY"
+                       		, TO_CHAR(TO_DATE(NVL(ET.START_DAY,''), 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "START_WDAY"
+                       		, NVL(ET.START_TIME, '') "START_TIME"
+                       		, NVL(ET.START_PYUN, '') "START_PYUN"
+                       		, NVL(ET.END_DAY_FR, '') "END_DAY_FR"
+                       		, NVL(ET.END_TIME_FR, '') "END_TIME_FR"
+                       		, NVL(ET.END_DAY, '') "END_DAY"
+                       		, TO_CHAR(TO_DATE(NVL(ET.END_DAY, ''), 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "END_WDAY" 
+                       		, NVL(ET.END_TIME, '') "END_TIME"
+                       		, NVL(ET.END_PYUN, '') "END_PYUN"
+                       		, NVL(ET.START_DAY_TO, '') "START_DAY_TO"
+                       		, NVL(ET.START_TIME_TO, '') "START_TIME_TO"
+                       		, NVL(ET.TRFF_CD, '') "TRFF_CD"
+                       		, NVL(TR.TRFF_KNM, '') "CD_NM"
+				            , ET.TRFF_CD_SHORT 
+				            , ET.FEE_SEQ
+				            , PRICE.ADULT_PRICE
+				            , PRICE.CHILD_PRICE
+				            , PRICE.BABY_PRICE
+				            , TO_CHAR(PRICE.ADULT_PRICE,  'Fm999,999,999,990') AS STR_ADULT_PRICE
+				            , TO_CHAR(PRICE.CHILD_PRICE,  'Fm999,999,999,990') AS STR_CHILD_PRICE
+				            , TO_CHAR(PRICE.BABY_PRICE,  'Fm999,999,999,990') AS STR_BABY_PRICE		            
+				            , PRICE.ETC_PRICE_TITLE1
+				            , PRICE.ETC_PRICE1
+				            , PRICE.ETC_PRICE_TITLE2
+				            , PRICE.ETC_PRICE2      
+				            , PRICE.ETC_PRICE_TITLE3
+				            , PRICE.ETC_PRICE3
+	                        , PRICE.ADULT_PRICE+PRICE.ETC_PRICE1 AS TOT_AMT1
+	                        , PRICE.CHILD_PRICE+PRICE.ETC_PRICE2 AS TOT_AMT2
+	                        , PRICE.BABY_PRICE+PRICE.ETC_PRICE3 AS TOT_AMT3
+	                       	, TO_CHAR(PRICE.ADULT_PRICE+PRICE.ETC_PRICE1, 'Fm999,999,999,990') AS STR_TOT_AMT1
+	                       	, TO_CHAR(PRICE.CHILD_PRICE+PRICE.ETC_PRICE2, 'Fm999,999,999,990') AS STR_TOT_AMT2
+	                        , TO_CHAR(PRICE.BABY_PRICE+PRICE.ETC_PRICE3, 'Fm999,999,999,990') AS STR_TOT_AMT3                       				            
+				            , ET.EV_INWON
+				            , ET.MIN_INWON
+							, NVL(ET.PROC_CD, '') PROC_CD
+		       				, NVL(ET.LOCK_UNIT, '') LOCK_UNIT
+				            , NVL(ET.TC_CNT,0) "TC_CNT"
+				            , ET.POINT_RATE
+				            , ET.POINT_AMT
+				            , ET.ET_ADM_CD            
+				            , NVL ((
+				                SELECT COUNT(RES_SEQ)
+				                FROM RV_ROSTER RS, RV_MST RV
+				                WHERE (RS.CANC_CD IS NULL OR RS.CANC_CD = '')
+				                AND RV.RES_CD=RS.RES_CD
+				                AND ET.EVENT_CD = RV.EVENT_CD
+				                GROUP BY EVENT_CD            
+				            ), 0) "RV_CNT"
+				            , TAG.IMG_PATH "IMG_URL"            
+				            , TAG.EVENT_TAG "GOODS_TAG_TEXT"
+				            , NVL(ET.CONF_YN,'N') "CONF_YN"
+				            , NVL(ET.CONF_LAND,'N') "CONF_LAND"
+				            , NVL(ET.CONF_AIR,'N') "CONF_AIR"
+				            , NVL(ET.CONF_INSU,'N') "CONF_INSU"
+				            , NVL(ET.CONF_HOTEL,'N') "CONF_HOTEL"
+				            , ET.GOODS_TYPE_CD "GOODS_TYPE_CD"
+				            , NVL(ET.EMP_RATE, 0) "EMP_RATE"
+							, ET.GOODS_JOIN_CD
+							, ET.BIZ_INSU_YN
+							, ET.PKG_INSU_YN
+							, ET.GUIDE_YN
+							, GD.DESC_FILE_PATH
+							, GD.DESC_FILE_NM
+				            , GD.GOODS_CD
+				            , ECI.CLAUSE_FG "OPT_DESC"
+				            , ECI.CLAUSE_DESC "PRO_DESC"
+				FROM        (
+				                SELECT ETM.*
+				                FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT WHERE CTG_SEQ=#ctg_seq#) EVC
+				                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL)
+				                       AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+				                           
+				            ) "ET", 
+				            ET_PRICE "PRICE", GD_MST "GD", CO_CD_TRAFFIC TR,
+				            (
+				                SELECT      MAX(EVENT_CD) "EVENT_CD" ,
+				        			        ltrim(XMLAGG(XMLELEMENT(EVENT_TAG, '|'||EVENT_TAG) ORDER BY EVENT_TAG).EXTRACT('//text()').GetStringVal(),'|')AS EVENT_TAG,
+											ltrim(XMLAGG(XMLELEMENT(IMG_PATH, '|'||IMG_PATH) ORDER BY IMG_PATH).EXTRACT('//text()').GetStringVal(),'|') AS IMG_PATH
+				                FROM                        
+				                (
+		
+				                 	SELECT  TAG.EVENT_CD ,
+				                            TAG.EVENT_TAG ,
+				                            TAG.IMG_PATH 
+				                    FROM    ET_DET_TAG TAG
+				                    WHERE TAG.EVENT_CD = #event_cd#
+				
+				
+				                ) 
+				                GROUP BY EVENT_CD
+				            ) TAG ,
+				            ET_CLAUSE_INFO ECI
+				WHERE ET.EVENT_CD=PRICE.EVENT_CD
+			        AND ET.FEE_SEQ=PRICE.FEE_SEQ
+		            AND ET.GOODS_CD=GD.GOODS_CD
+		            AND ET.COMP_CD=GD.COMP_CD
+		            AND GD.GOODS_CD=#goods_cd#
+		            AND GD.COMP_CD=#comp_cd#
+		            AND ET.EVENT_CD=TAG.EVENT_CD(+)
+	   	            AND ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT(+)
+	   	            AND ET.EVENT_CD = ECI.EVENT_CD(+)
+	   	            AND ET.DISP_YN = 'Y'
+	   	            <isNotEmpty property="price">
+		           		AND (PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)  <![CDATA[ < ]]> #price#
+		           </isNotEmpty>
+		           <isNotEmpty property="start_day">
+		           		AND ET.START_DAY  <![CDATA[ >= ]]> #start_day#
+		           </isNotEmpty>
+		           <isNotEmpty property="end_day">
+		           		AND ET.START_DAY  <![CDATA[ < ]]> #end_day#
+		           </isNotEmpty>			           	
+		           
+		           ORDER BY ET.START_DAY, ET.START_TIME	            	        
+		    ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# 
+      ) WHERE RN <![CDATA[ >= ]]> #startRow#	
+	</select>
+	
+	<!-- /** 상품 마스터 UI > 행사 마스터 리스트 조회 **/ -->	
+	<select id="GoodsDAO.selectSiteGoodsEvntListCanReserve" parameterClass="EventListDTO" resultMap="eventListDTO2">
+
+				SELECT      
+				              ET.EVENT_CD
+				            , ET.COMP_CD
+				            , ET.DISP_NM
+				            , ET.EV_DAY_CNT
+				            , ET.EV_NIGHT_CNT
+				            , ET.START_DAY
+				            , TO_CHAR(TO_DATE(ET.START_DAY,'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "START_WDAY"
+				            , ET.START_TIME
+				            , ET.START_PYUN
+				            , ET.END_DAY_FR
+				            , ET.END_TIME_FR
+				            , ET.END_DAY
+				            , TO_CHAR(TO_DATE(ET.END_DAY,'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "END_WDAY"
+				            , ET.END_TIME
+				            , ET.END_PYUN
+				            , ET.START_DAY_TO
+				            , ET.START_TIME_TO
+				            , ET.TRFF_CD
+				            , TR.TRFF_KNM "CD_NM"    
+				            , ET.TRFF_CD_SHORT 
+				            , ET.FEE_SEQ
+				            , PRICE.ADULT_PRICE
+				            , PRICE.CHILD_PRICE
+				            , PRICE.BABY_PRICE
+				            , TO_CHAR(PRICE.ADULT_PRICE,  'Fm999,999,999,990') AS STR_ADULT_PRICE
+				            , TO_CHAR(PRICE.CHILD_PRICE,  'Fm999,999,999,990') AS STR_CHILD_PRICE
+				            , TO_CHAR(PRICE.BABY_PRICE,  'Fm999,999,999,990') AS STR_BABY_PRICE		            
+				            , PRICE.ETC_PRICE_TITLE1
+				            , PRICE.ETC_PRICE1
+				            , PRICE.ETC_PRICE_TITLE2
+				            , PRICE.ETC_PRICE2      
+				            , PRICE.ETC_PRICE_TITLE3
+				            , PRICE.ETC_PRICE3
+	                        , PRICE.ADULT_PRICE+PRICE.ETC_PRICE1 AS TOT_AMT1
+	                        , PRICE.CHILD_PRICE+PRICE.ETC_PRICE2 AS TOT_AMT2
+	                        , PRICE.BABY_PRICE+PRICE.ETC_PRICE3 AS TOT_AMT3
+	                       	, TO_CHAR(PRICE.ADULT_PRICE+PRICE.ETC_PRICE1, 'Fm999,999,999,990') AS STR_TOT_AMT1
+	                       	, TO_CHAR(PRICE.CHILD_PRICE+PRICE.ETC_PRICE2, 'Fm999,999,999,990') AS STR_TOT_AMT2
+	                        , TO_CHAR(PRICE.BABY_PRICE+PRICE.ETC_PRICE3, 'Fm999,999,999,990') AS STR_TOT_AMT3                       				            
+				            , ET.EV_INWON
+				            , ET.MIN_INWON
+							, NVL(ET.PROC_CD, '') PROC_CD
+		       				, NVL(ET.LOCK_UNIT, '') LOCK_UNIT
+				            , NVL(ET.TC_CNT,0) "TC_CNT"
+				            , ET.POINT_RATE
+				            , ET.POINT_AMT
+				            , ET.ET_ADM_CD            
+				            , NVL ((
+				                SELECT COUNT(RES_SEQ)
+				                FROM RV_ROSTER RS, RV_MST RV
+				                WHERE (RS.CANC_CD IS NULL OR RS.CANC_CD = '')
+				                AND RV.RES_CD=RS.RES_CD
+				                AND ET.EVENT_CD = RV.EVENT_CD
+				                GROUP BY EVENT_CD            
+				            ), 0) "RV_CNT"
+				            , TAG.IMG_PATH "IMG_URL"            
+				            , TAG.EVENT_TAG "GOODS_TAG_TEXT"
+				            , NVL(ET.CONF_YN,'N') "CONF_YN"
+				            , NVL(ET.CONF_LAND,'N') "CONF_LAND"
+				            , NVL(ET.CONF_AIR,'N') "CONF_AIR"
+				            , NVL(ET.CONF_INSU,'N') "CONF_INSU"
+				            , NVL(ET.CONF_HOTEL,'N') "CONF_HOTEL"
+				            , ET.GOODS_TYPE_CD "GOODS_TYPE_CD"
+				            , NVL(ET.EMP_RATE, 0) "EMP_RATE"
+							, ET.GOODS_JOIN_CD
+							, ET.BIZ_INSU_YN
+							, ET.PKG_INSU_YN
+							, ET.GUIDE_YN
+							, GD.DESC_FILE_PATH
+							, GD.DESC_FILE_NM
+				            , GD.GOODS_CD
+				            , ECI.CLAUSE_FG "OPT_DESC"
+				            , ECI.CLAUSE_DESC "PRO_DESC"
+		FROM        (
+		                SELECT ETM.*
+		                FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT WHERE CTG_SEQ=#ctg_seq#) EVC
+		                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL)
+		                       AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+		                           
+		            ) "ET", 
+		            ET_PRICE "PRICE", GD_MST "GD", CO_CD_TRAFFIC TR,
+		            (
+		                SELECT      MAX(EVENT_CD) "EVENT_CD" ,
+		        			        ltrim(XMLAGG(XMLELEMENT(EVENT_TAG, '|'||EVENT_TAG) ORDER BY EVENT_TAG).EXTRACT('//text()').GetStringVal(),'|')AS EVENT_TAG,
+									ltrim(XMLAGG(XMLELEMENT(IMG_PATH, '|'||IMG_PATH) ORDER BY IMG_PATH).EXTRACT('//text()').GetStringVal(),'|') AS IMG_PATH
+		                FROM                        
+		                (
+		
+		                 	SELECT  TAG.EVENT_CD ,
+		                            TAG.EVENT_TAG ,
+		                            TAG.IMG_PATH 
+		                    FROM    ET_DET_TAG TAG
+		                    WHERE TAG.EVENT_CD = #event_cd#
+		
+		
+		                ) 
+		                GROUP BY EVENT_CD
+		            ) TAG ,
+		            ET_CLAUSE_INFO ECI
+		WHERE ET.EVENT_CD=PRICE.EVENT_CD
+		      AND ET.FEE_SEQ=PRICE.FEE_SEQ
+		      AND ET.GOODS_CD=GD.GOODS_CD
+		      AND ET.COMP_CD=GD.COMP_CD
+		      AND GD.GOODS_CD=#goods_cd#
+		      AND GD.COMP_CD=#comp_cd#
+		      AND ET.EVENT_CD=TAG.EVENT_CD(+)
+		      AND ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT(+)
+		      AND ET.EVENT_CD = ECI.EVENT_CD(+)
+		      AND ET.DISP_YN = 'Y'
+	   	            <isNotEmpty property="price">
+		           		AND (PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)  <![CDATA[ < ]]> #price#
+		           </isNotEmpty>
+			<isNotEmpty property="start_day">
+				AND ET.START_DAY  <![CDATA[ >= ]]> #start_day#
+			</isNotEmpty>	
+            <isNotEmpty property="end_day">
+           		AND ET.START_DAY  <![CDATA[ < ]]> #end_day#
+            </isNotEmpty>			        
+		        
+		ORDER BY ET.START_DAY, ET.START_TIME	            	        
+
+	</select>
+		
+	<!-- /** 상품 마스터 UI > 행사 마스터 리스트 조회 **/ -->	
+	<select id="GoodsDAO.selectSiteGoodsEvntListCount" parameterClass="EventListDTO" resultClass="int">
+	
+	    SELECT 
+	        COUNT(*) totalCnt
+	    FROM        (
+	                SELECT ETM.*
+	                FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT WHERE CTG_SEQ=#ctg_seq#) EVC
+	                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL)
+	                       AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+	                           
+	            ) "ET", 
+	            ET_PRICE "PRICE", GD_MST "GD", CO_CD_TRAFFIC TR,
+	            (
+	                SELECT      MAX(EVENT_CD) "EVENT_CD" ,
+	                            ltrim(XMLAGG(XMLELEMENT(EVENT_TAG, '|'||EVENT_TAG) ORDER BY EVENT_TAG).EXTRACT('//text()').GetStringVal(),'|')AS EVENT_TAG,
+	                            ltrim(XMLAGG(XMLELEMENT(IMG_PATH, '|'||IMG_PATH) ORDER BY IMG_PATH).EXTRACT('//text()').GetStringVal(),'|') AS IMG_PATH
+	                FROM                        
+	                (
+
+	                 	SELECT  TAG.EVENT_CD ,
+                            TAG.EVENT_TAG ,
+                            TAG.IMG_PATH 
+	                    FROM    ET_DET_TAG TAG
+	                    WHERE TAG.EVENT_CD = #event_cd#
+	                ) 
+	                
+	                GROUP BY EVENT_CD
+	            ) TAG ,
+	            ET_CLAUSE_INFO ECI
+	    WHERE ET.EVENT_CD=PRICE.EVENT_CD
+	        AND ET.FEE_SEQ=PRICE.FEE_SEQ
+	        AND ET.GOODS_CD=GD.GOODS_CD
+	        AND ET.COMP_CD=GD.COMP_CD
+	        AND GD.GOODS_CD=#goods_cd#
+	        AND GD.COMP_CD=#comp_cd#
+	        AND ET.EVENT_CD=TAG.EVENT_CD(+)
+	        AND ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT(+)
+	        AND ET.EVENT_CD = ECI.EVENT_CD(+)
+	        AND ET.DISP_YN = 'Y'
+	   	            <isNotEmpty property="price">
+		           		AND (PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)  <![CDATA[ < ]]> #price#
+		           </isNotEmpty>
+           <isNotEmpty property="start_day">
+           		AND ET.START_DAY  <![CDATA[ >= ]]> #start_day#
+           </isNotEmpty>
+           <isNotEmpty property="end_day">
+           		AND ET.START_DAY  <![CDATA[ < ]]> #end_day#
+           </isNotEmpty>	           
+           	            	          	        
+	
+	</select>	
+	
+	<select id="GoodsDAO.getCtgCode" parameterClass="java.util.HashMap" resultClass="GoodsMstVO">
+		<!-- SELECT GOODS_CD AS goods_cd ,
+		       CTG_SEQ AS ctg_seq 
+		FROM   (SELECT GOODS_CD ,
+		               CTG_SEQ ,
+		               ROW_NUMBER() OVER(PARTITION BY GOODS_CD
+		                ORDER BY DISP_ORDER ASC) AS SEQ
+		        FROM   CTG_GOODS
+		        WHERE  CTG_SEQ > (SELECT CTG_SEQ
+		                FROM   (SELECT CTG_SEQ ,
+		                               ROWNUM RN
+		                        FROM   CTG
+		                        WHERE  CTG_UPR_SEQ = 0 )
+		                WHERE  RN = 2 ) )
+		WHERE  SEQ = '1'
+		AND    GOODS_CD = #goodsCd# -->
+        SELECT CTG.GOODS_CD AS goods_cd ,
+		       CTG.CTG_SEQ AS ctg_seq
+		  FROM CTG_GOODS CTG ,
+		       (SELECT CTG_SEQ
+		          FROM CTG_HEADER
+		         WHERE DISP_YN = 'Y'
+		           AND CTG_TYPE_CD IN ('000',
+		                       '100')
+		           AND CTG_SEQ_PATH LIKE '%' || #ctg# || '%' 
+		               START WITH CTG_SEQ = '5738' CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ ) HE
+		 WHERE GOODS_CD =#goodsCd#
+		   AND CTG.CTG_SEQ = HE.CTG_SEQ
+		   AND rownum=1
+	</select>
+</sqlMap>

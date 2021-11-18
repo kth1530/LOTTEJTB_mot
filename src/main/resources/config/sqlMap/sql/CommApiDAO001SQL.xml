@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CommApiDAO">
+	
+		
+	<typeAlias alias="egovMap"        		type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="commExchangeVO"		type="com.lottejtb.comm.service.CommExchangeVO"/>
+	
+	<select id="CommApiDAO.exchangeInfo" parameterClass="commExchangeVO" resultClass="commExchangeVO">
+		SELECT /*+ INDEX_DESC(SY_EXCHANGE PK_SY_EXCHANGE) */
+		       EXC_DT  			AS excDt			/* 날짜 */
+		     , EXC_SEQ 			AS excSeq			/* 고시회차 */
+		     , BAS_RATE 		AS basRate			/* 매매기준율 */
+		     , CURR_CD      	AS currCd			/* 나라코드 */
+		  FROM SY_EXCHANGE 							/* 환율정보 */
+		WHERE CURR_CD = #currCd#
+		   AND ROWNUM = 1
+	</select>
+	
+	<select id="CommApiDAO.totalExchangeInfo" resultClass="commExchangeVO">
+		SELECT MST.CURR_CD      AS currCd
+		     , MST.BAS_RATE     AS basRate
+		  FROM SY_EXCHANGE MST INNER JOIN(
+		                        SELECT MAX(EXC_DT) AS EXC_DT
+		                             , CURR_CD
+		                        FROM SY_EXCHANGE
+		                        GROUP BY CURR_CD
+		                       ) MAX_CUR 
+		                    ON MST.EXC_DT = MAX_CUR.EXC_DT
+		                   AND MST.CURR_CD = MAX_CUR.CURR_CD
+	</select>
+</sqlMap>

@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PlanningDAO">
+	
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="PlanningVO"         type="com.lottejtb.planning.service.PlanningVO"/>
+	
+	<resultMap id="planning" class="PlanningVO">
+	 	<result property="rn" column="RN"/>
+	 	<result property="planSeq" column="PLAN_SEQ"/>	 	
+	 	<result property="planNm" column="PLAN_NM"/>
+	 	<result property="goodsTypeCd" column="GOODS_TYPE_CD"/>
+	    <result property="areaCd" column="AREA_CD"/>
+		<result property="cnt" column="CNTS" jdbcType="CLOB" javaType="String" />
+		<result property="smallImgPh" column="SMALL_IMG_PATH"/>
+		<result property="planFrday" column="PLAN_FR_DAY"/>
+		<result property="planToday" column="PLAN_TO_DAY"/>
+		<result property="planFrtm" column="PLAN_FR_TM"/>
+		<result property="planTotm" column="PLAN_TO_TM"/>
+		<result property="planUrl" column="PLAN_URL"/>
+		<result property="planClsCd" column="PLAN_CLS_CD"/>
+		<result property="planDetClsCd" column="PLAN_DET_CLS_CD"/>
+		<result property="planTyImgCd" column="PLAN_TYPE_IMG_CD"/>
+		<result property="templeteCd" column="TEMPLETE_CD"/>
+		<result property="spectialYn" column="SPECIAL_YN"/>
+		<result property="incYn" column="INC_YN"/>
+		<result property="notincYn" column="NOTINC_YN"/>
+		<result property="optionYn" column="OPTION_YN"/>
+		<result property="smallImgPh" column="SMALL_IMG_PATH"/>
+		<result property="bigImgPh" column="BIG_IMG_PATH"/>
+		<result property="dispYn" column="DISP_YN"/>
+		<result property="startDayYn" column="START_DAY_YN"/>
+		<result property="cnts" column="CNTS" jdbcType="CLOB" javaType="String" />
+		<result property="insDt" column="INS_DT"/>
+		<result property="insId" column="INS_ID"/>
+		<result property="updDt" column="UPD_DT"/>
+		<result property="updId" column="UPD_ID"/>
+		<result property="memo" column="MEMO"/>
+		<result property="html" column="HTML"/>
+		<result property="viewCnt" column="VIEW_CNT"/>
+		<result property="thnPath" column="THN_PATH"/>
+		<result property="mallCd" column="MALL_CD"/>
+    </resultMap>
+    
+    <resultMap id="addPlanInfo" class="PlanningVO">
+	 	<result property="planSeq" column="PLAN_SEQ"/>
+	 	<result property="goodCd" column="GOODS_CD"/>
+	 	<result property="goodsNightDay" column="GOODS_NIGHT_DAY"/>
+	 	<result property="shortGoodsNm" column="SHORT_GOODS_NM"/>
+	 	<result property="air_remark" column="AIR_REMARK"/>
+	 </resultMap>
+	 
+	 <resultMap id="PlanningImage" class="PlanningVO">
+		<result property="img_title" column="IMG_TITLE"/>
+	 	<result property="save_file_nm" column="SAVE_FILE_NM"/>
+	 	<result property="goodCd" column="GOODS_CD"/>
+	 </resultMap>
+    
+	<select id="PlanningDAO.srchAllPlanList" parameterClass="PlanningVO" resultMap="planning">
+		<!-- 
+		SELECT
+		 	   
+			  A.DIVISION            AS DIVISION               /*구분 MPROMOTION, M_SPECIAL, M_BEST...*/
+		      , A.TAB_CODE            AS TAB_CODE               /*탭 코드*/
+		      , A.KEY_SEQ             AS KEY_SEQ                /*키값으로 사용할 랜덤번호*/
+		      , A.KEY_STRING          AS KEY_STRING             /*키값으로 사용할 랜덤문자열*/
+		      , A.TAB_ORDERS          AS TAB_ORDERS             /*탭 순서*/
+		      , A.ITEM_ORDERS         AS ITEM_ORDERS            /*아이템 순서*/
+		      , B.ITEM_TYPE           AS ITEM_TYPE              /*타입  GOODS : 상품   BANNER_230_280 : 배너 230x280   BANNER_240_280 : 배너 240x280   BANNER_490_280 : 배너 490x280*/
+		      , B.GOODS_CD1           AS GOODS_CD1              /*상품코드 1*/
+		      , B.COMP_CD1            AS COMP_CD1               /*상품마스터의 자사/타사구분 1*/
+		      , B.EVENT_CD1           AS EVENT_CD1              /*이벤트 코드 1*/
+		      , B.TITLE1              AS TITLE1                 /*타이틀 1*/
+		      , B.DESCRIPTION1        AS DESCRIPTION1           /*상품 설명 1*/
+		      , B.PATH_LOCAL1         AS PATH_LOCAL1            /*이미지 패스 로컬 1*/
+		      , B.PATH_SERVER1        AS PATH_SERVER1           /*이미지 패스 서버 1*/
+		      , B.ALT1                AS ALT1                   /*이미지 설명 1*/
+		      , B.LINK_URL1           AS LINK_URL1              /*링크 URL 1*/
+		      , B.TARGET_TYPE1        AS TARGET_TYPE1           /*타겟 타입 1*/
+		      , B.IMAGE_USE_TYPE1     AS IMAGE_USE_TYPE1        /*이미지 사용 타입 1  CURRENT : 현재 등록되어 있는 것, OTHER : 다른것 기타-기존 등록된 상품 이미지 사용함*/
+		      , B.START_DT1           AS START_DT1              /*시작 년월일 1*/
+		      , B.START_TM1           AS START_TM1              /*시작 시분 1*/
+		      , B.END_DT1             AS END_DT1                /*종료 년월일 1*/
+		      , B.END_TM1             AS END_TM1                /*종료 시분 1*/
+		      , B.GOODS_CD2           AS GOODS_CD2              /*상품코드 2*/
+		      , B.COMP_CD2            AS COMP_CD2               /*상품마스터의 자사/타사구분 2*/
+		      , B.EVENT_CD2           AS EVENT_CD2              /*이벤트 코드 2*/
+		      , B.TITLE2              AS TITLE2                 /*타이틀 2*/
+		      , B.DESCRIPTION2        AS DESCRIPTION2           /*상품 설명 2*/
+		      , B.PATH_LOCAL2         AS PATH_LOCAL2            /*이미지 패스 로컬 2*/
+		      , B.PATH_SERVER2        AS PATH_SERVER2           /*이미지 패스 서버 2*/
+		      , B.ALT2                AS ALT2                   /*이미지 설명 2*/
+		      , B.LINK_URL2           AS LINK_URL2              /*링크 URL 2*/
+		      , B.TARGET_TYPE2        AS TARGET_TYPE2           /*타겟 타입 2*/
+		      , B.IMAGE_USE_TYPE2     AS IMAGE_USE_TYPE2        /*이미지 사용 타입 2  CURRENT : 현재 등록되어 있는 것, OTHER : 다른것 기타-기존 등록된 상품 이미지 사용함*/
+		      , B.START_DT2           AS START_DT2              /*시작 년월일 2*/
+		      , B.START_TM2           AS START_TM2              /*시작 시분 2*/
+		      , B.END_DT2             AS END_DT2                /*종료 년월일 2*/
+		      , B.END_TM2             AS END_TM2                /*종료 시분 2*/
+		      , B.GOODS_CD3           AS GOODS_CD3              /*상품코드 3*/
+		      , B.COMP_CD3            AS COMP_CD3               /*상품마스터의 자사/타사구분 3*/
+		      , B.EVENT_CD3           AS EVENT_CD3              /*이벤트 코드 3a*/
+		      , B.TITLE3              AS TITLE3                 /*타이틀 3*/
+		      , B.DESCRIPTION3        AS DESCRIPTION3           /*상품 설명 3*/
+		      , B.PATH_LOCAL3         AS PATH_LOCAL3            /*이미지 패스 로컬 3*/
+		      , B.PATH_SERVER3        AS PATH_SERVER3           /*이미지 패스 서버 3*/
+		      , B.ALT3                AS ALT3                   /*이미지 설명 3*/
+		      , B.LINK_URL3           AS LINK_URL3              /*링크 URL 3*/
+		      , B.TARGET_TYPE3        AS TARGET_TYPE3           /*타겟 타입 3*/
+		      , B.IMAGE_USE_TYPE3     AS IMAGE_USE_TYPE3        /*이미지 사용 타입 3  CURRENT : 현재 등록되어 있는 것, OTHER : 다른것 기타-기존 등록된 상품 이미지 사용함*/
+		      , B.START_DT3           AS START_DT3              /*시작 년월일 3*/
+		      , B.START_TM3           AS START_TM3              /*시작 시분 3*/
+		      , B.END_DT3             AS END_DT3                /*종료 년월일 3*/
+		      , B.END_TM3             AS END_TM3                /*종료 시분 3*/
+		      , B.BG_USE_TYPE         AS BG_USE_TYPE            /*BG 사용 타입 CURRENT : 현재 등록되어 있는 것, OTHER : 다른것 기타*/
+		      , B.BG_OTHER_DIVISION   AS BG_OTHER_DIVISION      /*BG 구분 M_PROMOTION, M_SPECIAL, M_BEST...*/
+		      , B.BG_OTHER_TAB_CODE   AS BG_OTHER_TAB_CODE      /*BG 탭 코드*/
+		      , B.BG_KEY_SEQ          AS BG_KEY_SEQ             /*BG 키값으로 사용할 랜덤번호*/
+		      , B.BG_TITLE1           AS BG_TITLE1              /*BG 타이틀 1*/
+		      , DECODE(B.BG_USE_TYPE, 'Y', B.BG_PATH_LOCAL1,  ( SELECT  A1.PATH_LOCAL1
+		                                                        FROM    RN_ITEM A1
+		                                                        WHERE   A1.DIVISION = TRIM(B.BG_OTHER_DIVISION)
+		                                                            AND A1.TAB_CODE = TRIM(B.BG_OTHER_TAB_CODE)
+		                                                            AND A1.KEY_SEQ  = TRIM(B.BG_KEY_SEQ) ) )AS BG_PATH_LOCAL1
+		      , DECODE(B.BG_USE_TYPE, 'Y', B.BG_PATH_SERVER1, ( SELECT  A2.PATH_SERVER1
+		                                                        FROM    RN_ITEM A2
+		                                                        WHERE   A2.DIVISION = TRIM(B.BG_OTHER_DIVISION)
+		                                                            AND A2.TAB_CODE = TRIM(B.BG_OTHER_TAB_CODE)
+		                                                            AND A2.KEY_SEQ  = TRIM(B.BG_KEY_SEQ) ) )AS BG_PATH_SERVER1
+		      , DECODE(B.BG_USE_TYPE, 'Y', B.BG_ALT1, ( SELECT  A3.ALT1
+		                                                FROM    RN_ITEM A3
+		                                                WHERE   A3.DIVISION = TRIM(B.BG_OTHER_DIVISION)
+		                                                    AND A3.TAB_CODE = TRIM(B.BG_OTHER_TAB_CODE)
+		                                                    AND A3.KEY_SEQ  = TRIM(B.BG_KEY_SEQ) ) )AS BG_ALT1
+		      , B.BG_LINK_URL1        AS BG_LINK_URL1           /*BG 링크 URL 1*/
+		      , B.BG_TITLE2           AS BG_TITLE2              /*BG 타이틀 2*/
+		      , B.BG_PATH_LOCAL2      AS BG_PATH_LOCAL2         /*BG 패스 로컬 2*/
+		      , B.BG_PATH_SERVER2     AS BG_PATH_SERVER2        /*BG 패스 서버 2*/
+		      , B.BG_ALT2             AS BG_ALT2                /*BG 설명 2*/
+		      , B.BG_LINK_URL2        AS BG_LINK_URL2           /*BG 링크 URL 2*/
+		      , B.MALL_CD             AS MALL_CD                /*MALL 코드*/
+		      , A.INSERT_SEQ          AS INSERT_SEQ
+		      , A.USE_YN              AS USE_YN                 /*사용여부*/
+		      , A.DEL_YN              AS DEL_YN                 /*삭제여부*/
+		      , A.INS_DT              AS INS_DT                 /*등록일자*/
+		      , A.INS_ID              AS INS_ID                 /*등록자*/
+		      , A.UPD_DT              AS UPD_DT                 /*수정일자*/
+		      , A.UPD_ID              AS UPD_ID
+		      , B.BG_RGB1             AS BG_RGB1
+		      , B.BG_RGB2             AS BG_RGB2
+		      , B.BG_RGB3             AS BG_RGB3
+		      , A.HIT_COUNT           AS HIT_COUNT
+		      , B.TITLE_MAIN1         AS TITLE_MAIN1
+		      , B.TITLE_SUB1          AS TITLE_SUB1
+		      , B.TITLE_MAIN2         AS TITLE_MAIN2
+		      , B.TITLE_SUB2          AS TITLE_SUB2
+		      , B.TITLE_MAIN3         AS TITLE_MAIN3
+		      , B.TITLE_SUB3          AS TITLE_SUB3
+		      , (CASE WHEN (    TO_NUMBER(TO_CHAR(B.START_DT1, 'yyyymmdd') || B.START_TM1) <![CDATA[ <= ]]> TO_NUMBER(TO_CHAR(SYSDATE, 'yyyymmddhh24mi'))
+		                    AND TO_NUMBER(TO_CHAR(SYSDATE, 'yyyymmddhh24mi')) <![CDATA[ <= ]]> TO_NUMBER(TO_CHAR(B.END_DT1, 'yyyymmdd') || B.END_TM1)
+		                    AND A.USE_YN = 'Y'
+		                    AND A.DEL_YN = 'N' ) THEN 'Y' ELSE 'N' END) AS DISPLAY_YN1
+		      , (CASE WHEN (    TO_NUMBER(TO_CHAR(B.START_DT2, 'yyyymmdd') || B.START_TM2) <![CDATA[ <= ]]> TO_NUMBER(TO_CHAR(SYSDATE, 'yyyymmddhh24mi'))
+		                    AND TO_NUMBER(TO_CHAR(SYSDATE, 'yyyymmddhh24mi')) <![CDATA[ <= ]]> TO_NUMBER(TO_CHAR(B.END_DT2, 'yyyymmdd') || B.END_TM2)
+		                    AND A.USE_YN = 'Y'
+		                    AND A.DEL_YN = 'N' ) THEN 'Y' ELSE 'N' END )  AS DISPLAY_YN2
+		      , (CASE WHEN (    TO_NUMBER(TO_CHAR(B.START_DT3, 'yyyymmdd') || B.START_TM3) <![CDATA[ <= ]]> TO_NUMBER(TO_CHAR(SYSDATE, 'yyyymmddhh24mi'))
+		                    AND TO_NUMBER(TO_CHAR(SYSDATE, 'yyyymmddhh24mi')) <![CDATA[ <= ]]> TO_NUMBER(TO_CHAR(B.END_DT3, 'yyyymmdd') || B.END_TM3)
+		                    AND A.USE_YN = 'Y'
+		                    AND A.DEL_YN = 'N' ) THEN 'Y' ELSE 'N' END )  AS DISPLAY_YN3
+		      , ( SELECT  GD.GOODS_NM FROM GD_MST GD WHERE GD.GOODS_CD = B.GOODS_CD1 AND GD.COMP_CD = B.COMP_CD1) AS GD_NM1
+		      , ( SELECT  MIN(PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)   AS ADULT_PRICE
+		          FROM    ET_PRICE  PRICE
+		                , ( SELECT  ETM.*
+		                    FROM    ET_MST ETM, CTG_EVENT EVC
+		                    WHERE   ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                        AND EVC.EVENT_CD IS NULL
+		                        AND ETM.DISP_YN = 'Y'
+		                        AND ( ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99' )
+		                        AND ETM.START_DAY >= TO_CHAR(DECODE(ETM.OP_CD, 'OT', SYSDATE+4, SYSDATE+2), 'YYYYMMDD') ) ET
+		          WHERE   ET.GOODS_CD = B.GOODS_CD1
+		              AND ET.COMP_CD  = B.COMP_CD1
+		              AND ET.EVENT_CD = PRICE.EVENT_CD
+		              AND ET.FEE_SEQ  = PRICE.FEE_SEQ
+		              AND PRICE.ADULT_PRICE > 0
+		          GROUP BY ET.GOODS_CD, ET.COMP_CD )  AS GD_PRICE1
+		      , ( SELECT  '/upload/common/goods/' || GD.AREA_CD || '/' || GD.GOODS_CD || '/' || IMG.SAVE_FILE_NM
+		          FROM    GD_MST GD
+		                , GD_IMG IMG
+		          WHERE   GD.GOODS_CD = IMG.GOODS_CD
+		              AND GD.COMP_CD  = IMG.COMP_CD
+		              AND GD.GOODS_CD = B.GOODS_CD1
+		              AND GD.COMP_CD  = B.COMP_CD1
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS GD_IMG1
+		      , ( SELECT  IMG.GOODS_DESC
+		          FROM    GD_MST GD
+		                , GD_IMG IMG
+		          WHERE   GD.GOODS_CD = IMG.GOODS_CD
+		              AND GD.COMP_CD  = IMG.COMP_CD
+		              AND GD.GOODS_CD = B.GOODS_CD1
+		              AND GD.COMP_CD  = B.COMP_CD1
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS GD_ALT1
+		      , ( SELECT  EMP_RATE    FROM GD_MST GD WHERE GD.GOODS_CD = B.GOODS_CD1 AND GD.COMP_CD = B.COMP_CD1 )  AS EMP_RATE1
+		      , ( SELECT  GD.GOODS_NM FROM GD_MST GD WHERE GD.GOODS_CD = B.GOODS_CD2 AND GD.COMP_CD = B.COMP_CD2 )  AS GD_NM2
+		      , ( SELECT  MIN(PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)   AS ADULT_PRICE
+		          FROM    ET_PRICE  PRICE
+		                , ( SELECT  ETM.*
+		                    FROM    ET_MST    ETM
+		                          , CTG_EVENT EVC
+		                    WHERE   ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                        AND EVC.EVENT_CD IS NULL
+		                        AND ETM.DISP_YN = 'Y'
+		                        AND ( ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99' )
+		                        AND ETM.START_DAY >= TO_CHAR(DECODE(ETM.OP_CD, 'OT', SYSDATE+4, SYSDATE+2), 'YYYYMMDD') ) ET
+		          WHERE   ET.GOODS_CD = B.GOODS_CD2
+		              AND ET.COMP_CD  = B.COMP_CD2
+		              AND ET.EVENT_CD = PRICE.EVENT_CD
+		              AND ET.FEE_SEQ  = PRICE.FEE_SEQ
+		              AND PRICE.ADULT_PRICE > 0
+		          GROUP BY ET.GOODS_CD, ET.COMP_CD )    AS GD_PRICE2
+		      , ( SELECT  '/upload/common/goods/' || GD.AREA_CD || '/' || GD.GOODS_CD || '/' || IMG.SAVE_FILE_NM
+		          FROM    GD_MST GD
+		                , GD_IMG IMG
+		          WHERE   GD.GOODS_CD = IMG.GOODS_CD
+		              AND GD.COMP_CD  = IMG.COMP_CD
+		              AND GD.GOODS_CD = B.GOODS_CD2
+		              AND GD.COMP_CD  = B.COMP_CD2
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1)   AS GD_IMG2
+		      , ( SELECT  IMG.GOODS_DESC
+		          FROM    GD_MST GD
+		                , GD_IMG IMG
+		          WHERE   GD.GOODS_CD = IMG.GOODS_CD
+		              AND GD.COMP_CD  = IMG.COMP_CD
+		              AND GD.GOODS_CD = B.GOODS_CD2
+		              AND GD.COMP_CD  = B.COMP_CD2
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS GD_ALT2
+		      , ( SELECT  EMP_RATE    FROM GD_MST GD WHERE GD.GOODS_CD = B.GOODS_CD2 AND GD.COMP_CD = B.COMP_CD2 )  AS EMP_RATE2
+		      , ( SELECT  GD.GOODS_NM FROM GD_MST GD WHERE GD.GOODS_CD = B.GOODS_CD3 AND GD.COMP_CD = B.COMP_CD3 )  AS GD_NM3
+		      , ( SELECT  MIN(PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)   AS ADULT_PRICE
+		          FROM    ET_PRICE  PRICE
+		                , ( SELECT  ETM.*
+		                    FROM    ET_MST ETM, CTG_EVENT EVC
+		                    WHERE   ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                        AND EVC.EVENT_CD IS NULL
+		                        AND ETM.DISP_YN = 'Y'
+		                        AND ( ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99' )
+		                        AND ETM.START_DAY >= TO_CHAR(DECODE(ETM.OP_CD, 'OT', SYSDATE+4, SYSDATE+2), 'YYYYMMDD') ) ET
+		          WHERE   ET.GOODS_CD = B.GOODS_CD3
+		              AND ET.COMP_CD  = B.COMP_CD3
+		              AND ET.EVENT_CD = PRICE.EVENT_CD
+		              AND ET.FEE_SEQ  = PRICE.FEE_SEQ
+		              AND PRICE.ADULT_PRICE > 0
+		          GROUP BY ET.GOODS_CD, ET.COMP_CD )    AS GD_PRICE3
+		      , ( SELECT  '/upload/common/goods/' || GD.AREA_CD || '/' || GD.GOODS_CD || '/' || IMG.SAVE_FILE_NM
+		          FROM    GD_MST GD
+		                , GD_IMG IMG
+		          WHERE   GD.GOODS_CD = IMG.GOODS_CD
+		              AND GD.COMP_CD  = IMG.COMP_CD
+		              AND GD.GOODS_CD = B.GOODS_CD3
+		              AND GD.COMP_CD  = B.COMP_CD3
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS GD_IMG3
+		      , ( SELECT  IMG.GOODS_DESC
+		          FROM    GD_MST GD
+		                , GD_IMG IMG
+		          WHERE   GD.GOODS_CD = IMG.GOODS_CD
+		              AND GD.COMP_CD  = IMG.COMP_CD
+		              AND GD.GOODS_CD = B.GOODS_CD3
+		              AND GD.COMP_CD  = B.COMP_CD3
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS GD_ALT3
+		      , ( SELECT  EMP_RATE     FROM GD_MST GD WHERE GD.GOODS_CD = B.GOODS_CD3 AND GD.COMP_CD = B.COMP_CD3 )     AS EMP_RATE3
+		      , ( SELECT  ET.START_DAY FROM ET_MST ET WHERE ET.EVENT_CD = B.EVENT_CD1 )   AS ET_START_DAY1
+		      , ( SELECT  ET.EV_INWON  FROM ET_MST ET WHERE ET.EVENT_CD = B.EVENT_CD1 )   AS ET_INWON1
+		      , ( SELECT  COUNT(RES_SEQ)  AS RV_CNT
+		          FROM    RV_ROSTER RS
+		                , RV_MST
+		          WHERE   ( RS.CANC_CD IS NULL OR RS.CANC_CD = '' )
+		              AND RV_MST.RES_CD   = RS.RES_CD
+		              AND RV_MST.EVENT_CD = B.EVENT_CD1
+		          GROUP BY RV_MST.EVENT_CD)     AS ET_RV_CNT1
+		      , ( SELECT  ET.EVENT_NM FROM ET_MST ET WHERE ET.EVENT_CD = B.EVENT_CD1 )    AS ET_NM1
+		      , ( SELECT  MIN(PRICE.ADULT_PRICE+PRICE.ETC_PRICE1)   AS ADULT_PRICE
+		          FROM    ET_PRICE  PRICE
+		                , ( SELECT  ETM.*
+		                    FROM    ET_MST    ETM
+		                          , CTG_EVENT EVC
+		                    WHERE   ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                        AND EVC.EVENT_CD IS NULL
+		                        AND ETM.DISP_YN = 'Y'
+		                        AND ( ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99' )
+		                        AND ETM.START_DAY >= TO_CHAR(DECODE(ETM.OP_CD, 'OT', SYSDATE+4, SYSDATE+2), 'YYYYMMDD') )   ET
+		          WHERE   ET.GOODS_CD = SUBSTR(B.EVENT_CD1, 0, 7)
+		
+		              AND ET.EVENT_CD = PRICE.EVENT_CD
+		              AND ET.FEE_SEQ  = PRICE.FEE_SEQ
+		              AND PRICE.ADULT_PRICE > 0
+		          GROUP BY ET.GOODS_CD, ET.COMP_CD )    AS ET_PRICE1
+		      , ( SELECT  '/upload/common/goods/' || ET.AREA_CD || '/' || ET.GOODS_CD || '/' || IMG.SAVE_FILE_NM
+		          FROM    ET_MST ET
+		                , GD_IMG IMG
+		          WHERE   ET.GOODS_CD = IMG.GOODS_CD
+		              AND ET.COMP_CD  = IMG.COMP_CD
+		              AND ET.EVENT_CD = B.EVENT_CD1
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS ET_IMG1
+		      , ( SELECT  IMG.GOODS_DESC
+		          FROM    ET_MST ET
+		                , GD_IMG IMG
+		          WHERE   ET.GOODS_CD = IMG.GOODS_CD
+		              AND ET.COMP_CD  = IMG.COMP_CD
+		              AND ET.EVENT_CD = B.EVENT_CD1
+		              AND IMG.DISP_GRADE = 1
+		              AND ROWNUM = 1 )    AS ET_ALT1
+		      , ''                        AS BBS_CNTS
+		      , ( SELECT  MAX(CTG_SEQ)
+		          FROM    CTG_GOODS
+		          WHERE   CTG_SEQ IN (SELECT  CTG_SEQ
+		                              FROM    CTG
+		                              WHERE   CTG_TYPE_CD IN ('000', '100')
+		                                  AND DISP_YN = 'Y'
+		                              START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 2)
+		                              CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+		          AND GOODS_CD = B.GOODS_CD1 )    AS CTG_GOODS1
+		      , ( SELECT  MAX(CTG_SEQ)
+		          FROM    CTG_GOODS
+		          WHERE   CTG_SEQ IN (SELECT  CTG_SEQ
+		                              FROM    CTG
+		                              WHERE   CTG_TYPE_CD IN ('000', '100')
+		                                  AND DISP_YN = 'Y'
+		                              START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 2)
+		                              CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+		          AND GOODS_CD = B.GOODS_CD2 )    AS CTG_GOODS2
+		      , ( SELECT  MAX(CTG_SEQ)
+		          FROM    CTG_GOODS
+		          WHERE   CTG_SEQ IN (SELECT  CTG_SEQ
+		                              FROM    CTG
+		                              WHERE   CTG_TYPE_CD IN ('000', '100')
+		                                  AND DISP_YN = 'Y'
+		                              START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 2)
+		                              CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+		          AND GOODS_CD = B.GOODS_CD3 )    AS CTG_GOODS3
+		      , ( SELECT  MAX(CTG_SEQ)
+		          FROM    CTG_GOODS
+		          WHERE   CTG_SEQ IN (SELECT  CTG_SEQ
+		                              FROM    CTG
+		                              WHERE   CTG_TYPE_CD IN ('000', '100')
+		                                  AND DISP_YN = 'Y'
+		                              START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 2)
+		                              CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+		          AND GOODS_CD = SUBSTR(B.EVENT_CD1, 0, 7) )    AS CTG_EVENT1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '001' )   AS HOMESHOPPING_YN1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '002' )   AS PLAN_YN1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '003' )   AS EVENT_YN1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '004' )   AS PREMIUM_YN1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '005' )   AS CLASSIC_YN1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '006' )   AS SAVE_YN1
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '001' )   AS HOMESHOPPING_YN2
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '002' )   AS PLAN_YN2
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '003' )   AS EVENT_YN2
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD2 AND COMP_CD = B.COMP_CD2 AND USE_YN = 'Y' AND GOODS_TAG = '004' )   AS PREMIUM_YN2
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD2 AND COMP_CD = B.COMP_CD2 AND USE_YN = 'Y' AND GOODS_TAG = '005' )   AS CLASSIC_YN2
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD2 AND COMP_CD = B.COMP_CD2 AND USE_YN = 'Y' AND GOODS_TAG = '006' )   AS SAVE_YN2
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '001' )   AS HOMESHOPPING_YN3
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '002' )   AS PLAN_YN3
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD1 AND COMP_CD = B.COMP_CD1 AND USE_YN = 'Y' AND GOODS_TAG = '003' )   AS EVENT_YN3
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD3 AND COMP_CD = B.COMP_CD3 AND USE_YN = 'Y' AND GOODS_TAG = '004' )   AS PREMIUM_YN3
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD3 AND COMP_CD = B.COMP_CD3 AND USE_YN = 'Y' AND GOODS_TAG = '005' )   AS CLASSIC_YN3
+		      , ( SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = B.GOODS_CD3 AND COMP_CD = B.COMP_CD3 AND USE_YN = 'Y' AND GOODS_TAG = '006' )   AS SAVE_YN3
+		FROM    RN_ITEM_DISPLAY   A
+		      , RN_ITEM   B
+		WHERE   A.DIVISION = B.DIVISION
+			    AND A.TAB_CODE = B.TAB_CODE
+			    AND A.KEY_SEQ  = B.KEY_SEQ
+			  
+			   
+		ORDER BY A.DIVISION ASC, DEL_YN, ITEM_ORDERS, TAB_ORDERS ASC
+		-->
+	</select>
+	
+	
+	<!-- 기획전 선택 조회 -->
+	<select id="PlanningDAO.selPlanList" parameterClass="PlanningVO"  resultClass="PlanningVO">
+	  SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM ( 
+		
+		SELECT			
+			PLAN_SEQ        	"planSeq",		
+			PLAN_NM         	"planNm",		
+			GOODS_TYPE_CD   	"goodsTypeCd",		
+			FN_SY_CD_DET_S01('GDTYPE', GOODS_TYPE_CD)     "cdNm",
+			AREA_CD         	"areaCd",		
+			FN_SY_CD_DET_S01('AREATYPE', AREA_CD)     "cdNm01",
+			SUBSTR(PLAN_FR_DAY, 0, 4) || '-' || SUBSTR(PLAN_FR_DAY, 5, 2) || '-' || SUBSTR(PLAN_FR_DAY, 7, 2)	"planFrday",
+			SUBSTR(PLAN_TO_DAY, 0, 4) || '-' || SUBSTR(PLAN_TO_DAY, 5, 2) || '-' || SUBSTR(PLAN_TO_DAY, 7, 2)	"planToday",
+			PLAN_FR_TM      	"planFrtm",		
+			PLAN_TO_TM      	"planTotm",		
+			PLAN_URL        	"planUrl",		
+			PLAN_CLS_CD     	"planClsCd",		
+			PLAN_DET_CLS_CD 	"planDetClsCd",		
+			PLAN_TYPE_IMG_CD	"planTyImgCd",		
+			TEMPLETE_CD     	"templeteCd",		
+			SPECIAL_YN      	"spectialYn",		
+			INC_YN          	"incYn",		
+			NOTINC_YN       	"notincYn",		
+			OPTION_YN       	"optionYn",		
+			SMALL_IMG_PATH  	"smallImgPh",	
+			BIG_IMG_PATH    	"bigImgPh",		
+			DISP_YN         	"dispYn",		
+			START_DAY_YN        "startDayYn" , 
+			INS_DT          	"insDt",		
+			INS_ID          	"insId",		
+			FN_USERNM_S01(INS_ID) "EMP_NM" ,
+			UPD_DT          	"updDt",		
+			UPD_ID          	"updId" ,
+			FN_USERNM_S01(UPD_ID) "UPD_EMP_NM" ,
+			CNTS				"cnts",   
+			MEMO				"memo",   
+			HTML				"html",   
+			NVL(VIEW_CNT,0)		"viewCnt",  
+			THN_PATH			"thnPath",	
+			MALL_CD				"mallCd", 
+			MBL_PLAN_URL		"mblPlanUrl",
+			DISPLAY_TYPE_CD		"displayTypeCd"
+		FROM	DI_PLAN 
+		WHERE  1=1
+	 	AND  DISP_YN = #dispYn#
+	    AND  OPTION_YN = #optionYn#
+	    AND  (PLAN_FR_DAY <![CDATA[ <= ]]> TO_CHAR(SYSDATE,'YYYYMMDD')  AND PLAN_TO_DAY <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YYYYMMDD')) 
+	    AND  ((DISPLAY_TYPE_CD='MBL') OR (DISPLAY_TYPE_CD='ALL') OR (DISPLAY_TYPE_CD IS NULL))
+	    ORDER BY PLAN_FR_DAY DESC 
+ 	) QUERY ) WHERE RN <![CDATA[>=]]> #startRow# AND RN <![CDATA[ <= ]]> #endRow#	
+	</select>	
+    
+    
+    <select id="PlanningDAO.getTotalCnt" parameterClass="PlanningVO" resultClass="int">
+    	SELECT	COUNT(*)		
+		FROM	DI_PLAN 
+		WHERE  1=1
+	 	AND  DISP_YN = #dispYn#
+	    AND  OPTION_YN = #optionYn#
+	    AND  PLAN_TO_DAY <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YYYYMMDD') 
+	    AND  ((DISPLAY_TYPE_CD='MBL') OR (DISPLAY_TYPE_CD='ALL') OR (DISPLAY_TYPE_CD IS NULL))
+	    ORDER BY PLAN_FR_DAY DESC 
+    </select>
+    
+    <select id="PlanningDAO.setDetailPlanList" parameterClass="PlanningVO" resultClass="PlanningVO">
+	  SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (   
+	     SELECT	/*+  'DIplanDAOV00_1'  */ 
+			PLAN_SEQ        																					"planSeq",		
+			PLAN_NM         																					"planNm",		
+			GOODS_TYPE_CD   																					"goodsTypeCd",		
+			FN_SY_CD_DET_S01('GDTYPE', GOODS_TYPE_CD)     														"cdNm",
+			AREA_CD         																					"areaCd",		
+			FN_SY_CD_DET_S01('AREATYPE', AREA_CD)    															"cdNm01",
+			SUBSTR(PLAN_FR_DAY, 0, 4) || '-' || SUBSTR(PLAN_FR_DAY, 5, 2) || '-' || SUBSTR(PLAN_FR_DAY, 7, 2)	"planFrday",		
+			SUBSTR(PLAN_TO_DAY, 0, 4) || '-' || SUBSTR(PLAN_TO_DAY, 5, 2) || '-' || SUBSTR(PLAN_TO_DAY, 7, 2)	"planToday",		
+			PLAN_FR_TM     										 												"planFrtm",		
+			PLAN_TO_TM      																					"planTotm",		
+			PLAN_URL        																					"planUrl",		
+			PLAN_CLS_CD     																					"planClsCd",		
+			PLAN_DET_CLS_CD 																					"planDetClsCd",		
+			PLAN_TYPE_IMG_CD																					"planTyImgCd",		
+			TEMPLETE_CD     																					"templeteCd",		
+			SPECIAL_YN      																					"spectialYn",		
+			INC_YN          																					"incYn",		
+			NOTINC_YN       																					"notincYn",		
+			OPTION_YN       																					"optionYn",		
+			SMALL_IMG_PATH  																					"smallImgPh",	
+			BIG_IMG_PATH    																					"bigImgPh",		
+			DISP_YN         																					"dispYn",		
+			START_DAY_YN      																				  	"startDayYn" , 
+			INS_DT          																					"insDt",		
+			INS_ID          																					"insId",		
+			FN_USERNM_S01(INS_ID) 																				"EMP_NM" ,
+			UPD_DT          																					"updDt",		
+			UPD_ID          																					"updId" ,
+			FN_USERNM_S01(UPD_ID) 																				"UPD_EMP_NM" ,
+			CNTS																								"cnts",   
+			MEMO																								"memo",   
+			HTML																								"html",   
+			NVL(VIEW_CNT,0)																						"viewCnt",  
+			MBL_PLAN_URL																						"mblPlanUrl",
+			DISPLAY_TYPE_CD            																			"displayTypeCd"
+		FROM	DI_PLAN  
+		WHERE   PLAN_SEQ = #planSeq#
+		 AND   ((DISPLAY_TYPE_CD = 'MBL') OR (DISPLAY_TYPE_CD = 'ALL') OR (DISPLAY_TYPE_CD IS NULL)) 
+		<isNotEmpty property="planFrday">
+		AND PLAN_TO_DAY <![CDATA[ >= ]]> #planFrday#
+		</isNotEmpty>
+		<isNotEmpty property="planToday">
+		AND PLAN_TO_DAY <![CDATA[ <= ]]> #planToday#
+		</isNotEmpty>
+		<isNotEmpty property="goodsTypeCd">
+		AND GOODS_TYPE_CD = #goodsTypeCd#
+		</isNotEmpty>
+		<isNotEmpty property="areaCd">
+		AND AREA_CD = #areaCd#
+		</isNotEmpty>
+				
+		ORDER BY 	PLAN_SEQ DESC
+	) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#    
+    </select>
+    
+    
+    <!-- 조회수 update -->
+	<update id="PlanningDAO.planningCnt" parameterClass="PlanningVO" >
+		UPDATE 	DI_PLAN
+   		SET 	VIEW_CNT = NVL(VIEW_CNT,0) + 1
+ 		WHERE  PLAN_SEQ = #planSeq#
+ 	</update>
+ 	
+ 	
+ 	<!-- 기획전 조회수 -->
+  	<select id="PlanningDAO.getplanCnt" parameterClass="PlanningVO" resultClass="int">
+ 		SELECT VIEW_CNT "viewCnt"
+ 		FROM DI_PLAN
+ 		WHERE PLAN_SEQ = #planSeq#
+ 	</select>
+	
+	<!-- 전시플랜상품조회 -->
+	<!-- 기획전 상세 -->
+	<select id="PlanningDAO.srchDetailPlanList" parameterClass="PlanningVO" resultClass="PlanningVO">
+    <!-- SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (--> 
+   	<!--
+		SELECT	/*+  'DIplan_goodDAOV01'  */ 
+			PG.PLAN_SEQ    	"planSeq",        
+	        PG.GOODS_CD        "goodCd",        
+	        PG.PLAN_TAB_SEQ    "planTabSeq",    
+	        PG.INC_YN          "incYn",        
+	        PG.NOTINC_YN       "noticeYn",     
+	        PG.SPECIAL_YN      "specialYn",    
+	        PG.OPTION_YN       "optionYn",        
+	        PG.DISP_ORDER      "dispOrder",       
+	        PG.INS_DT          "insDt",
+	        PG.INS_ID          "insId",
+	        PG.UPD_DT          "updDt",
+	        PG.UPD_ID          "updId" ,
+	        GD.GOODS_NM        "goodsNm" ,
+	        GD.OP_CD		   "opCd",
+	        PT.PLAN_TAB_TITLE     "planTabTitle",
+	        PG.COMP_CD			"compCd",
+	        PG.GOODS_DESC		"goodsDesc"
+		FROM    DI_PLAN_GOODS PG , DI_PLAN_TAB PT , GD_MST GD
+		WHERE    
+            GD.GOODS_CD = PG.GOODS_CD
+            AND GD.COMP_CD = PG.COMP_CD
+            AND PG.PLAN_SEQ=PT.PLAN_SEQ(+)
+            AND PG.PLAN_TAB_SEQ=PT.PLAN_TAB_SEQ(+)
+            AND PG.PLAN_SEQ = #planSeq# 
+					      
+		ORDER BY     PG.DISP_ORDER, PG.GOODS_CD, PG.PLAN_SEQ ASC
+	-->
+	<!-- ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#-->
+		SELECT A.PLAN_SEQ 																			AS planSeq
+		     , B.GOODS_CD																			AS goodCd 
+		     , A.PLAN_TAB_SEQ																		AS planTabSeq
+		     , A.INC_YN																				AS incYn
+		     , A.NOTINC_YN																			AS notincYn
+		     , A.SPECIAL_YN																			AS specialYn
+		     , A.OPTION_YN																			AS optionYn
+		     , A.DISP_ORDER																			AS dispOrder
+		     , A.INS_DT																				AS insDt
+		     , A.INS_ID																				AS insId
+		     , A.UPD_DT																				AS updDt
+		     , A.UPD_ID																				AS updId
+		     , B.GOODS_NM																			AS goodsNm
+		     , B.OP_CD																				AS opCd
+		     , B.SHORT_GOODS_NM  																	AS shortGoodsNm
+		     , ET.AIR_REMARK   																		AS air_remark
+		     , (SELECT MAX(CTG_SEQ) 
+		          FROM CTG_GOODS 
+		         WHERE CTG_SEQ IN (SELECT CTG_SEQ 
+		                             FROM CTG 
+		                            WHERE CTG_TYPE_CD IN ('000', '100') 
+		                              AND DISP_YN = 'Y' 
+		                            START WITH CTG_SEQ = (SELECT CTG_SEQ 
+		                                                    FROM (SELECT CTG_SEQ
+		                                                               , ROWNUM RN 
+		                                                            FROM CTG 
+		                                                           WHERE CTG_UPR_SEQ = 0)
+		                                                   WHERE RN = 2) 
+		                          CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+		           AND GOODS_CD = B.GOODS_CD) 														AS ctgSeq
+		     , (SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = A.GOODS_CD AND COMP_CD = A.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '001') AS homeshoppingYn
+		     , (SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = A.GOODS_CD AND COMP_CD = A.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '002') AS planYn
+		     , (SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = A.GOODS_CD AND COMP_CD = A.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '003') AS eventYn
+		     , D.PLAN_TAB_TITLE																		AS planTabTitle
+		     , A.COMP_CD																			AS compCd
+		     , A.GOODS_DESC																			AS goodsDesc
+		     , IMG.SAVE_FILE_NM																		AS save_file_nm
+		     , IMG.IMG_TITLE																		AS img_title
+		  FROM DI_PLAN_GOODS A
+		     , GD_MST B
+		     , DI_PLAN C
+		     , DI_PLAN_TAB D
+		     , (SELECT GOODS_CD
+		             , COMP_CD
+		             , XMLAGG(XMLELEMENT(TRFF_KNM, '|'||TRFF_KNM) ORDER BY TRFF_KNM).EXTRACT('//text()').GetStringVal() AS AIR_REMARK
+		          FROM (SELECT DISTINCT GOODS_CD
+		                     , COMP_CD
+		                     , TRFF_KNM "TRFF_KNM"
+		                     , ROWNUM "ROW_ID"
+		                  FROM (SELECT DISTINCT GOODS_CD
+		                             , COMP_CD
+		                             , TRFF_KNM
+		                          FROM (SELECT ETM.*
+		                                  FROM ET_MST ETM
+		                                     , (SELECT EVENT_CD FROM CTG_EVENT) EVC
+		                                 WHERE (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL AND ETM.DISP_YN='Y')
+		                                   AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+		                                   AND ETM.START_DAY <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+		                                   AND GOODS_CD IN (SELECT DISTINCT GOODS_CD FROM DI_PLAN_GOODS WHERE PLAN_SEQ = #planSeq#)
+		                               ) ET
+		                              , CO_CD_TRAFFIC TR
+		                          WHERE (ET.TRFF_CD_SHORT IS NOT NULL OR ET.TRFF_CD_SHORT != '')
+		                            AND ET.START_DAY <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+		                            AND ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT
+		                        )
+		               )            
+		          GROUP BY GOODS_CD, COMP_CD
+		        ) ET
+		      , (SELECT DISTINCT IMG_T.GOODS_CD
+		              , MAX(IMG_T.IMG_TITLE) AS IMG_TITLE
+		              , 'http://www.lottejtb.com/upload/common/goods/' || SUBSTR(IMG_T.GOODS_CD, 1, 2) || '/' || IMG_T.GOODS_CD || '/' || REPLACE(MAX(IMG_T.SAVE_FILE_NM), '.', '_440.') AS SAVE_FILE_NM
+		              , IMG_T.DISP_GRADE
+		           FROM GD_IMG IMG_T
+		              , (SELECT A.GOODS_CD
+		                      , MIN(A.DISP_GRADE) AS DISP_GRADE
+		                   FROM GD_IMG A
+		                      , DI_PLAN_GOODS B
+		                  WHERE A.GOODS_CD = B.GOODS_CD
+		                    AND B.PLAN_SEQ = #planSeq#
+		                    AND A.USE_YN = 'Y'
+		                  GROUP BY A.GOODS_CD) GOODS_GRP
+		          WHERE IMG_T.GOODS_CD = GOODS_GRP.GOODS_CD
+		            AND IMG_T.DISP_GRADE = GOODS_GRP.DISP_GRADE 
+		          GROUP BY IMG_T.GOODS_CD, IMG_T.DISP_GRADE) IMG	       
+		 WHERE A.PLAN_SEQ = #planSeq#
+		   AND A.GOODS_CD = B.GOODS_CD
+		   AND A.PLAN_SEQ = C.PLAN_SEQ
+		   AND A.PLAN_SEQ = D.PLAN_SEQ
+		   AND A.PLAN_TAB_SEQ = D.PLAN_TAB_SEQ
+ 		   AND C.PLAN_TO_DAY <![CDATA[ >= ]]> TO_CHAR(SYSDATE, 'YYYYMMDD') 
+		   AND A.GOODS_CD = ET.GOODS_CD(+)
+		   AND A.GOODS_CD = IMG.GOODS_CD(+)
+		 ORDER BY A.DISP_ORDER, B.GOODS_CD, A.PLAN_SEQ ASC
+	</select>
+	
+	<!--  기획전 추가정보조회  searchRNDiPlanAddInfo. -->
+ 	<select id="PlanningDAO.searchRNDiPlanAddInfo" parameterClass="PlanningVO" resultMap="addPlanInfo">
+ 	  <!-- SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (--> 
+	    SELECT 	
+	  			A.PLAN_SEQ  
+			   ,B.GOODS_CD  
+			   ,CASE WHEN CDAY.ET_DAY_CNTS IS NULL THEN '' ELSE CDAY.ET_DAY_CNTS||'일' END AS GOODS_NIGHT_DAY 
+			   ,B.SHORT_GOODS_NM  
+		       ,ET.AIR_REMARK   
+			   ,(SELECT MAX(CTG_SEQ)
+		               FROM CTG_GOODS
+		               WHERE CTG_SEQ IN (SELECT CTG_SEQ
+		                                  FROM CTG
+		                                 WHERE CTG_TYPE_CD IN ('000', '100')
+		                                   AND DISP_YN = 'Y'
+		                                 START WITH CTG_SEQ = (SELECT CTG_SEQ FROM (SELECT CTG_SEQ, ROWNUM RN FROM CTG WHERE CTG_UPR_SEQ = 0) WHERE RN = 1)
+		                               CONNECT BY PRIOR CTG_SEQ = CTG_UPR_SEQ)
+		                AND GOODS_CD = B.GOODS_CD) AS CTG_SEQ
+				  ,(SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = A.GOODS_CD AND COMP_CD = A.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '001') AS HOMESHOPPING_YN
+		          ,(SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = A.GOODS_CD AND COMP_CD = A.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '002') AS PLAN_YN
+		          ,(SELECT DECODE(COUNT(*), 0, 'N', 'Y') FROM GD_DET_TAG WHERE GOODS_CD = A.GOODS_CD AND COMP_CD = A.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '003') AS EVENT_YN
+		 FROM DI_PLAN_GOODS A, GD_MST B, DI_PLAN C,
+		 			(
+		            SELECT  GOODS_CD, COMP_CD,
+		                    XMLAGG(XMLELEMENT(TRFF_KNM, '|'||TRFF_KNM) ORDER BY TRFF_KNM).EXTRACT('//text()').GetStringVal() AS AIR_REMARK
+		
+		            FROM
+		            (
+		                SELECT  DISTINCT GOODS_CD, COMP_CD, TRFF_KNM "TRFF_KNM", ROWNUM "ROW_ID"
+		                FROM    (SELECT DISTINCT GOODS_CD,COMP_CD, TRFF_KNM
+		                         FROM   (
+		                                   SELECT ETM.*
+		                                   FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT) EVC
+		                                   WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL AND ETM.DISP_YN='Y')
+		                                          AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+		                                          AND ETM.START_DAY <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+		                                          AND GOODS_CD IN (SELECT DISTINCT GOODS_CD FROM DI_PLAN_GOODS WHERE PLAN_SEQ = #planSeq# )
+		                                          
+		                                )  ET, CO_CD_TRAFFIC TR
+		                         WHERE   (ET.TRFF_CD_SHORT IS NOT NULL OR ET.TRFF_CD_SHORT != '')
+		                                 AND ET.START_DAY <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+		                         AND ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT
+		                        )
+		            )
+		            
+		            GROUP BY GOODS_CD, COMP_CD
+		        )   ET
+		       , (
+		            SELECT GOODS_CD, COMP_CD,
+		                   ltrim(XMLAGG(XMLELEMENT(EV_DAY_CNT, '박'||EV_DAY_CNT) ORDER BY EV_DAY_CNT).EXTRACT('//text()').GetStringVal(),'박') AS ET_DAY_CNTS
+		            FROM
+		                (
+		                       SELECT GOODS_CD, COMP_CD, EV_DAY_CNT
+		                    FROM (
+		                        SELECT  DISTINCT GOODS_CD, COMP_CD, EV_DAY_CNT
+		                        FROM    (
+		                                   SELECT ETM.*
+		                                   FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT WHERE CTG_SEQ=5834) EVC
+		                                   WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL AND ETM.DISP_YN='Y')
+		                                          AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+		                                )  "TEMP_ET_MST"
+		                        WHERE START_DAY <![CDATA[ >= ]]>  TO_CHAR(SYSDATE, 'YYYYMMDD') 
+		                                
+		                        )
+		                )
+		            GROUP BY GOODS_CD, COMP_CD
+			     )   CDAY 
+		
+		 WHERE A.PLAN_SEQ = #planSeq#
+		   AND A.GOODS_CD = B.GOODS_CD
+		   AND A.PLAN_SEQ = C.PLAN_SEQ
+		   AND C.PLAN_TO_DAY <![CDATA[ >= ]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+		   AND A.GOODS_CD = ET.GOODS_CD(+)
+		   AND B.GOODS_CD = CDAY.GOODS_CD(+)
+		   AND B.COMP_CD = CDAY.COMP_CD(+)
+	 <!--  ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#-->
+ 	</select>
+	
+ 	<!--  기획전에 포함된 각 상품의 행사별 요금/날짜 정보를 조회한다. -->
+ 	<select id="PlanningDAO.getplanSubInfo" parameterClass="PlanningVO" resultClass="PlanningVO">
+	
+		SELECT WM_CONCAT(ET_DAYS) AS etDays
+		     , NVL(MIN(GT.ADULT_PRICE), 0) AS adultPrice
+		FROM (
+		    SELECT LT.ET_DAYS
+		         , LT.ET_DAYS_SORT
+		         , MIN(LT.ADULT_PRICE) AS ADULT_PRICE
+		    FROM (
+		        SELECT TO_CHAR(TO_DATE(B.START_DAY,'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS ET_DAYS
+		             , TO_CHAR(TO_DATE(B.START_DAY,'yyyyMMdd'), 'D') AS ET_DAYS_SORT
+		             , NVL(MIN(C.ADULT_PRICE + C.ETC_PRICE1), 0) AS ADULT_PRICE
+		        FROM   GD_MST A,
+		               ET_MST B,
+		               ET_PRICE C,
+		               (SELECT *
+		                FROM   RV_MST
+		                WHERE  CANC_CD IS NULL) D
+		        WHERE  A.GOODS_CD = B.GOODS_CD
+		        AND    B.EVENT_CD = C.EVENT_CD
+		        AND    B.FEE_SEQ = C.FEE_SEQ
+		        AND    B.EVENT_CD = D.EVENT_CD(+)
+		        AND    A.GOODS_CD = #goodCd#
+		        AND    B.START_DAY <![CDATA[ > ]]>  #startDay# 
+		        AND    C.ADULT_PRICE <![CDATA[ > ]]> 0
+		        AND    NVL(B.PROC_CD, ' ') <![CDATA[ <> ]]> 'RE'
+		        AND    B.EV_INWON <![CDATA[ <> ]]> 0
+		        AND    B.LOCK_UNIT <![CDATA[ <> ]]> 'Y'
+		        AND    NOT EXISTS (SELECT *
+		                FROM   DI_PLAN_EVENT Z
+		                WHERE  B.EVENT_CD = Z.EVENT_CD
+		                AND    Z.PLAN_SEQ = #planSeq#
+		                AND    Z.GOODS_CD = #goodCd#)
+		        GROUP BY B.START_DAY, B.EVENT_CD, B.EV_INWON
+		        HAVING B.EV_INWON <![CDATA[ <> ]]> SUM(NVL(D.RES_CNT, 0) - NVL(d.CANC_CNT, 0))
+		    ) LT
+		    GROUP BY ET_DAYS, ET_DAYS_SORT
+		) GT
+ 	</select>
+ 	
+ 	<select id = "PlanningDAO.minCharge" parameterClass="PlanningVO" resultClass = "int">
+ 	<!--   SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (--> 	
+ 	 	SELECT NVL(MIN(C.ADULT_PRICE+C.ETC_PRICE1), 0) "adultPrice"
+			FROM  GD_MST A
+			     ,ET_MST B
+			     ,ET_PRICE C
+			     , (SELECT * FROM DI_PLAN_EVENT WHERE PLAN_SEQ = #adultPrice#)D
+			WHERE A.GOODS_CD = B.GOODS_CD
+			  AND B.EVENT_CD = C.EVENT_CD
+			  AND B.FEE_SEQ  = C.FEE_SEQ  
+			  AND A.GOODS_CD = #goodCd#
+			  AND B.EVENT_CD = D.EVENT_CD(+)
+			  AND B.START_DAY <![CDATA[ > ]]>#startDay#
+			  AND B.EV_INWON <![CDATA[ > ]]> 0
+			  AND C.ADULT_PRICE <![CDATA[ > ]]>0
+			  AND D.EVENT_CD IS NULL
+			  AND B.DISP_YN = 'Y'
+		<!-- ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow# -->
+ 	</select>
+	
+	<!-- 전시플랜이미지 조회 -->
+	<select id="PlanningDAO.getPlanImage" parameterClass="PlanningVO" resultMap="PlanningImage">
+		SELECT IMG_T.IMG_TITLE IMG_TITLE , 
+		       IMG_T.SAVE_FILE_NM SAVE_FILE_NM ,
+		       IMG_T.GOODS_CD GOODS_CD 
+		FROM   GD_IMG IMG_T,
+		       (SELECT A.GOODS_CD,
+		               MIN(A.DISP_GRADE) SEQ
+		        FROM   GD_IMG A,
+		               DI_PLAN_GOODS B
+		        WHERE  A.GOODS_CD = B.GOODS_CD
+		        AND    B.PLAN_SEQ = #planSeq#
+		        AND    A.USE_YN ='Y'
+		        GROUP BY A.GOODS_CD ) GOODS_GRP
+		WHERE  IMG_T.GOODS_CD = GOODS_GRP.GOODS_CD
+		AND    IMG_T.DISP_GRADE = GOODS_GRP.SEQ
+	</select>
+	
+	<select id="PlanningDAO.getPlanTabList" parameterClass="PlanningVO" resultClass="PlanningVO">
+		SELECT PLAN_SEQ 			AS planSeq
+		     , PLAN_TAB_SEQ			AS planTabSeq
+		     , PLAN_TAB_TITLE		AS planTabTitle
+		  FROM DI_PLAN_TAB
+		 WHERE PLAN_SEQ = #planSeq#
+		 ORDER BY DISP_ORDER asc
+	</select>
+</sqlMap>

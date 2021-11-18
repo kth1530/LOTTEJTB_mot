@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="LoginDAO">
+	
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="LoginVO"         type="com.lottejtb.sso.service.LoginVO"/>
+	<typeAlias alias="CookieInfoVO"     type="com.lottejtb.sso.service.CookieInfoVO"/>
+	
+	
+	<resultMap id="cookieinfo" class="CookieInfoVO">
+		<result property="cust_cd" column="CUST_CD"/>
+	</resultMap>			
+	
+	<resultMap id="cookieinsert" class="CookieInfoVO">
+		<result property="cust_cd" 		column="CUST_CD"/>
+		<!-- <result property="jmno" column="JMNO"/>-->
+		<result property="knm" 			column="KNM"/>
+		<result property="id" 			column="ID"/>
+		<result property="email" 		column="EMAIL"/>
+		<result property="custGradeCd"	column="CUST_GRADE_CD"/>
+		<result property="custGradeNm"	column="CUST_GRADE_NM"/>
+		<result property="birthday"		column="BIRTHDAY"/>
+		<result property="cust_id"		column="LOTTE_ID"/>
+		<result property="r_phoneno"		column="r_phoneno"/>
+	</resultMap>
+	
+	
+	<select id="LoginDAO.checkGuestLogin" parameterClass="LoginVO" resultClass="LoginVO">
+		SELECT 
+			 A.RES_CD	"res_cd", 
+			 A.CUST_CD	"cust_cd"                
+		     
+		FROM RV_MST A 
+		WHERE A.RES_NM = #res_nm# 	
+			  <isNotEmpty property="r_phoneno">
+              AND A.HANDPHONE1 || A.HANDPHONE2 || A.HANDPHONE3 =  #r_phoneno#
+              </isNotEmpty>
+			  AND   A.RES_CD = #res_cd#
+	</select>
+	
+	<select id="LoginDAO.cookieSaveData" parameterClass="CookieInfoVO" resultMap="cookieinfo">
+		SELECT CUST_CD FROM CU_MST WHERE LOTTE_ID=#cust_id#	
+	</select>
+	
+	<insert id="LoginDAO.cookieInsert" parameterClass="CookieInfoVO">
+		<selectKey keyProperty="cust_cd" resultClass="String">
+			SELECT NVL(LPAD(TO_CHAR(max(TO_NUMBER(CUST_CD))+1),10,'0'), 1) FROM CU_MST
+		</selectKey>
+		INSERT 
+		INTO 
+		CU_MST
+			 (
+			  CUST_CD,
+			  JMNO, 
+			  KNM,
+			  ID, 
+			  EMAIL,
+			  DEL_YN, 
+			  LOTTE_ID, 
+			  INS_DT, 
+			  INS_ID
+			  )
+		VALUES
+			 (
+			   #cust_cd#,
+			   #jmno#,
+			   #knm#, 
+			   #id#, 
+			   #email#, 
+			   'N', 
+			   #cust_id#, 
+			   SYSDATE, 
+			   'MOBILEUSER'
+			 )
+	
+	</insert>
+	
+	<update id="LoginDAO.cookieUpdate" parameterClass="CookieInfoVO">
+		UPDATE CU_MST 
+		SET 
+			KNM = NVL(#knm#, KNM),
+			ID = NVL(#id#, ID),
+			EMAIL = NVL(#email#, EMAIL),
+			SEX = NVL(#sex#, SEX),
+			UPD_DT = SYSDATE,
+			UPD_ID ='MOBILEUSER' 
+	    WHERE LOTTE_ID = #cust_id#
+	</update>
+	
+	<!-- 저장되어있는 쿠키값 -->
+	<select id="LoginDAO.getCookieInfo" parameterClass="CookieInfoVO" resultMap="cookieinsert">
+		SELECT CUST_CD,
+		       KNM,
+		       ID,
+		       EMAIL,
+		       CUST_GRADE_CD,
+		       FN_SY_CD_DET_S01('CUGRADE',CUST_GRADE_CD ) AS CUST_GRADE_NM,
+		       BIRTHDAY,
+		       LOTTE_ID
+		FROM   CU_MST
+		WHERE  CUST_CD = #cust_cd#
+	</select>
+	
+		
+	<update id="loginDAO.updateDeviceCustId" parameterClass="CookieInfoVO">
+		UPDATE MO_PUSH_INFO
+		   SET CUST_ID = #cust_id#
+		 WHERE DEVICE_ID = #deviceId#
+	</update>
+	
+	<insert id="LoginDAO.loginLogInsert" parameterClass="LoginVO">
+		INSERT /* LoginDAO.loginLogInsert */
+			INTO LOTTE_LOGINLOG@T2RL
+			  (
+			    LOTTE_ID,
+			    LOGINTIME,
+			    REMARK,
+			    ACE_TKN
+			  )
+			  VALUES
+			  (
+			    #cust_id#,
+			    sysdate,
+			    'MO',
+			    #aceTkn#
+			  )
+	
+	</insert> 
+	
+	<select id="LoginDAO.selectLoginLog" parameterClass="LoginVO" resultClass="LoginVO">
+		SELECT  LOTTE_ID
+				  , LOGINTIME
+				  , REMARK
+	      FROM LOTTE_LOGINLOG@T2RL
+	    WHERE LOTTE_ID = #cust_id#
+			AND TO_CHAR(LOGINTIME, 'YYYYMMDD') = TO_CHAR(SYSDATE, 'YYYYMMDD')
+	</select>
+	<!-- 임직원 마크업 추가 2019.04.16 bum -->
+  	<select id="LoginDAO.checkCustCdChk" parameterClass="String" resultClass="String">
+		SELECT 
+		CASE WHEN A.CD_NM = '그룹직원' THEN '그룹직원'
+		     ELSE ''
+		END AS CD_NM
+		FROM SY_CD_DET A LEFT OUTER JOIN CU_MST B ON A.CD = B.CUST_GRADE_CD 
+		WHERE B.CUST_CD = #custCdChk# AND A.CD_NM = '그룹직원'
+	</select>
+</sqlMap>

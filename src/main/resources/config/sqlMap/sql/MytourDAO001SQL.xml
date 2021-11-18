@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="MytourDAO">
+
+	<typeAlias alias="egovMap"      type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="mytourVO"  	type="com.lottejtb.mytour.service.MytourVO"/>
+	<typeAlias alias="rvPaymentVO"     	type="com.lottejtb.account.service.RvPaymentVO"/>
+	<typeAlias alias="coSettMethVO"     type="com.lottejtb.account.service.CoSettMethVO"/>
+	<typeAlias alias="coSettFeeVO"     	type="com.lottejtb.account.service.CoSettFeeVO"/>
+	<typeAlias alias="coSettDetVO"     	type="com.lottejtb.account.service.CoSettDetVO"/>
+	<typeAlias alias="paramVO"     		type="com.lottejtb.account.service.paramVO"/>
+	<typeAlias alias="cashVO"     		type="com.lottejtb.account.service.CashVO"/>
+	
+	<select id="MytourDAO.myReservationList" parameterClass="mytourVO" resultClass="mytourVO">
+		SELECT B.CUST_CD																								AS custCd,
+		       B.RES_CD 																								AS resCd,                   
+		       SUBSTR(B.RES_DAY, 0, 4) || '-' || SUBSTR(B.RES_DAY, 5, 2) || '-' || SUBSTR(B.RES_DAY, 7, 2)				AS resDay,
+		       B.ETC_RES_CD																								AS etcResCd,
+		       A.GOODS_TYPE_CD																							AS goodsTypeCd,
+		       A.AREA_CD																								AS areaCd,
+		       A.EVENT_NM																								AS eventNm,
+		       B.RES_CHK_CD																								AS resChkCd,
+		       A.COMP_CD																								AS compCd,
+		       SUBSTR(A.START_DAY, 0, 4) || '-' || SUBSTR(A.START_DAY, 5, 2) || '-' || SUBSTR(A.START_DAY, 7, 2)		AS startDay,
+		       CASE B.MASS_CD WHEN 'ONI' THEN C.CD_NM ELSE MASS_DESC END												AS siteCd,
+		       B.RES_NM																									AS resNm,
+		       B.RES_CNT																								AS resCnt,
+		       B.CANC_CNT																								AS cancCnt, 
+		       FN_RV_MST_CNT_S01('1', A.EVENT_CD)||'/'||FN_RV_MST_CNT_S01('2', A.EVENT_CD)								AS okwt,
+		       ( SELECT nVL(SUM(A.EVENT_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS eventAmt,             
+		       FN_GET_TOT_SALE_AMT(B.RES_CD)																			AS totSaleAmt,
+		       ( SELECT nVL(SUM(A.ADD_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS addAmt,
+		       FN_GET_IN_AMT(B.RES_CD)																					AS totInAmt,            
+		       FN_GET_TOT_SALE_AMT(B.RES_CD) - FN_GET_IN_AMT(B.RES_CD)													AS misuAmt,
+		       ( SELECT nVL(SUM(A.SITE_COMM),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS siteComm,
+		       B.CHA_ID																									AS chaId,
+		       B.CHA_DEPT_CD																							AS chaDeptCd,
+		       CASE WHEN  A.COMP_CD = 'LT' THEN A.EVENT_CD ELSE A.ETC_EVENT_ID END										AS eventCd,
+		       A.EV_DAY_CNT																								AS evDayCnt,
+		       A.EV_NIGHT_CNT																							AS evNightCnt,
+		       A.END_DAY																								AS endDay,
+		       A.START_PYUN																								AS startPyun,
+		       B.CANC_CD																								AS cancCd,
+		       FN_SY_CD_DET_S01('RVCOND', B.STATUS_CD)																	AS statusNm,
+		       B.STATUS_CD																								AS statusCd,
+		       CASE WHEN B.STATUS_CD = '01' OR B.STATUS_CD = 'H1' OR B.STATUS_CD = 'H0' THEN 'RW'
+		            ELSE CASE WHEN B.STATUS_CD = '99' OR B.STATUS_CD = 'HH' THEN 'CC'
+		                 ELSE CASE WHEN B.STATUS_CD = '10' OR B.STATUS_CD = 'H2' OR B.STATUS_CD = 'H3' OR
+		                           B.STATUS_CD = 'H4' OR B.STATUS_CD = 'H5' OR B.STATUS_CD = 'HI' THEN 'RC'
+		                      ELSE CASE WHEN B.STATUS_CD = 'HN' THEN 'RN' ELSE '' END END END END 						AS statusRgCd,
+		       A.END_DAY_FR																								AS endDayFr,
+		       A.START_TIME																								AS startTime,
+		       A.END_TIME_FR																							AS endTimeFr,
+		       D.CITY_CD																								AS cityCd,
+		       C.GOODS_CD																								AS goodsCd,
+		       C.COMP_CD																								AS compCd,
+		       C.OP_CD																									AS opCd,
+		       C.HT_CITY_CD																								AS htCityCd,
+		       C.ETC_GOODS_ID																							AS etcGoodsId,
+		       B.SALE_AMT																								AS saleAmt,
+		       (SELECT RI.SALE_AMT_W FROM RV_HOTEL_INFO RI WHERE RI.RES_CD = B.RES_CD AND RI.HOTEL_SEQ = '1')			AS hpSaleAmtW
+		  FROM ET_MST A JOIN RV_MST B ON A.EVENT_CD  = B.EVENT_CD 
+		       LEFT JOIN (select CD, CD_NM from sy_cd_det where grp_cd='ADMSDET') C ON C.CD = B.MASS_SITE_CD
+		       LEFT JOIN GD_MST C ON C.GOODS_CD = A.GOODS_CD AND C.COMP_CD = A.COMP_CD 
+		       LEFT JOIN DI_HOTEL_MST D ON C.ETC_GOODS_ID = D.HOTEL_CD
+		 WHERE B.CUST_CD = NVL(#custCd#, B.CUST_CD)
+		   AND A.START_DAY BETWEEN NVL('', '00000000') AND NVL('', '99991231')
+		   AND B.RES_CD = NVL(null, B.RES_CD)
+		   AND B.STATUS_CD NOT IN ('99', 'HH')
+		   AND SUBSTR(A.START_DAY, 0, 4) <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYY') - 1
+		   AND A.GOODS_TYPE_CD <![CDATA[<>]]> 'A'
+		 ORDER BY B.INS_DT DESC
+	</select>
+	
+	<select id="MytourDAO.myReservationDateList" parameterClass="mytourVO" resultClass="mytourVO">
+		SELECT B.CUST_CD																								AS custCd,
+		       B.RES_CD 																								AS resCd,                   
+		       SUBSTR(B.RES_DAY, 0, 4) || '-' || SUBSTR(B.RES_DAY, 5, 2) || '-' || SUBSTR(B.RES_DAY, 7, 2)				AS resDay,
+		       B.ETC_RES_CD																								AS etcResCd,
+		       A.GOODS_TYPE_CD																							AS goodsTypeCd,
+		       A.AREA_CD																								AS areaCd,
+		       A.EVENT_NM																								AS eventNm,
+		       B.RES_CHK_CD																								AS resChkCd,
+		       A.COMP_CD																								AS compCd,
+		       SUBSTR(A.START_DAY, 0, 4) || '-' || SUBSTR(A.START_DAY, 5, 2) || '-' || SUBSTR(A.START_DAY, 7, 2)		AS startDay,
+		       CASE B.MASS_CD WHEN 'ONI' THEN C.CD_NM ELSE MASS_DESC END												AS siteCd,
+		       B.RES_NM																									AS resNm,
+		       B.RES_CNT																								AS resCnt,
+		       B.CANC_CNT																								AS cancCnt, 
+		       FN_RV_MST_CNT_S01('1', A.EVENT_CD)||'/'||FN_RV_MST_CNT_S01('2', A.EVENT_CD)								AS okwt,
+		       ( SELECT nVL(SUM(A.EVENT_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS eventAmt,             
+		       FN_GET_TOT_SALE_AMT(B.RES_CD)																			AS totSaleAmt,
+		       ( SELECT nVL(SUM(A.ADD_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS addAmt,
+		       FN_GET_IN_AMT(B.RES_CD)																					AS totInAmt,            
+		       FN_GET_TOT_SALE_AMT(B.RES_CD) - FN_GET_IN_AMT(B.RES_CD)													AS misuAmt,
+		       ( SELECT nVL(SUM(A.SITE_COMM),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS siteComm,
+		       B.CHA_ID																									AS chaId,
+		       B.CHA_DEPT_CD																							AS chaDeptCd,
+		       CASE WHEN  A.COMP_CD = 'LT' THEN A.EVENT_CD ELSE A.ETC_EVENT_ID END										AS eventCd,
+		       A.EV_DAY_CNT																								AS evDayCnt,
+		       A.EV_NIGHT_CNT																							AS evNightCnt,
+		       A.END_DAY																								AS endDay,
+		       A.START_PYUN																								AS startPyun,
+		       B.CANC_CD																								AS cancCd,
+		       FN_SY_CD_DET_S01('RVCOND', B.STATUS_CD)																	AS statusNm,
+		       B.STATUS_CD																								AS statusCd,
+		       CASE WHEN B.STATUS_CD = '01' OR B.STATUS_CD = 'H1' OR B.STATUS_CD = 'H0' THEN 'RW'
+		            ELSE CASE WHEN B.STATUS_CD = '99' OR B.STATUS_CD = 'HH' THEN 'CC'
+		                 ELSE CASE WHEN B.STATUS_CD = '10' OR B.STATUS_CD = 'H2' OR B.STATUS_CD = 'H3' OR
+		                           B.STATUS_CD = 'H4' OR B.STATUS_CD = 'H5' OR B.STATUS_CD = 'HI' THEN 'RC'
+		                      ELSE CASE WHEN B.STATUS_CD = 'HN' THEN 'RN' ELSE '' END END END END 						AS statusRgCd,
+		       A.END_DAY_FR																								AS endDayFr,
+		       A.START_TIME																								AS startTime,
+		       A.END_TIME_FR																							AS endTimeFr,
+		       D.CITY_CD																								AS cityCd,
+		       C.GOODS_CD																								AS goodsCd,
+		       C.COMP_CD																								AS compCd,
+		       C.OP_CD																									AS opCd,
+		       C.HT_CITY_CD																								AS htCityCd,
+		       C.ETC_GOODS_ID																							AS etcGoodsId,
+		       B.SALE_AMT																								AS saleAmt,
+		       (SELECT RI.SALE_AMT_W FROM RV_HOTEL_INFO RI WHERE RI.RES_CD = B.RES_CD AND RI.HOTEL_SEQ = '1')			AS hpSaleAmtW
+		  FROM ET_MST A JOIN RV_MST B ON A.EVENT_CD  = B.EVENT_CD 
+		       LEFT JOIN (select CD, CD_NM from sy_cd_det where grp_cd='ADMSDET') C ON C.CD = B.MASS_SITE_CD
+		       LEFT JOIN GD_MST C ON C.GOODS_CD = A.GOODS_CD AND C.COMP_CD = A.COMP_CD 
+		       LEFT JOIN DI_HOTEL_MST D ON C.ETC_GOODS_ID = D.HOTEL_CD
+		 WHERE B.CUST_CD = NVL(#custCd#, B.CUST_CD)
+		   AND A.START_DAY BETWEEN NVL('', '00000000') AND NVL('', '99991231')
+		   AND B.RES_CD = NVL(null, B.RES_CD)
+		   AND B.STATUS_CD NOT IN ('99', 'HH')
+		   AND SUBSTR(A.START_DAY, 0, 4) <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYY') - 1
+		   AND A.GOODS_TYPE_CD <![CDATA[<>]]> 'A'
+		   	<isNotEmpty property="resDate">
+		   		AND B.RES_DAY <![CDATA[>=]]> #resDate#
+		   	</isNotEmpty>
+		 ORDER BY B.INS_DT DESC
+	</select>
+	
+	<select id="MytourDAO.myCancelReservationList" parameterClass="mytourVO" resultClass="mytourVO">
+		SELECT B.CUST_CD																								AS custCd,
+		       B.RES_CD 																								AS resCd,                   
+		       SUBSTR(B.RES_DAY, 0, 4) || '-' || SUBSTR(B.RES_DAY, 5, 2) || '-' || SUBSTR(B.RES_DAY, 7, 2)				AS resDay,
+		       B.ETC_RES_CD																								AS etcResCd,
+		       A.GOODS_TYPE_CD																							AS goodsTypeCd,
+		       A.AREA_CD																								AS areaCd,
+		       A.EVENT_NM																								AS eventNm,
+		       B.RES_CHK_CD																								AS resChkCd,
+		       A.COMP_CD																								AS compCd,
+		       SUBSTR(A.START_DAY, 0, 4) || '-' || SUBSTR(A.START_DAY, 5, 2) || '-' || SUBSTR(A.START_DAY, 7, 2)		AS startDay,
+		       CASE B.MASS_CD WHEN 'ONI' THEN C.CD_NM ELSE MASS_DESC END												AS siteCd,
+		       B.RES_NM																									AS resNm,
+		       B.RES_CNT																								AS resCnt,
+		       B.CANC_CNT																								AS cancCnt, 
+		       FN_RV_MST_CNT_S01('1', A.EVENT_CD)||'/'||FN_RV_MST_CNT_S01('2', A.EVENT_CD)								AS okwt,
+		       ( SELECT nVL(SUM(A.EVENT_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS eventAmt,             
+		       FN_GET_TOT_SALE_AMT(B.RES_CD)																			AS totSaleAmt,
+		       ( SELECT nVL(SUM(A.ADD_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS addAmt,
+		       FN_GET_IN_AMT(B.RES_CD)																					AS totInAmt,            
+		       FN_GET_TOT_SALE_AMT(B.RES_CD) - FN_GET_IN_AMT(B.RES_CD)													AS misuAmt,
+		       ( SELECT nVL(SUM(A.SITE_COMM),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS siteComm,
+		       B.CHA_ID																									AS chaId,
+		       B.CHA_DEPT_CD																							AS chaDeptCd,
+		       CASE WHEN  A.COMP_CD = 'LT' THEN A.EVENT_CD ELSE A.ETC_EVENT_ID END										AS eventCd,
+		       A.EV_DAY_CNT																								AS evDayCnt,
+		       A.EV_NIGHT_CNT																							AS evNightCnt,
+		       A.END_DAY																								AS endDay,
+		       A.START_PYUN																								AS startPyun,
+		       B.CANC_CD																								AS cancCd,
+		       FN_SY_CD_DET_S01('RVCOND', B.STATUS_CD)																	AS statusNm,
+		       B.STATUS_CD																								AS statusCd,
+		       CASE WHEN B.STATUS_CD = '01' OR B.STATUS_CD = 'H1' OR B.STATUS_CD = 'H0' THEN 'RW'
+		            ELSE CASE WHEN B.STATUS_CD = '99' OR B.STATUS_CD = 'HH' THEN 'CC'
+		                 ELSE CASE WHEN B.STATUS_CD = '10' OR B.STATUS_CD = 'H2' OR B.STATUS_CD = 'H3' OR
+		                           B.STATUS_CD = 'H4' OR B.STATUS_CD = 'H5' OR B.STATUS_CD = 'HI' THEN 'RC'
+		                      ELSE CASE WHEN B.STATUS_CD = 'HN' THEN 'RN' ELSE '' END END END END 						AS statusRgCd,
+		       A.END_DAY_FR																								AS endDayFr,
+		       A.START_TIME																								AS startTime,
+		       A.END_TIME_FR																							AS endTimeFr,
+		       D.CITY_CD																								AS cityCd,
+		       C.GOODS_CD																								AS goodsCd,
+		       C.COMP_CD																								AS compCd,
+		       C.OP_CD																									AS opCd,
+		       C.HT_CITY_CD																								AS htCityCd,
+		       C.ETC_GOODS_ID																							AS etcGoodsId,
+		       B.SALE_AMT																								AS saleAmt,
+		       (SELECT RI.SALE_AMT_W FROM RV_HOTEL_INFO RI WHERE RI.RES_CD = B.RES_CD AND RI.HOTEL_SEQ = '1')			AS hpSaleAmtW
+		  FROM ET_MST A JOIN RV_MST B ON A.EVENT_CD  = B.EVENT_CD 
+		       LEFT JOIN (select CD, CD_NM from sy_cd_det where grp_cd='ADMSDET') C ON C.CD = B.MASS_SITE_CD
+		       LEFT JOIN GD_MST C ON C.GOODS_CD = A.GOODS_CD AND C.COMP_CD = A.COMP_CD 
+		       LEFT JOIN DI_HOTEL_MST D ON C.ETC_GOODS_ID = D.HOTEL_CD
+		 WHERE B.CUST_CD = NVL(#custCd#, B.CUST_CD)
+		   AND A.START_DAY BETWEEN NVL('', '00000000') AND NVL('', '99991231')
+		   AND B.RES_CD = NVL(null, B.RES_CD)
+		   AND B.STATUS_CD IN ('99', 'HH')
+		   AND A.GOODS_TYPE_CD <![CDATA[<>]]> 'A'
+		 ORDER BY B.INS_DT DESC
+	</select>
+	
+	<select id="MytourDAO.nonMemberResList" parameterClass="mytourVO" resultClass="mytourVO">
+		SELECT B.CUST_CD																								AS custCd,
+		       B.RES_CD 																								AS resCd,                   
+		       SUBSTR(B.RES_DAY, 0, 4) || '-' || SUBSTR(B.RES_DAY, 5, 2) || '-' || SUBSTR(B.RES_DAY, 7, 2)				AS resDay,
+		       B.ETC_RES_CD																								AS etcResCd,
+		       A.GOODS_TYPE_CD																							AS goodsTypeCd,
+		       A.AREA_CD																								AS areaCd,
+		       A.EVENT_NM																								AS eventNm,
+		       B.RES_CHK_CD																								AS resChkCd,
+		       A.COMP_CD																								AS compCd,
+		       SUBSTR(A.START_DAY, 0, 4) || '-' || SUBSTR(A.START_DAY, 5, 2) || '-' || SUBSTR(A.START_DAY, 7, 2)		AS startDay,
+		       CASE B.MASS_CD WHEN 'ONI' THEN C.CD_NM ELSE MASS_DESC END												AS siteCd,
+		       B.RES_NM																									AS resNm,
+		       B.RES_CNT																								AS resCnt,
+		       B.CANC_CNT																								AS cancCnt, 
+		       FN_RV_MST_CNT_S01('1', A.EVENT_CD)||'/'||FN_RV_MST_CNT_S01('2', A.EVENT_CD)								AS okwt,
+		       ( SELECT nVL(SUM(A.EVENT_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS eventAmt,             
+		       FN_GET_TOT_SALE_AMT(B.RES_CD)																			AS totSaleAmt,
+		       ( SELECT nVL(SUM(A.ADD_AMT),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS addAmt,
+		       FN_GET_IN_AMT(B.RES_CD)																					AS totInAmt,            
+		       FN_GET_TOT_SALE_AMT(B.RES_CD) - FN_GET_IN_AMT(B.RES_CD)													AS misuAmt,
+		       ( SELECT nVL(SUM(A.SITE_COMM),0) FROM RV_ROSTER A WHERE A.RES_CD = B.RES_CD AND A.CANC_CD IS NULL )		AS siteComm,
+		       B.CHA_ID																									AS chaId,
+		       B.CHA_DEPT_CD																							AS chaDeptCd,
+		       CASE WHEN  A.COMP_CD = 'LT' THEN A.EVENT_CD ELSE A.ETC_EVENT_ID END										AS eventCd,
+		       A.EV_DAY_CNT																								AS evDayCnt,
+		       A.EV_NIGHT_CNT																							AS evNightCnt,
+		       A.END_DAY																								AS endDay,
+		       A.START_PYUN																								AS startPyun,
+		       B.CANC_CD																								AS cancCd,
+		       FN_SY_CD_DET_S01('RVCOND', B.STATUS_CD)																	AS statusNm,
+		       B.STATUS_CD																								AS statusCd,
+		       CASE WHEN B.STATUS_CD = '01' OR B.STATUS_CD = 'H1' OR B.STATUS_CD = 'H0' THEN 'RW'
+		            ELSE CASE WHEN B.STATUS_CD = '99' OR B.STATUS_CD = 'HH' THEN 'CC'
+		                 ELSE CASE WHEN B.STATUS_CD = '10' OR B.STATUS_CD = 'H2' OR B.STATUS_CD = 'H3' OR
+		                           B.STATUS_CD = 'H4' OR B.STATUS_CD = 'H5' OR B.STATUS_CD = 'HI' THEN 'RC'
+		                      ELSE CASE WHEN B.STATUS_CD = 'HN' THEN 'RN' ELSE '' END END END END 						AS statusRgCd,
+		       A.END_DAY_FR																								AS endDayFr,
+		       A.START_TIME																								AS startTime,
+		       A.END_TIME_FR																							AS endTimeFr,
+		       D.CITY_CD																								AS cityCd,
+		       C.GOODS_CD																								AS goodsCd,
+		       C.COMP_CD																								AS compCd,
+		       C.OP_CD																									AS opCd,
+		       C.HT_CITY_CD																								AS htCityCd,
+		       C.ETC_GOODS_ID																							AS etcGoodsId,
+		       B.SALE_AMT																								AS saleAmt,
+		       (SELECT RI.SALE_AMT_W FROM RV_HOTEL_INFO RI WHERE RI.RES_CD = B.RES_CD AND RI.HOTEL_SEQ = '1')			AS hpSaleAmtW
+		  FROM ET_MST A JOIN RV_MST B ON A.EVENT_CD  = B.EVENT_CD 
+		       LEFT JOIN (select CD, CD_NM from sy_cd_det where grp_cd='ADMSDET') C ON C.CD = B.MASS_SITE_CD
+		       LEFT JOIN GD_MST C ON C.GOODS_CD = A.GOODS_CD AND C.COMP_CD = A.COMP_CD 
+		       LEFT JOIN DI_HOTEL_MST D ON C.ETC_GOODS_ID = D.HOTEL_CD
+		 WHERE A.START_DAY BETWEEN NVL('', '00000000') AND NVL('', '99991231')
+		   AND B.RES_NM = #resNm#
+		   AND B.EMAIL = #email#
+		   AND B.RES_CD = NVL(#resCd#, B.RES_CD)
+		   AND A.GOODS_TYPE_CD <![CDATA[<>]]> 'A'
+		 ORDER BY B.INS_DT DESC
+	</select>
+	
+	<select id="MytourDAO.choiceGoodsCount" parameterClass="mytourVO" resultClass="int">
+		SELECT COUNT(1) AS totalcnt
+		  FROM DI_WISH_LIST A
+              ,CTG_GOODS B
+              ,ET_MST C
+              ,ET_PRICE D 
+              ,GD_MST M
+              ,CO_CD_TRAFFIC G
+         WHERE A.CUST_CD = #custCd#
+           AND A.WISH_CD = #wishCd#
+           AND A.DEL_YN = 'N'
+           AND B.GOODS_CD = A.GOODS_CD
+           AND B.CTG_SEQ = A.CTG_SEQ
+           AND C.GOODS_CD = B.GOODS_CD
+           AND C.EVENT_CD = A.EVENT_CD
+           AND D.EVENT_CD = C.EVENT_CD
+           AND D.FEE_SEQ = C.FEE_SEQ
+           AND M.GOODS_CD = C.GOODS_CD
+           AND M.COMP_CD = C.COMP_CD
+           AND M.OP_CD = C.OP_CD
+           AND C.TRFF_CD_SHORT = G.TRFF_CD_SHORT
+           AND EXISTS (SELECT 1 FROM GD_IMG E WHERE E.GOODS_CD =  A.GOODS_CD )
+         ORDER BY A.INS_DT DESC
+		<!--  
+		  SELECT COUNT(1) AS totalcnt
+			FROM   (SELECT CTG_SEQ
+			             , CUST_CD
+			             , GOODS_CD
+			             , EVENT_CD
+			             , MAX(WISH_SEQ) AS WISH_SEQ
+			        FROM DI_WISH_LIST
+			        WHERE CUST_CD = #custCd#
+			          AND WISH_CD = #wishCd#
+			          AND DEL_YN = 'N'
+			          AND INS_DT >= (SYSDATE - 7)
+			        GROUP BY CTG_SEQ, CUST_CD, GOODS_CD, EVENT_CD ) A ,
+			       CTG_GOODS B ,
+			       ET_MST C ,
+			       ET_PRICE D ,
+			       GD_IMG E ,
+			       (SELECT MIN(DISP_GRADE) GRADE,
+			               GOODS_CD
+			        FROM   GD_IMG
+			        GROUP BY GOODS_CD) F ,
+			       CO_CD_TRAFFIC G
+			WHERE  A.GOODS_CD = B.GOODS_CD
+			AND    A.CTG_SEQ = B.CTG_SEQ
+			AND    B.GOODS_CD = C.GOODS_CD
+			AND    A.EVENT_CD = C.EVENT_CD
+			AND    C.EVENT_CD = D.EVENT_CD
+			AND    C.FEE_SEQ = D.FEE_SEQ
+			AND    A.GOODS_CD = E.GOODS_CD
+			AND    A.GOODS_CD = F.GOODS_CD
+			AND    E.DISP_GRADE = F.GRADE
+			AND    C.TRFF_CD_SHORT = G.TRFF_CD_SHORT
+			ORDER BY A.WISH_SEQ DESC
+			-->
+	</select>
+	
+	<select id="MytourDAO.choiceGoodsList" parameterClass="mytourVO" resultClass="mytourVO">
+		SELECT *
+		  FROM (
+		    SELECT QUERY.* ,
+		           ROWNUM AS RN
+		      FROM (
+		            SELECT A.GOODS_CD       AS goodsCd
+		                  ,A.EVENT_CD       AS eventCd
+		                  ,A.CTG_SEQ        AS ctgSeq
+		                  ,C.EVENT_NM       AS eventNm
+		                  ,C.DISP_NM		AS dispNm
+		                  ,D.ADULT_PRICE+D.ETC_PRICE1   AS adultPrice
+		                  ,( SELECT MIN(I.SAVE_FILE_NM) FROM  GD_IMG I WHERE I.GOODS_CD = A.GOODS_CD AND I.DISP_GRADE = ( SELECT MIN(X.DISP_GRADE) AS GRADE FROM GD_IMG X WHERE X.GOODS_CD = I.GOODS_CD GROUP BY X.GOODS_CD ) ) AS saveFileNm 
+		                  ,C.START_DAY      AS startDay
+		                  ,C.END_DAY        AS endDay
+		                  ,A.WISH_SEQ       AS wishSeq
+		                  ,C.EV_NIGHT_CNT   AS evNightCnt
+		                  ,C.EV_DAY_CNT     AS evDayCnt
+		                  ,C.OP_CD          AS opCd
+		                  ,NVL(M.SHORT_GOODS_NM,'') AS shortGoodsNm
+		                  ,NVL(M.EMP_RATE,0)        AS empRate
+		                  ,DECODE(NVL(M.EMP_RATE,0), 0, (D.ADULT_PRICE+D.ETC_PRICE1), ((D.ADULT_PRICE+D.ETC_PRICE1)-((D.ADULT_PRICE+D.ETC_PRICE1)*M.EMP_RATE)/100))   AS empPrice
+		                  ,DECODE((SELECT GOODS_TAG FROM GD_DET_TAG WHERE GOODS_CD = M.GOODS_CD AND COMP_CD = M.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '001'),NULL,'N','Y')  AS homeShoppingYn
+		                  ,DECODE((SELECT GOODS_TAG FROM GD_DET_TAG WHERE GOODS_CD = M.GOODS_CD AND COMP_CD = M.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '002'),NULL,'N','Y')  AS planYn
+		                  ,DECODE((SELECT GOODS_TAG FROM GD_DET_TAG WHERE GOODS_CD = M.GOODS_CD AND COMP_CD = M.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '003'),NULL,'N','Y')  AS eventYn
+		                  ,DECODE((SELECT GOODS_TAG FROM GD_DET_TAG WHERE GOODS_CD = M.GOODS_CD AND COMP_CD = M.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '004'),NULL,'N','Y')  AS premiumYn
+		                  ,DECODE((SELECT GOODS_TAG FROM GD_DET_TAG WHERE GOODS_CD = M.GOODS_CD AND COMP_CD = M.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '005'),NULL,'N','Y')  AS classicYn
+		                  ,DECODE((SELECT GOODS_TAG FROM GD_DET_TAG WHERE GOODS_CD = M.GOODS_CD AND COMP_CD = M.COMP_CD AND USE_YN = 'Y' AND GOODS_TAG = '006'),NULL,'N','Y')  AS saveYn
+		                  ,TO_CHAR(TO_DATE(C.START_DAY,'YYYYMMDD'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN')  AS wishCd
+		                  ,G.TRFF_KNM		AS trffKnm
+		              FROM DI_WISH_LIST A
+		                  ,CTG_GOODS B
+		                  ,ET_MST C
+		                  ,ET_PRICE D 
+		                  ,GD_MST M
+		                  ,CO_CD_TRAFFIC G
+		             WHERE A.CUST_CD = #custCd#
+		               AND A.WISH_CD = #wishCd#
+		               AND A.DEL_YN = 'N'
+		               AND B.GOODS_CD = A.GOODS_CD
+		               AND B.CTG_SEQ = A.CTG_SEQ
+		               AND C.GOODS_CD = B.GOODS_CD
+		               AND C.EVENT_CD = A.EVENT_CD
+		               AND D.EVENT_CD = C.EVENT_CD
+		               AND D.FEE_SEQ = C.FEE_SEQ
+		               AND M.GOODS_CD = C.GOODS_CD
+		               AND M.COMP_CD = C.COMP_CD
+		               AND M.OP_CD = C.OP_CD
+		               AND C.TRFF_CD_SHORT = G.TRFF_CD_SHORT
+		               AND EXISTS (SELECT 1 FROM GD_IMG E WHERE E.GOODS_CD =  A.GOODS_CD )
+		             ORDER BY A.INS_DT DESC
+		        ) QUERY
+		    )
+		WHERE RN BETWEEN #startRow# AND #endRow#
+		<!--
+		SELECT *
+		  FROM (
+		  	SELECT QUERY.*
+		  		 , ROWNUM AS RN
+		  	  FROM (
+				SELECT A.GOODS_CD 						AS goodsCd
+				      ,A.EVENT_CD 						AS eventCd
+				      ,A.CTG_SEQ 						AS ctgSeq
+				      ,C.EVENT_NM 						AS eventNm
+				      ,D.ADULT_PRICE+D.ETC_PRICE1 		AS adultPrice
+				      ,E.SAVE_FILE_NM 					AS saveFileNm
+				      ,C.START_DAY 						AS startDay
+				      ,C.END_DAY 						AS endDay
+				      ,A.WISH_SEQ 						AS wishSeq
+				      ,C.EV_NIGHT_CNT 					AS evNightCnt
+				      ,C.EV_DAY_CNT 					AS evDayCnt
+				      ,C.OP_CD 							AS opCd
+				      ,G.TRFF_KNM						AS trffKnm
+				  FROM DI_WISH_LIST A
+				      , CTG_GOODS B
+				      , ET_MST C
+				      , ET_PRICE D
+				      , GD_IMG E
+				      , (SELECT MIN(DISP_GRADE) AS DISP_GRADE
+				              , GOODS_CD
+				           FROM GD_IMG
+				          GROUP BY GOODS_CD) F
+				      , CO_CD_TRAFFIC G
+				 WHERE A.CUST_CD = #custCd#
+				   AND A.WISH_CD = #wishCd#
+				   AND A.DEL_YN = 'N'
+				   AND A.INS_DT >= (SYSDATE - 7)
+				   AND A.CTG_SEQ = B.CTG_SEQ
+				   AND A.GOODS_CD = B.GOODS_CD
+				   AND A.EVENT_CD = C.EVENT_CD
+				   AND A.GOODS_CD = C.GOODS_CD
+				   AND A.EVENT_CD = D.EVENT_CD
+				   AND C.FEE_SEQ = D.FEE_SEQ
+				   AND A.GOODS_CD = E.GOODS_CD
+				   AND A.GOODS_CD = F.GOODS_CD
+				   AND E.DISP_GRADE = F.DISP_GRADE
+				   AND C.TRFF_CD_SHORT = G.TRFF_CD_SHORT
+				 ORDER BY A.INS_DT DESC
+			) QUERY 
+		) WHERE RN BETWEEN #startRow# AND #endRow#
+		-->
+	</select>
+	
+	<select id="MytourDAO.myEventCount" parameterClass="mytourVO" resultClass="int">
+		SELECT COUNT(1) AS totalcnt
+		  FROM DI_EVENT_APPLY A, DI_EVENT B, DI_EVENT_WINNER C
+		 WHERE A.EVENT_SEQ = B.EVENT_SEQ
+		   AND A.EVENT_SEQ = C.EVENT_SEQ(+)
+		   AND A.APPLY_SEQ = C.APPLY_SEQ(+)
+		   AND A.CUST_CD = C.CUST_CD(+)
+		   AND A.CUST_CD = #custCd#
+	</select>
+	
+	<select id="MytourDAO.myEventList" parameterClass="mytourVO" resultClass="mytourVO">
+		SELECT *
+		  FROM(
+			SELECT QUERY.*
+			     , ROWNUM AS RN
+			  FROM (
+			    SELECT A.EVENT_SEQ      AS eventSeq
+			         , A.APPLY_SEQ      AS applySeq
+			         , A.CUST_CD        AS custCd
+			         , A.CUST_NM        AS custNm
+			         , B.EVENT_NM       AS eventNm
+			         , B.CNT            AS cnt
+			         , B.EVENT_FR_DAY   AS eventFrDay
+			         , B.EVENT_TO_DAY   AS eventToDay
+			         , B.EVENT_DESC     AS eventDesc
+			         , B.EVENT_URL      AS eventUrl
+			         , B.DISP_YN        AS dispYn
+			         , A.INS_DT         AS insDt
+			         , C.WIN_SEQ        AS winSeq
+			      FROM DI_EVENT_APPLY A, DI_EVENT B, DI_EVENT_WINNER C
+			     WHERE A.EVENT_SEQ = B.EVENT_SEQ
+			       AND A.EVENT_SEQ = C.EVENT_SEQ(+)
+			       AND A.APPLY_SEQ = C.APPLY_SEQ(+)
+			       AND A.CUST_CD = C.CUST_CD(+)
+			       AND A.CUST_CD = #custCd#
+			     ORDER BY A.INS_DT DESC, A.EVENT_SEQ DESC, A.APPLY_SEQ DESC
+			   ) QUERY
+			) WHERE RN BETWEEN #startRow# AND #endRow#
+	</select>
+	
+	<update id="MytourDAO.delectSelChoiceGoods" parameterClass="mytourVO">
+		UPDATE DI_WISH_LIST
+		   SET DEL_YN = 'Y'
+		 WHERE DEL_YN = 'N'
+		   AND #wishSeqs# || ',' LIKE '%,' || WISH_SEQ || ',%'
+	</update>
+	
+	<update id="MytourDAO.delectAllChoiceGoods" parameterClass="mytourVO">
+		UPDATE DI_WISH_LIST
+		   SET DEL_YN = 'Y'
+		 WHERE DEL_YN = 'N'
+		   AND CUST_CD = #custCd#
+	</update>
+	
+	<select id="MytourDAO.selectLottePointSeq" resultClass="java.util.HashMap">
+		SELECT LPAD(NVL(MAX(TRADE_NO),0),5,0) AS TRADE_NO
+		  FROM CU_POINT_TRNO A
+		 WHERE A.ENTDATE = TO_CHAR(sysdate,'YYYYMMDD')
+	</select>
+	
+	<insert id="MytourDAO.insertLottePointSeq">
+		INSERT INTO CU_POINT_TRNO (
+					  ENTDATE
+					, TRADE_NO
+					, INS_DT
+				   ) VALUES (
+				   	  TO_CHAR(sysdate,'YYYYMMDD')
+				   	, 1
+				   	, SYSDATE
+				   )
+	</insert>
+	
+	<update id="MytourDAO.updateLottePointSeq">
+		UPDATE CU_POINT_TRNO 
+		   SET TRADE_NO = TRADE_NO+1
+			 , INS_DT = SYSDATE
+		 WHERE ENTDATE = TO_CHAR(sysdate,'YYYYMMDD')
+	</update>
+	
+	<insert id="MytourDAO.insertLottePointMst">
+		<![CDATA[
+			INSERT INTO CU_POINT_MST(
+					POINT_TID      		,	ENTDATE        		,	POINT_FG       		,	RES_CD         		,	START_DAY      		,
+					CARD_NO        		,	JMNO           		,	POINT_DESC     		,	SALE_AMT       		,	POINT_NOW      		,
+					POINT_PREV     		,	POINT_SUM      		,	SAVE_DATE      		,	SAVE_POINT     		,	SAVE_APPRNO    		,
+					SAVE_ORG_APPRNO		,	USE_DATE       		,	USE_POINT      		,	USE_APPRNO     		,	USE_ORG_APPRNO 		,
+					INS_FG         		,	INS_ID         		,	INS_DT         		,	UPD_ID         		,	UPD_DT         	
+				) VALUES(
+					#POINT_TID#			,	#ENTDATE#			,	#POINT_FG#    		,	#RES_CD#    		,	#START_DAY#    		,
+					#CARD_NO#    		,	#JMNO#    			,	#POINT_DESC#    	,	nvl(#SALE_AMT#,0)  	,	nvl(#POINT_NOW#,0) 	,
+					nvl(#POINT_PREV#,0) ,	nvl(#POINT_SUM#,0)  ,	#SAVE_DATE#    		,	nvl(#SAVE_POINT#,0) ,	#SAVE_APPRNO#    	,
+					#SAVE_ORG_APPRNO#   ,	#USE_DATE#    		,	nvl(#USE_POINT#,0)  ,	#USE_APPRNO#  		,	#USE_ORG_APPRNO#    ,
+					#INS_FG#    		,	#INS_ID#    		,	sysdate         	,	#UPD_ID#    		,	sysdate) 
+		]]>
+	</insert>
+	
+	
+	<insert id="MytourDAO.insertLottePointHis">
+		<![CDATA[
+				INSERT INTO CU_POINT_HISTORY(
+						POINT_TID 	,	
+						POINT_SEQ 	,	
+						POINT_FG  	,	CARD_NO   	,	JM_NO     	,	POINT_DESC	,	APPRDATE  	,	
+						SALE_AMT  	,	POINT_AMT 	,	APPRNO    	,	ORG_APPRNO
+					) VALUES(
+						#POINT_TID#	,	
+						(SELECT NVL((MAX(POINT_SEQ)+1),1) FROM CU_POINT_HISTORY WHERE POINT_TID = #POINT_TID#) 	,	
+						#POINT_FG# 	,	#CARD_NO#  	,	#JM_NO#    	,	#POINT_DESC#,	TO_CHAR(sysdate,'yyyy-mm-dd am hh:mi:ss'),	
+						#SALE_AMT# ,	#POINT_AMT#	,	#APPRNO#	,	#ORG_APPRNO#) 
+		]]>
+	</insert>
+
+	<select id="MytourDAO.selectIoCd" parameterClass="rvPaymentVO" resultClass="rvPaymentVO">
+		<![CDATA[
+		SELECT	/*+'RVrv_paymentDAOV02.view'*/
+					A.IO_CD 	"IO_CD" 	,
+					A.RES_CD	"RES_CD"	
+		FROM		RV_PAYMENT A
+		WHERE		A.RES_CD = #RES_CD# 
+		AND A.IO_FG = 'I'
+		AND A.IO_CD < TO_CHAR(sysdate, 'YYMMDD')||'-200' and A.IO_CD like TO_CHAR(sysdate, 'YYMMDD')||'%'
+		ORDER BY	A.IO_CD DESC     
+		]]>
+	</select>
+
+	<select id="MytourDAO.selectSettMeth" parameterClass="paramVO" resultClass="coSettMethVO">
+		<![CDATA[
+		SELECT	/*+'COSettmethDAOV01.view'*/
+					A.SETT_CD     	"SETT_CD"     	,
+					A.SETT_DET_CD 	"SETT_DET_CD" 	,
+					A.SETT_DET_NM 	"SETT_DET_NM" 	,
+					A.SETT_TYPE_CD	"SETT_TYPE_CD"	,
+					A.USE_YN      	"USE_YN"      	,
+					A.BUY_SETT_NM 	"BUY_SETT_NM" 	,
+					A.JOIN_CMP_NO 	"JOIN_CMP_NO" 	,
+					A.ONLINE_YN   	"ONLINE_YN"   	,
+					A.REMARK      	"REMARK"      	,
+					A.INS_DT      	"INS_DT"      	,
+					A.INS_ID      	"INS_ID"      	,
+					A.UPD_DT      	"UPD_DT"      	,
+					A.UPD_ID      	"UPD_ID"      	
+		FROM		CO_SETT_METH A
+      	WHERE	A.SETT_CD = #SETT_CD#
+      	AND		A.SETT_DET_CD = #SETT_DET_CD#
+      	AND		A.USE_YN = #USE_YN#
+		]]>
+	</select>
+	
+	<select id="MytourDAO.selectSettFee" parameterClass="paramVO" resultClass="coSettFeeVO">
+		<![CDATA[
+		SELECT	/*+'COSettFeeDAOV00.view'*/
+					A.SETT_CD    	"SETT_CD"    	,
+					A.SETT_DET_CD	"SETT_DET_CD"	,
+					A.FEE_SEQ    	"FEE_SEQ"    	,
+					A.FEE_FR_DTM 	"FEE_FR_DTM" 	,
+					A.FEE_TO_DTM 	"FEE_TO_DTM" 	,
+					A.FEE_RATE   	"FEE_RATE"   	,
+					A.USE_YN     	"USE_YN"     	,
+					A.VAT_YN     	"VAT_YN"     	,
+					A.REMARK     	"REMARK"     	,
+					A.INS_DT     	"INS_DT"     	,
+					A.INS_ID     	"INS_ID"     	,
+					A.UPD_DT     	"UPD_DT"     	,
+					A.UPD_ID     	"UPD_ID"     	
+		FROM		CO_SETT_FEE A
+		WHERE		A.SETT_CD = #SETT_CD#
+		AND			A.USE_YN = #USE_YN#
+		AND			A.SETT_DET_CD = #SETT_DET_CD#
+		AND			A.FEE_FR_DTM <= #CONF_DAY# AND A.FEE_TO_DTM >= #CONF_DAY#
+		
+		ORDER BY A.FEE_FR_DTM DESC
+		]]>
+	</select>
+	
+	<select id="MytourDAO.selectSettDet" parameterClass="paramVO" resultClass="coSettDetVO">
+		<![CDATA[
+		SELECT	/*+'COSettDetDAOV00.view'*/
+					A.SETT_CD        	"SETT_CD"        	,
+					A.SETT_DET_CD    	"SETT_DET_CD"    	,
+					A.DET_SEQ        	"DET_SEQ"        	,
+					A.DET_FR_DT      	"FEE_FR_DTM"      	,
+					A.DET_TO_DT      	"FEE_TO_DTM"      	,
+					A.LIMIT_AMT      	"LIMIT_AMT"      	,
+					A.COMM_YN        	"COMM_YN"        	,
+					A.COMM_RATE      	"COMM_RATE"      	,
+					A.NOINT_MONTH_CNT	"NOINT_MONTH_CNT"	,
+					A.USE_YN         	"USE_YN"         	,
+					A.ACCOUNT_NO     	"ACCOUNT_NO"     	,
+					A.ACCOUNT_DESC   	"ACCOUNT_DESC"   	,
+					A.REMARK         	"REMARK"         	,
+					A.INS_DT         	"INS_DT"         	,
+					A.INS_ID         	"INS_ID"         	,
+					A.UPD_DT         	"UPD_DT"         	,
+					A.UPD_ID         	"UPD_ID"         	
+		FROM		CO_SETT_DET A
+		WHERE		A.SETT_CD = #SETT_CD#
+		AND			A.USE_YN = #USE_YN#
+		AND			A.SETT_DET_CD = #SETT_DET_CD#
+		AND			A.DET_FR_DT <= #CONF_DAY#  AND A.DET_TO_DT >= #CONF_DAY#
+		ORDER BY A.DET_SEQ DESC
+		]]>
+	</select>
+	
+	<insert id="MytourDAO.insertPayment" parameterClass="rvPaymentVO">
+		<![CDATA[
+		INSERT INTO RV_PAYMENT (
+					RES_CD,				IO_CD,					IO_DAY,				IO_FG,
+					STATUS_CD,			IO_FG_CD,				IO_DETAIL_CD,		IO_AMT,
+					CONF_DAY,			INPAY_ID,				IO_DESC,			ALTER_DAY,
+					COUPON_NO,			ACCOUNT_NO,				NM,					CARD_OWNER,
+					CARD_NO,			VALID_YM,				QUOTA_YN,			QUOTA_TERM,
+					AGREE_NO,			AGENT_NM,				PRE_DAY,			REAL_DAY,
+					CP_APPR_CD,			TID,					AGREE_DT,			AGREE_ID,
+					CANC_TID,			CANC_AGREE_DT,			CANC_ID,			REFUND_CD,
+					RFND_CD,			COMP_RATE,				COMP_AMT,			RFND_RATE,
+					RFND_AMT,			NOINT_RATE,				NOINT_AMT,			MISU_YN,
+					SITE_CD,			RES_SEQ,				TICKET_NO,			CARD_OWNER_YN,
+					COM_RATE,			COM_AMT,				INS_DT,				INS_ID,
+					PRE_AMT,			CASH_RECEIPT_FG,		CASH_RECEIPT_CD,	CASH_RECEIPT_INFO,
+					MID,				NOINTEREST_CD
+			) VALUES (
+					#RES_CD#,			#IO_CD#,				#IO_DAY#,			#IO_FG#,
+					#STATUS_CD#,		#IO_FG_CD#,				#IO_DETAIL_CD#,		#IO_AMT#,
+					#CONF_DAY#,			#INPAY_ID#,				#IO_DESC#,			#ALTER_DAY#,
+					#COUPON_NO#,		#ACCOUNT_NO#,			#NM#,				#CARD_OWNER#,
+					#CARD_NO#,			#VALID_YM#,				#QUOTA_YN#,			#QUOTA_TERM#,
+					#AGREE_NO#,			#AGENT_NM#,				#PRE_DAY#,			#REAL_DAY#,
+					#CP_APPR_CD#,		#TID#,					#AGREE_DT#,			#AGREE_ID#,
+					#CANC_TID#,			#CANC_AGREE_DT#,		#CANC_ID#,			#REFUND_CD#,
+					#RFND_CD#,			#COMP_RATE#,			#COMP_AMT#,			#RFND_RATE#,
+					#RFND_AMT#,			#NOINT_RATE#,			#NOINT_AMT#,		#MISU_YN#,
+					#SITE_CD#,			#RES_SEQ#,				#TICKET_NO#,		#CARD_OWNER_YN#,
+					#COM_RATE#,			#COM_AMT#,				SYSDATE,			#INS_ID#,
+					#PRE_AMT#,			#CASH_RECEIPT_FG#,		#CASH_RECEIPT_CD#,	#CASH_RECEIPT_INFO#,
+					#MID#,				#NOINTEREST_CD#
+				)
+		]]>
+	</insert>
+
+	<select id="MytourDAO.selectBusiNo" parameterClass="rvPaymentVO" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT NVL(C.BUSI_NO,'2018602089') "busi_no"
+		  FROM RV_MST A, ADM_ADMIN B, COMPANY_INFO C
+		 WHERE A.SALE_ID = B.USERID(+)
+		   AND B.ADM_POSI_CD = C.SEQ(+)
+		   AND A.RES_CD = #RES_CD#
+		]]>
+	</select>
+	
+	<select id="MytourDAO.selectCashNo" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT	/*+'RVtb_cashDAOV00.view'*/
+				A.CA_SEQ	"CA_SEQ"	
+		  FROM	TB_CASH A
+		 WHERE A.CA_SEQ like TO_CHAR(SYSDATE, 'YYYYMMDD')||'%'
+		ORDER BY A.CA_SEQ DESC
+		]]>
+	</select>
+
+	<insert id="MytourDAO.insertCash" parameterClass="cashVO">
+		<![CDATA[
+		INSERT INTO TB_CASH (
+			  CA_SEQ             ,  TRDDATE            ,  COMPANYNO          ,  JUMCODE            ,
+			  POSNO              ,  TRNO               ,  APPRCODE           ,  SUPPLYAMT          ,
+			  VAT                ,  COVERCHARGE        ,  TOTAMT             ,  USETYPE            ,
+			  TRGU               ,  PERSONAUTHCODE     ,  MANUAL             ,  RETCODE            ,
+			  APPRMSG            ,  SUCCESSFLAG        ,  APPRDATE           ,  CANCELTRDDATE      ,
+			  CANCELAPPRCODE     ,  CANCELRETCODE      ,  CANCELAPPRMSG      ,  CANCELSUCCESSFLAG  ,
+			  CANCELAPPRDATE     ,  RES_CD             ,  CUST_CD            ,  IO_CD              ,
+			  CASH_SEQ           ,  CAN_FG             ,  CAN_CA_SEQ         ,  ORI_TRDDATE        ,
+			  ORI_APPRCODE       ,  CAN_SAYU           
+		) VALUES (
+			  #CA_SEQ#           ,  #TRDDATE#          ,  #COMPANYNO#        ,  #JUMCODE#           ,
+			  #POSNO#            ,  #TRNO#             ,  #APPRCODE#         ,  #SUPPLYAMT#         ,
+			  #VAT#              ,  #COVERCHARGE#      ,  #TOTAMT#           ,  #USETYPE#           ,
+			  #TRGU#             ,  #PERSONAUTHCODE#   ,  #MANUAL#           ,  #RETCODE#           ,
+			  #APPRMSG#          ,  #SUCCESSFLAG#      ,  #APPRDATE#         ,  #CANCELTRDDATE#     ,
+			  #CANCELAPPRCODE#   ,  #CANCELRETCODE#    ,  #CANCELAPPRMSG#    ,  #CANCELSUCCESSFLAG# ,
+			  #CANCELAPPRDATE#   ,  #RES_CD#           ,  #CUST_CD#          ,  #IO_CD#             ,
+			  #CASH_SEQ#         ,  #CAN_FG#           ,  #CAN_CA_SEQ#       ,  #ORI_TRDDATE#       ,
+			  #ORI_APPRCODE#     ,  #CAN_SAYU#           
+		)
+		]]>
+	</insert>
+	
+	<select id="MytourDAO.selectEtcRscCd" parameterClass="rvPaymentVO" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT	/*+'MytourDAO.selectEtcRscCd'*/
+				A.ETC_RES_CD	"ETC_RES_CD"	
+		  FROM	RV_MST A
+		 WHERE RES_CD	=	#RES_CD#
+		]]>
+	</select>
+
+	<!-- 결제 입금내역 조회 -->	
+	<select id="MytourDAO.selectDeposithistory" parameterClass="rvPaymentVO" resultClass="rvPaymentVO">
+		<!-- ![CDATA[
+			SELECT  
+                     A.STATUS_CD 	 "STATUS_CD"      ,             /*진행상태구분코드*/
+                     A.IO_DAY        "IO_DAY"        ,               /*입금일자*/
+                     A.IO_CD         "IO_CD"         ,               /*입금번호*/
+                     FN_GET_USER_NM(A.INPAY_ID)              "INPAY_ID",             /*입금사원*/
+                     CASE A.IO_FG
+                             WHEN 'I' THEN '입금'
+                             WHEN 'O' THEN '환불'                     
+                     ELSE '' END                     "IO_FG" ,       /*구분(입금, 출금)*/
+                     FN_SY_CD_DET_S01('PAYMST', A.IO_FG_CD)          "IO_FG_CD"              ,               /*입금구분코드(은행,가상계좌등)*/
+                     CASE A.IO_FG_CD
+                             WHEN 'E' THEN
+                             (SELECT SETT_DET_NM FROM CO_SETT_METH
+                                     WHERE SETT_CD = 'A' AND SETT_DET_CD=A.IO_DETAIL_CD)
+                             ELSE
+                             (SELECT SETT_DET_NM FROM CO_SETT_METH
+                                     WHERE SETT_CD = A.IO_FG_CD AND SETT_DET_CD=A.IO_DETAIL_CD)
+                     END                             "IO_DETAIL_CD"  ,               /*금세부구분코드*/
+                     CASE A.IO_FG_CD
+                             WHEN 'D' THEN A.COUPON_NO                                                                                      
+                         ELSE A.ACCOUNT_NO
+                     END                     "ACCOUNT_NO" ,       /*구분(입금, 출금)*/              
+                     A.IO_AMT                "IO_AMT"                ,               /*금액*/
+                     A.PRE_AMT               "PRE_AMT"               ,               /*입금대기금액*/
+                     A.NM                    "NM"                    ,               /*입금고객*/
+                     A.TID                   "TID"                   ,               /*TID*/
+                     A.AGREE_DT              "AGREE_DT"              ,
+                     A.AGREE_NO              "AGREE_NO"              ,
+                     A.CANC_TID              "CANC_TID"              ,               /*CANC_TID*/
+                     A.CANC_AGREE_DT         "CANC_AGREE_DT" ,
+                     A.PRE_DAY               "PRE_DAY"               ,               /*처리예정일*/
+                     A.IO_DESC               "IO_DESC"               ,               /*비고*/
+                     A.COMP_RATE             "COMP_RATE"             ,               /*자사수수료율*/
+                     A.COMP_AMT              "COMP_AMT"              ,               /*자사수수료*/
+                     A.COM_RATE              "COM_RATE"              ,               /*기본수수료율*/
+                     A.COM_AMT               "COM_AMT"               ,               /*기본수수료*/
+                     A.RFND_RATE             "RFND_RATE"             ,               /*기본수수료율*/
+                     A.RFND_AMT              "RFND_AMT"              ,               /*기본수수료*/
+                     A.NOINTEREST_CD "NOINTEREST_CD" ,               /*무이자여부*/
+                     A.QUOTA_TERM            "QUOTA_TERM",           /*할부개월*/
+                     A.INS_DT                        "INS_DT",                       /*등록일*/
+                     A.CASH_RECEIPT_INFO  "CASH_RECEIPT_NO"          ,
+                     A.MID "MID",
+                     FN_GET_USER_NM(A.INS_ID) "INS_ID"               /*등록자*/
+			FROM            RV_PAYMENT A
+			WHERE           A.RES_CD = #RES_CD#
+			AND             A.IO_FG_CD <> 'J'
+			AND 			A.STATUS_CD = 'OK'
+			ORDER BY        INS_DT DESC, IO_CD DESC
+		]]-->
+		
+		<![CDATA[
+		SELECT 
+		      CASE WHEN IO_DAY IS NOT NULL THEN SUBSTR(IO_DAY,0,4) || '-' || SUBSTR(IO_DAY,5,2) || '-' || SUBSTR(IO_DAY,7,2)
+		           ELSE ''
+		      END AS DISPLAY1
+		    , CASE WHEN IO_FG_CD = '카드' THEN '신용' || IO_FG_CD
+		           WHEN IO_FG_CD = '가상계좌' AND STATUS_CD = 'WT' THEN  IO_DETAIL_CD 
+		                                                                || '-' 
+		                                                                || ACCOUNT_NO 
+		                                                                || ' '
+		                                                                || SUBSTR(PRE_DAY,0,4) || '-' || SUBSTR(PRE_DAY,5,2) || '-' || SUBSTR(PRE_DAY,7,2)
+		                                                                || ' 까지 입금 바랍니다.'
+		           WHEN IO_FG_CD = '가상계좌' AND STATUS_CD = 'CX' THEN  '(취소)'   
+		           WHEN IO_FG_CD = 'ARS카드' AND STATUS_CD = 'WT'  THEN IO_FG_CD
+		                                                                || ' ' 
+		                                                                || SUBSTR(PRE_DAY,0,4) || '-' || SUBSTR(PRE_DAY,5,2) || '-' || SUBSTR(PRE_DAY,7,2)
+		                                                                || ' 까지 입금 바랍니다.'
+		           WHEN IO_FG_CD = 'ARS카드' AND STATUS_CD = 'CX'  THEN  '(취소)' 
+		           ELSE IO_FG_CD
+		      END AS DISPLAY2  
+		    , CASE WHEN IO_FG_CD = 'L.Pay' OR IO_FG_CD = 'ARS카드'  THEN IO_FG_CD
+		           ELSE IO_DETAIL_CD
+		      END AS DISPLAY3
+		    , CASE WHEN STATUS_CD = 'RK' THEN '환불'
+		           WHEN IO_FG_CD NOT IN ('ARS카드', '상품권', '가상계좌', '은행') AND NVL(STATUS_CD, ' ') <> 'CX' THEN '입금완료'
+		           WHEN IO_FG_CD NOT IN ('ARS카드', '상품권', '가상계좌', '은행') AND NVL(STATUS_CD, ' ') = 'CX' THEN '입금취소'
+		           WHEN IO_FG_CD = '가상계좌' AND STATUS_CD = 'WT' THEN '입금대기'
+		           WHEN IO_FG_CD = '가상계좌' AND STATUS_CD = 'CX' THEN '입금취소'
+		           WHEN IO_FG_CD = '가상계좌' AND STATUS_CD = 'OK' THEN '입금완료'
+		           WHEN IO_FG_CD = '상품권'   AND STATUS_CD = 'WT' THEN '입금대기'
+		           WHEN IO_FG_CD = '상품권'   AND STATUS_CD = 'CX' THEN '입금취소'
+		           WHEN IO_FG_CD = '상품권'   AND STATUS_CD = 'OK' THEN '입금완료'
+		           WHEN IO_FG_CD = '은행'     AND STATUS_CD = 'CX' THEN '입금취소'
+		           WHEN IO_FG_CD = '은행'     AND STATUS_CD = 'OK' THEN '입금완료'
+		           WHEN IO_FG_CD = 'ARS카드'  AND STATUS_CD = 'WT' THEN '입금대기'
+		           WHEN IO_FG_CD = 'ARS카드'  AND STATUS_CD = 'OK' THEN '입금완료'
+		           ELSE ''
+		      END AS DISPLAY4
+		      
+		
+		     ,CASE WHEN IO_FG_CD NOT IN ('ARS카드', '상품권', '가상계좌', '은행') THEN CASE WHEN STATUS_CD = 'CX' OR STATUS_CD = 'RK' THEN TRIM(TO_CHAR( IO_AMT - (IO_AMT*2) , '999,999,999,999,999'))
+		                                                                                    ELSE TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                                               END
+		           WHEN IO_FG_CD = '가상계좌' THEN CASE WHEN STATUS_CD = 'OK' THEN TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                WHEN STATUS_CD = 'RK' THEN TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                WHEN NVL(STATUS_CD, ' ') != 'OK' AND STATUS_CD IN ('WT','CX') THEN '(' ||  TRIM(TO_CHAR(PRE_AMT , '999,999,999,999,999')) || ')'
+		                                           END
+		           WHEN IO_FG_CD = '상품권' THEN CASE WHEN STATUS_CD = 'OK' THEN TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                WHEN STATUS_CD = 'RK' THEN TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                WHEN NVL(STATUS_CD, ' ') != 'OK' AND STATUS_CD IN ('WT','CX') THEN '(' ||  TRIM(TO_CHAR(PRE_AMT , '999,999,999,999,999')) || ')'
+		                                           END   
+		           WHEN IO_FG_CD = '은행' THEN   CASE WHEN STATUS_CD = 'CX' OR STATUS_CD = 'RK' THEN TRIM(TO_CHAR( IO_AMT - (IO_AMT*2) , '999,999,999,999,999'))
+		                                              ELSE TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                         END
+		           WHEN IO_FG_CD = 'ARS카드' THEN CASE WHEN STATUS_CD = 'OK' THEN TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                WHEN STATUS_CD = 'RK' THEN TRIM(TO_CHAR(IO_AMT , '999,999,999,999,999'))
+		                                                WHEN NVL(STATUS_CD, ' ') != 'OK' AND STATUS_CD IN ('WT','CX') THEN '(' ||  TRIM(TO_CHAR(PRE_AMT , '999,999,999,999,999')) || ')'
+		                                           END                                         
+		      END AS DISPLAY5                                
+		    , STATUS_CD
+		    , IO_DAY
+		    , IO_CD
+		    , IO_FG
+		    , IO_FG_CD
+		    , IO_DETAIL_CD
+		    , ACCOUNT_NO
+		    , IO_AMT
+		    , PRE_AMT
+		    , NM
+		    , TID
+		    , AGREE_DT
+		    , AGREE_NO
+		    , CANC_TID
+		    , CANC_AGREE_DT
+		    , PRE_DAY
+		    , IO_DESC
+		    , COMP_RATE
+		    , COMP_AMT
+		    , COM_RATE
+		    , COM_AMT
+		    , RFND_RATE
+		    , RFND_AMT
+		    , NOINTEREST_CD
+		    , QUOTA_TERM
+		    , INS_DT
+		    , CASH_RECEIPT_NO
+		    , MID
+		    , INS_ID
+		    
+		    FROM (
+		        SELECT 
+		                A.STATUS_CD "STATUS_CD",                                /* 진행상태구분코드 */
+		                A.IO_DAY "IO_DAY",                                      /* 입금일자 */
+		                A.IO_CD "IO_CD",
+		                CASE A.IO_FG
+		                     WHEN 'I' THEN '입금'
+		                     WHEN 'O' THEN '환불'
+		                     ELSE ''
+		                END "IO_FG" ,                                           /* 구분(입금, 출금) */
+		                FN_SY_CD_DET_S01('PAYMST', A.IO_FG_CD) "IO_FG_CD" ,     /* 입금구분코드(은행,가상계좌등) */
+		                CASE A.IO_FG_CD  WHEN 'E' THEN (SELECT SETT_DET_NM
+		                                                 FROM   CO_SETT_METH
+		                                                WHERE  SETT_CD = 'A'
+		                                                  AND  SETT_DET_CD=A.IO_DETAIL_CD)
+		                                  ELSE (SELECT SETT_DET_NM
+		                                          FROM   CO_SETT_METH
+		                                         WHERE  SETT_CD = A.IO_FG_CD
+		                                           AND  SETT_DET_CD=A.IO_DETAIL_CD)
+		                END "IO_DETAIL_CD" ,                                    /* 입금세부구분코드 */
+		                CASE A.IO_FG_CD WHEN 'D' THEN A.COUPON_NO
+		                                ELSE A.ACCOUNT_NO
+		                END "ACCOUNT_NO" ,                                      /* 구분(입금, 출금) */
+		                A.IO_AMT "IO_AMT" ,                                     /* 금액 */
+		                A.PRE_AMT "PRE_AMT" ,                                   /* 입금대기금액 */
+		                A.NM "NM" ,                                             /* 입금고객 */
+		                A.TID "TID" ,                                           /* TID */
+		                A.AGREE_DT "AGREE_DT" ,
+		                A.AGREE_NO "AGREE_NO" ,                                  
+		                A.CANC_TID "CANC_TID" ,                                 /* CANC_TID */
+		                A.CANC_AGREE_DT "CANC_AGREE_DT" ,
+		                A.PRE_DAY "PRE_DAY" ,                                   /* 처리예정일 */
+		                A.IO_DESC "IO_DESC" ,                                   /* 비고 */
+		                A.COMP_RATE "COMP_RATE" ,                               /* 자사수수료율 */
+		                A.COMP_AMT "COMP_AMT" ,                                 /* 자사수수료 */
+		                A.COM_RATE "COM_RATE" ,                                 /* 기본수수료율 */
+		                A.COM_AMT "COM_AMT" ,                                   /* 기본수수료 */
+		                A.RFND_RATE "RFND_RATE" ,                               /* 기본수수료율 */
+		                A.RFND_AMT "RFND_AMT" ,                                 /* 기본수수료 */
+		                A.NOINTEREST_CD "NOINTEREST_CD" ,                       /* 무이자여부 */
+		                A.QUOTA_TERM "QUOTA_TERM",                              /* 할부개월 */
+		                A.INS_DT "INS_DT",                                      /* 등록일 */
+		                A.CASH_RECEIPT_INFO "CASH_RECEIPT_NO" ,
+		                A.MID "MID",
+		                FN_GET_USER_NM(A.INS_ID) "INS_ID" /* 등록자 */
+		        FROM   RV_PAYMENT A
+		        WHERE  A.RES_CD = #RES_CD#
+		        AND    A.IO_FG_CD <> 'J'
+		        ORDER BY INS_DT DESC, IO_CD DESC 
+		    )
+		]]>		
+	</select>
+
+</sqlMap>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="SettingDAO">
+
+	<typeAlias alias="egovMap"      type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="SettingVO"  	type="com.lottejtb.setting.service.SettingVO"/>
+	
+	<resultMap id="setting" class="SettingVO">
+		<result property="osType" 		column="OS_TYPE"/>
+		<result property="versionNo" 	column="VERSION_NO"/>
+		<result property="version" 		column="VERSION"/>
+		<result property="keyHashCode"	column="KEY_HASHCODE"/>
+	</resultMap>
+	
+	<select id="SettingDAO.selectAppCheck" parameterClass="SettingVO" resultMap="setting">
+		SELECT OS_TYPE
+			 , VERSION_NO
+			 , VERSION
+			 , KEY_HASHCODE
+		  FROM MO_VERSION
+		 WHERE OS_TYPE = #osType# 
+		  
+	</select>
+	
+	<insert id="SettingDAO.insertMarketingReceiveYn" parameterClass="SettingVO">
+		INSERT INTO MO_PUSH_INFO(
+              DEVICE_ID
+            , OS_TYPE
+            , OS_VERSION
+            , DEVICE_TOKEN
+            , DEVICE_MODEL
+            , INS_DT
+            , INS_ID
+            , UPD_DT
+            , UPD_ID
+            , MARKETING_YN
+        ) VALUES (
+              #deviceId#
+            , NVL(#osType#, '0')
+            , NVL(#osVersion#, '0')
+            , NVL(#deviceToken#, '0')
+            , NVL(#deviceModel#, '0')
+            , SYSDATE
+            , 'MOBILEUSER'
+            , SYSDATE
+            , 'MOBILEUSER'
+            , #marketingYn#
+        )
+	</insert>
+	
+	<select id="SettingDAO.selectMarketingReceiveYn" parameterClass="SettingVO" resultClass="SettingVO">
+		SELECT MARKETING_YN AS marketingYn
+		  FROM MO_PUSH_INFO
+		 WHERE DEVICE_ID = #deviceId#
+	</select>
+	
+	<select id="SettingDAO.selectMarketingReceiveCnt" parameterClass="SettingVO" resultClass="Integer">
+		SELECT COUNT(1) AS cnt
+		  FROM MO_PUSH_INFO
+		 WHERE DEVICE_ID = #deviceId#
+	</select>
+	
+	<update id="SettingDAO.updateMarketingReceiveYn" parameterClass="SettingVO">
+		UPDATE MO_PUSH_INFO
+		   SET MARKETING_YN = #marketingYn#
+		 WHERE DEVICE_ID = #deviceId#
+	</update>
+</sqlMap>

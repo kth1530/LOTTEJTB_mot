@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Request>
+<Source>
+<RequestorID Client ="187" EMailAddress ="XML.EBSOLUTIONS@LOTTE.COM" Password ="PASS"/>
+ <RequestorPreferences Country="KR" Language="EN" Currency="KRW">
+<RequestMode>SYNCHRONOUS</RequestMode>
+</RequestorPreferences>
+</Source>
+<RequestDetails>
+		<SearchHotelPriceRequest>
+			<ItemDestination DestinationType="city" DestinationCode="AMS" />
+			<ImmediateConfirmationOnly />
+			<PeriodOfStay>
+				<CheckInDate>2016-10-30</CheckInDate>
+				<Duration>4</Duration>
+			</PeriodOfStay>
+                    <IncludeRecommended/>
+			<Rooms>
+				<Room Code="DB" NumberOfRooms="1">
+					<ExtraBeds>
+						<Age>5</Age>
+					</ExtraBeds>
+				</Room>
+				<Room Code="SB" />
+			</Rooms>
+			<StarRating MinimumRating="true">3</StarRating>
+			<LocationCode>G1</LocationCode>
+		
+			<OrderBy>pricelowtohigh</OrderBy>
+			<NumberOfReturnedItems>10</NumberOfReturnedItems>
+		</SearchHotelPriceRequest>
+	</RequestDetails>
+
+</Request>

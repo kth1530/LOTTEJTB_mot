@@ -1,0 +1,10 @@
+<script type="text/javascript" language="javascript">
+	var url = String(window.document.location);
+	var prefix = "h=";
+	var StartIndex = url.indexOf(prefix);	
+	var h = url.substring(StartIndex + prefix.length, url.length);
+	
+	h = parseInt(h) + 15;
+	
+	parent.parent.document.getElementById("ifr_child").height = h;
+</script>

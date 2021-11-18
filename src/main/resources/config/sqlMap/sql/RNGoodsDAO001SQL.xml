@@ -1,0 +1,1515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="RNGoodsDAO">
+	
+		
+	<typeAlias alias="egovMap"        					type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="RNGDMstVO"       					type="com.lottejtb.goods.rn.service.RNGDMstVO"/>
+	<typeAlias alias="RNETMstVO"       					type="com.lottejtb.goods.rn.service.RNETMstVO"/>
+	<typeAlias alias="RNGDTagsVO"       				type="com.lottejtb.goods.rn.service.RNGDTagsVO"/>
+	<typeAlias alias="RNGDImgVO"       					type="com.lottejtb.goods.rn.service.RNGDImgVO"/>
+	<typeAlias alias="RNETClauseInfoVO"     			type="com.lottejtb.goods.rn.service.RNETClauseInfoVO"/>
+	<typeAlias alias="RNGDCommSchdVO"      				type="com.lottejtb.goods.rn.service.RNGDCommSchdVO"/>
+	<typeAlias alias="RNGDSchdVO"       				type="com.lottejtb.goods.rn.service.RNGDSchdVO"/>
+	<typeAlias alias="RNReviewVO"       				type="com.lottejtb.goods.rn.service.RNReviewVO"/>
+	<typeAlias alias="RNHotelVO"       					type="com.lottejtb.goods.rn.service.RNHotelVO"/>
+	<typeAlias alias="RNWeatherVO"       				type="com.lottejtb.goods.rn.service.RNWeatherVO"/>
+	<typeAlias alias="RNTimeDifferCurrencyVO"       	type="com.lottejtb.goods.rn.service.RNTimeDifferCurrencyVO"/>
+	<typeAlias alias="ETMstOtherAirLineVO"       		type="com.lottejtb.goods.rn.service.ETMstOtherAirLineVO"/>
+	
+    <!-- 상품 상세 UI >  행사 상품 정보 조회  -->
+	<resultMap id="gdMstVO" class="RNGDMstVO">
+
+	    <result property="op_cd" column="OP_CD"/>
+	 	<result property="goods_type_cd" column="GOODS_TYPE_CD"/>
+	 	<result property="area_cd" column="AREA_CD"/>
+	 	<result property="sub_area_cd" column="SUB_AREA_CD"/>
+	 	<result property="goods_sub_cd" column="GOODS_SUB_CD"/>
+	 	
+	 	<result property="start_cd" column="START_CD"/>
+	 	<result property="city_nm" column="CITY_NM"/>
+	 	<result property="comp_cd" column="COMP_CD"/>
+	 	<result property="comp_nm" column="COMP_NM"/>
+	 	<result property="goods_nm" column="GOODS_NM"/>
+
+	 	<result property="short_goods_nm" column="SHORT_GOODS_NM"/>
+	 	<result property="goods_night_day" column="GOODS_NIGHT_DAY"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>
+	 	 		 		 		 		 		 		 		 	
+    </resultMap>
+            
+    <!-- 상품 상세 UI >  행사 상품 정보 조회  -->
+	<resultMap id="etMstVO" class="RNETMstVO">
+
+	    <result property="comp_cd" column="COMP_CD"/>
+	 	<result property="disp_nm" column="DISP_NM"/>
+	 	<result property="ev_day_cnt" column="EV_DAY_CNT"/>
+	 	<result property="ev_night_cnt" column="EV_NIGHT_CNT"/>
+	 	<result property="start_day" column="START_DAY"/>
+	 	
+	 	<result property="start_wday" column="START_WDAY"/>
+	 	<result property="start_time" column="START_TIME"/>
+	 	<result property="start_pyun" column="START_PYUN"/>
+	 	<result property="end_day_fr" column="END_DAY_FR"/>
+	 	<result property="end_time_fr" column="END_TIME_FR"/>
+	 	
+	 	<result property="end_day" column="END_DAY"/>	 	
+	 	<result property="end_wday" column="END_WDAY"/>
+	 	<result property="end_time" column="END_TIME"/>
+	 	<result property="end_pyun" column="END_PYUN"/>
+	 	<result property="start_day_to" column="START_DAY_TO"/>
+	 	
+	 	<result property="start_time_to" column="START_TIME_TO"/>
+	 	<result property="trff_cd" column="TRFF_CD"/>
+	 	<result property="cd_nm" column="CD_NM" nullValue=""/>
+	 	<result property="trff_cd_short" column="TRFF_CD_SHORT"/>
+	 	<result property="fee_seq" column="FEE_SEQ"/>
+	 	<result property="adult_price" column="ADULT_PRICE"/>
+	 	
+	 	<result property="child_price" column="CHILD_PRICE"/>
+	 	<result property="baby_price" column="BABY_PRICE"/>
+	 	<result property="etc_price_title1" column="ETC_PRICE_TITLE1"/>
+	 	<result property="etc_price1" column="ETC_PRICE1"/>
+	 	<result property="etc_price_title2" column="ETC_PRICE_TITLE2"/>
+	 	<result property="etc_price2" column="ETC_PRICE2"/>
+	 	
+	 	<result property="etc_price_title3" column="ETC_PRICE_TITLE3"/>
+	 	<result property="etc_price3" column="ETC_PRICE3"/>
+	 	<result property="ev_inwon" column="EV_INWON"/>
+	 	<result property="min_inwon" column="MIN_INWON"/>
+	 	<result property="proc_cd" column="PROC_CD"/>
+
+	 	<result property="lock_unit" column="LOCK_UNIT"/>
+	 	<result property="tc_cnt" column="TC_CNT"/>
+	 	<result property="point_yn" column="POINT_YN"/> 	
+	 	<result property="point_rate" column="POINT_RATE"/>
+	 	<result property="point_amt" column="POINT_AMT"/>
+	 	<result property="et_adm_cd" column="ET_ADM_CD"/>
+
+	 	<result property="rv_cnt" column="RV_CNT"/>
+	 	<result property="img_url" column="IMG_URL"/>
+	 	<result property="goods_tag_text" column="GOODS_TAG_TEXT"/>
+	 	<result property="conf_yn" column="CONF_YN"/>
+	 	<result property="conf_land" column="CONF_LAND"/>	
+	 	
+	 	<result property="conf_air" column="CONF_AIR"/>	
+	 	<result property="conf_insu" column="CONF_INSU"/>	
+	 	<result property="conf_hotel" column="CONF_HOTEL"/>	
+	 	<result property="goods_type_cd" column="GOODS_TYPE_CD"/>	
+	 	<result property="emp_rate" column="EMP_RATE" nullValue='0'/>	
+	 	
+	 	<result property="goods_join_cd" column="GOODS_JOIN_CD"/>	
+	 	<result property="biz_insu_yn" column="BIZ_INSU_YN"/>	
+	 	<result property="pkg_insu_yn" column="PKG_INSU_YN"/>	
+	 	<result property="guide_yn" column="GUIDE_YN"/>	
+	 	<result property="desc_file_path" column="DESC_FILE_PATH"/>	
+	 	
+	 	<result property="desc_file_nm" column="DESC_FILE_NM"/>	
+	 	<result property="goods_cd" column="GOODS_CD"/>	
+	 	<result property="opt_desc" column="OPT_DESC"/>	
+	 	<result property="pro_desc" column="PRO_DESC"/>	
+	 	<result property="pro_desc2" column="PRO_DESC2"/>	
+	 	
+	 	<result property="tot_amt1" column="TOT_AMT1"/>	
+	 	<result property="tot_amt2" column="TOT_AMT2"/>	
+	 	<result property="tot_amt3" column="TOT_AMT3"/>	
+	 	
+	 	<result property="event_cd" column="EVENT_CD"/>	
+	 	<result property="min_yn" column="MIN_YN"/>	
+	 	 		 		 		 		 		 		 		 	
+    </resultMap>
+    
+    <!-- 상품 상세 UI >  행사 상품 정보 조회  -->
+	<resultMap id="gdTagsVO" class="RNGDTagsVO">
+
+	    <result property="comp_cd" column="COMP_CD"/>
+	    
+	 	<result property="homeshopping_yn" column="HOMESHOPPING_YN"/>
+	 	<result property="plan_yn" column="PLAN_YN"/>
+	 	<result property="event_yn" column="EVENT_YN"/>
+	 	<result property="premium_yn" column="PREMIUM_YN"/>
+	 	
+	 	<result property="classic_yn" column="CLASSIC_YN"/>
+	 	<result property="save_yn" column="SAVE_YN"/>
+	 		 		 	
+    </resultMap>
+
+    <!-- 상품 상세 UI >  행사 상품 이미지 정보 조회  -->
+	<resultMap id="gdImgVO" class="RNGDImgVO">
+	 	<result property="seq" column="SEQ"/>
+	 	<result property="img_title" column="IMG_TITLE"/>
+	 	<result property="save_file_nm" column="SAVE_FILE_NM"/>
+	 	<result property="goods_desc" column="GOODS_DESC"/>	 	
+	 	<result property="img_path" column="IMG_PATH"/>
+	 	<result property="disp_grade" column="DISP_GRADE"/>	 		 	
+    </resultMap>
+
+    <!--  상품 상세 UI >  표준약관/특별약관/국내약관 조회   -->
+	<resultMap id="etClauseInfoVO" class="RNETClauseInfoVO">
+	 	<result property="clause_fg" column="CLAUSE_FG"/>
+	 	<result property="clause_desc" column="CLAUSE_DESC"/>
+	 	<result property="clause_desc2" column="CLAUSE_DESC2"/>
+	 	<result property="event_cd" column="EVENT_CD"/>	 		 		 		 		 		 		 		 	
+    </resultMap>
+        
+    <!-- 상품 상세 UI >  행사 상품 관련 태그 정보 조회  -->
+	<resultMap id="gdCommSchdVO" class="RNGDCommSchdVO">
+
+	 	<result property="schd_id" column="SCHD_ID"/>
+	 	<result property="reg_seq" column="REG_SEQ"/>
+	 	<result property="day_cnt" column="DAY_CNT"/>
+	 	<result property="seq" column="SEQ"/>
+	 	
+	 	<result property="schd_det_cd" column="SCHD_DET_CD"/>
+	 	<result property="schd_det_cd_val" column="SCHD_DET_CD_VAL"/>
+	 	<result property="schd_det_cntn" column="SCHD_DET_CNTN"/>
+	 	<result property="schd_det_clval" column="SCHD_DET_CLVAL"/>
+	 	<result property="img_title" column="IMG_TITLE"/>
+	 	
+	 	<result property="img_path" column="IMG_PATH"/>
+	 	<result property="disp_yn" column="DISP_YN"/>
+	 	<result property="include_yn" column="INCLUDE_YN"/>
+	 		 		 	
+    </resultMap>
+    
+    <!-- 상품 상세 UI >  행사 상품 관련 태그 정보 조회  -->
+	<resultMap id="gdSchdVO" class="RNGDSchdVO">
+
+	    <result property="schd_id" column="SCHD_ID"/>
+	 	<result property="reg_seq" column="REG_SEQ"/>
+	 	<result property="day_cnt" column="DAY_CNT"/>
+	 	<result property="day_cnt" column="DAY_CNT"/>
+	 	<result property="seq" column="SEQ"/>
+	 	
+	 	<result property="schd_det_cd" column="SCHD_DET_CD"/>
+	 	<result property="schd_det_cd_val" column="SCHD_DET_CD_VAL"/>
+	 	<result property="schd_det_cntn" column="SCHD_DET_CNTN"/>
+	 	<result property="schd_det_clval" column="SCHD_DET_CLVAL"/>
+	 	<result property="img_title" column="IMG_TITLE"/>
+	 	
+	 	<result property="img_path" column="IMG_PATH"/>
+	 	<result property="disp_yn" column="DISP_YN"/>
+	 	<result property="include_yn" column="INCLUDE_YN"/>
+	 	<result property="o_op_cd" column="O_OP_CD"/>
+	 	<result property="o_area_cd" column="O_AREA_CD"/>
+	 	
+	 	<result property="o_option_cd" column="O_OPTION_CD"/>
+	 	<result property="o_sub_area_cd" column="O_SUB_AREA_CD"/>
+	 	<result property="o_option_nm" column="O_OPTION_NM"/>
+	 	<result property="o_country_cd" column="O_COUNTRY_CD"/>
+	 	<result property="o_city_cd" column="O_CITY_CD"/>
+	 	
+	 	<result property="o_price_info" column="O_PRICE_INFO"/>
+	 	<result property="o_op_time" column="O_OP_TIME"/>
+	 	<result property="o_option_desc" column="O_OPTION_DESC"/>
+	 	<result property="o_include_desc" column="O_INCLUDE_DESC"/>
+	 	<result property="o_use_yn" column="O_USE_YN"/>
+	 	
+	 	<result property="o_dept_cd" column="O_DEPT_CD"/>
+	 	<result property="o_other_schd" column="O_OTHER_SCHD"/>
+	 	<result property="o_guide_yn" column="O_GUIDE_YN"/>
+	 	<result property="d_country_cd" column="D_COUNTRY_CD"/>
+	 	<result property="d_city_cd" column="D_CITY_CD"/>
+	 	
+	 	<result property="d_city_nm" column="D_CITY_NM"/>
+	 	<result property="d_bus_time" column="D_BUS_TIME"/>
+	 	<result property="d_cost" column="D_COST"/>
+	 	<result property="d_detail_cnts1" column="D_DETAIL_CNTS1"/>
+	 	
+	 	<result property="d_knm" column="D_KNM"/>
+	 	<result property="h_lodge_knm" column="H_LODGE_KNM"/>
+	 	<result property="h_lodge_grade" column="H_LODGE_GRADE"/>
+	 	<result property="h_country_cd" column="H_COUNTRY_CD"/>
+	 	<result property="h_city_cd" column="H_CITY_CD"/>
+	 	
+	 	<result property="h_hotel_desc" column="H_HOTEL_DESC" nullValue=''/>
+	 	<result property="h_homepage_url" column="H_HOMEPAGE_URL" nullValue=''/>
+	 	<result property="h_phone_no" column="H_PHONE_NO" nullValue=''/>
+	 	<result property="h_address" column="H_ADDRESS" nullValue=''/>
+	 	<result property="h_location_desc" column="H_LOCATION_DESC" nullValue=''/>
+	 	<result property="schd_det_nm" column="SCHD_DET_NM" nullValue=''/>
+	 	
+	 	<result property="d_imgs" column="D_IMGS"/>
+	 	<result property="o_imgs" column="O_IMGS"/>
+	 	
+	 	<result property="h_imgs" column="H_IMGS"/>
+	 	
+	 	<result property="country_cd" column="COUNTRY_CD"/>
+	 	<result property="country_nm" column="COUNTRY_NM"/>
+	 	
+	 	 		 		 	
+    </resultMap>
+
+    <!-- 상품 상세 UI >  행사 상품 정보 조회  -->
+	<resultMap id="reviewVO" class="RNReviewVO">
+
+	    <result property="goods_cd" column="GOODS_CD"/>
+	 	<result property="goods_eval_seq" column="GOODS_EVAL_SEQ"/>
+	 	<result property="goods_nm" column="GOODS_NM"/>
+	 	<result property="eval_title" column="EVAL_TITLE"/>
+	 	<result property="eval_cnts" column="EVAL_CNTS"/>
+	 	
+	 	<result property="eval_avg" column="EVAL_AVG"/>
+	 	<result property="tour_goal_cd" column="TOUR_GOAL_CD"/>
+	 	<result property="cd_nm" column="CD_NM"/>
+	 	<result property="goods_type_cd" column="GOODS_TYPE_CD"/>
+	 	<result property="cd_nm01" column="CD_NM01"/>
+
+	 	<result property="area_cd" column="AREA_CD"/>
+	 	<result property="cd_nm02" column="CD_NM02"/>
+	 	<result property="read_cnt" column="READ_CNT"/>
+	 	<result property="recommend_cnt" column="RECOMMEND_CNT"/>
+	 	<result property="disp_yn" column="DISP_YN"/>
+	 	
+	 	<result property="cust_cd" column="CUST_CD"/>
+	 	<result property="cust_nm" column="CUST_NM"/>
+	 	<result property="lotte_id" column="LOTTE_ID"/>
+	 	<result property="tel" column="TEL"/>
+	 	<result property="memo" column="MEMO"/>
+
+	 	<result property="del_yn" column="DEL_YN"/>
+	 	<result property="ins_dt" column="INS_DT"/>
+	 	<result property="ins_id" column="INS_ID"/>
+	 	<result property="upd_dt" column="UPD_DT"/>
+	 	<result property="upd_id" column="UPD_ID"/>
+	 	
+	 	<result property="eval_point1" column="EVAL_POINT1"/>
+	 	<result property="eval_point2" column="EVAL_POINT2"/>
+	 	<result property="eval_point3" column="EVAL_POINT3"/>
+	 	<result property="eval_point4" column="EVAL_POINT4"/>
+	 	 		 		 		 		 		 		 		 	
+    </resultMap>
+    
+    <!--  상품 상세 UI >  표준약관/특별약관/국내약관 조회   -->
+	<resultMap id="hotelVO" class="RNHotelVO">
+	 	<result property="hotel_grp_seq" column="HOTEL_GRP_SEQ"/>
+	 	<result property="hotel_grp_nm" column="HOTEL_GRP_NM"/>
+	 	<result property="goods_cd" column="GOODS_CD"/>	 	
+	 	<result property="comp_cd" column="COMP_CD"/>	 	
+	 	<result property="event_cd" column="EVENT_CD"/>	 	
+	 	<result property="ctg_seq" column="CTG_SEQ"/>	 	 		 		 		 		 		 		 		 	
+    </resultMap>
+   
+    <!--  상품 상세 UI >  날씨 정보   -->
+	<resultMap id="weatherVO" class="RNWeatherVO">
+	 	<result property="opCd" column="OP_CD"/>
+	 	<result property="countryCd" column="COUNTRY_CD"/>
+	 	<result property="cityCd" column="CITY_CD"/>	 	
+	 	<result property="cityKnm" column="CITY_KNM"/>	 	
+	 	<result property="countryNm" column="COUNTRY_NM"/>	 	
+	 	<result property="maxTemper" column="MAX_TEMPER"/>	
+		<result property="minTemper" column="MIN_TEMPER"/>	
+		<result property="weatCd" column="WEAT_CD"/>		 	 	
+		<result property="weatNm" column="WEAT_NM"/>	
+		<result property="dayCnt" column="DAY_CNT"/>
+		<result property="weatDt" column="WEAT_DT"/>
+					 		 		 		 		 		 		 		 	
+    </resultMap>
+
+    <!--  상품 상세 UI >  시차/환율 정보   -->
+	<resultMap id="timeDifferCurrencyVO" class="RNTimeDifferCurrencyVO">
+	 	<result property="countryKnm" column="COUNTRY_KNM"/>
+	 	<result property="cityKnm" column="CITY_KNM"/>
+	 	<result property="nowTime" column="NOW_TIME"/>	 	
+	 	<result property="timeDiff" column="TIME_DIFF"/>	 	
+	 	<result property="opCd" column="OP_CD"/>	 	
+	 	<result property="countryCd" column="COUNTRY_CD"/>	
+		<result property="cityCd" column="CITY_CD"/>	
+		<result property="currencyNm" column="CURRENCY_NM"/>		 	 	
+		<result property="cashBuyRate" column="CASH_BUY_RATE"/>	
+    </resultMap>
+                                  
+	<!--  상품 상세 UI > 상품 마스터 조회   -->
+	<select id="RNGoodsDAO.selectGDMstSrch" parameterClass="RNGDMstVO" resultMap="gdMstVO">
+		SELECT /*+ 'lottejtb.t2.di.dispcategory.dao.DIgd_mstDAOV00' */GD.GOODS_CD ,
+		       GD.OP_CD ,
+		       GD.GOODS_TYPE_CD ,
+		       GD.AREA_CD ,
+		       GD.SUB_AREA_CD ,
+		       GD.GOODS_SUB_CD ,
+		       GD.START_CD ,
+		       FN_SY_CD_DET_S01('STARTPL', GD.START_CD) "CITY_NM" ,
+		       GD.COMP_CD ,
+		       FN_SY_CD_DET_S01('COMP', GD.COMP_CD) "COMP_NM" ,
+		       GD.GOODS_NM ,
+		       GD.SHORT_GOODS_NM ,
+		       FN_SCHD_NIGHT_DAYS(GD.GOODS_CD, GD.COMP_CD, null, 3) "GOODS_NIGHT_DAY"
+		FROM   GD_MST GD
+		WHERE  GD.GOODS_CD = #goods_cd#
+		AND    GD.COMP_CD = #comp_cd#
+
+	</select>
+ 
+     <!--  상품 상세 UI >  다른 이용 항공사 정보    -->
+	<resultMap id="otherAirLineVO" class="ETMstOtherAirLineVO">
+	 	<result property="event_cd" column="EVENT_CD" nullValue="" javaType="java.lang.String"/>
+	 	<result property="trff_knm" column="TRFF_KNM" nullValue="" javaType="java.lang.String"/>
+	 	<result property="start_time" column="START_TIME" nullValue="" javaType="java.lang.String"/>	 	
+	 	<result property="start_pyun" column="START_PYUN" nullValue="" javaType="java.lang.String"/>	 	
+	 	<result property="start_day" column="START_DAY" nullValue="" javaType="java.lang.String"/>	 	
+	 	<result property="start_wday" column="START_WDAY" nullValue="" javaType="java.lang.String"/>	
+		<result property="end_time" column="END_TIME" nullValue="" javaType="java.lang.String"/>	
+		<result property="ctg_seq" column="CTG_SEQ" nullValue="0" javaType="java.lang.Integer"/>		 	 	
+		<result property="rv_cnt" column="RV_CNT" nullValue="0" javaType="java.lang.Integer"/>	
+		<result property="ev_inwon" column="EV_INWON" nullValue="0" javaType="java.lang.Integer"/>	
+		<result property="proc_cd" column="PROC_CD" nullValue="" javaType="java.lang.String"/>	
+		<result property="adult_price" column="ADULT_PRICE" nullValue="0" javaType="java.lang.Integer"/>	
+		<result property="sel_txt" column="SEL_TXT" nullValue="" javaType="java.lang.String"/>		
+    </resultMap>
+    
+	<!--  상품 상세 UI >  행사 상품 정보 조회   -->
+	<select id="RNGoodsDAO.selectETMstSrch" parameterClass="RNETMstVO" resultMap="etMstVO">
+		SELECT /*+ 'lottejtb.t2.pw.goods.dao.PWet_mstDAOV02' */ET.EVENT_CD ,
+		       ET.COMP_CD ,
+		       ET.DISP_NM ,
+		       ET.EV_DAY_CNT ,
+		       ET.EV_NIGHT_CNT ,
+		       NVL(ET.START_DAY, '') AS START_DAY,
+		       TO_CHAR(TO_DATE(ET.START_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "START_WDAY" ,
+		       (CASE WHEN ET.START_TIME IS NOT NULL THEN ET.START_TIME ELSE ET.START_TIME_TO END) START_TIME,
+		       ET.START_PYUN ,
+		       ET.END_DAY_FR ,
+		       ET.END_TIME_FR ,
+		       ET.END_DAY ,
+		       TO_CHAR(TO_DATE(ET.END_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "END_WDAY" ,
+		       (CASE WHEN ET.END_TIME IS NOT NULL THEN ET.END_TIME ELSE ET.END_TIME_FR END) END_TIME,
+		       ET.END_PYUN ,
+		       ET.START_DAY_TO ,
+		       ET.START_TIME_TO ,
+		       ET.TRFF_CD ,
+		       NVL(TR.TRFF_KNM, '') "CD_NM" ,
+		       ET.TRFF_CD_SHORT ,
+		       ET.FEE_SEQ ,
+		       PRICE.ADULT_PRICE ,
+		       PRICE.CHILD_PRICE ,
+		       PRICE.BABY_PRICE ,
+		       PRICE.ETC_PRICE_TITLE1 ,
+		       PRICE.ETC_PRICE1 ,
+		       PRICE.ETC_PRICE_TITLE2 ,
+		       PRICE.ETC_PRICE2 ,
+		       PRICE.ETC_PRICE_TITLE3 ,
+		       PRICE.ETC_PRICE3 ,
+		       ET.EV_INWON ,
+		       ET.MIN_INWON ,
+		       ET.PROC_CD ,
+		       ET.LOCK_UNIT ,
+		       NVL(ET.TC_CNT, 0) "TC_CNT" ,
+		       ET.POINT_YN ,
+		       ET.POINT_RATE ,
+		       CASE
+		         WHEN ET.POINT_AMT <![CDATA[ <= ]]> 0 AND    ET.POINT_RATE <![CDATA[ < ]]> 0 THEN PRICE.ADULT_PRICE * 0 * 0.01
+		         WHEN ET.POINT_AMT <![CDATA[ <= ]]> 0 THEN PRICE.ADULT_PRICE * ET.POINT_RATE * 0.01
+		         ELSE ET.POINT_AMT
+		       END AS POINT_AMT ,
+		       ET.ET_ADM_CD ,
+		       NVL ((SELECT COUNT(RES_SEQ)
+		                FROM   RV_ROSTER RS,
+		                       RV_MST RV
+		                WHERE  (RS.CANC_CD IS NULL
+		                        OR     RS.CANC_CD = '')
+		                AND    RV.RES_CD=RS.RES_CD
+		                AND    ET.EVENT_CD = RV.EVENT_CD
+		                GROUP BY EVENT_CD ), 0) "RV_CNT" ,
+		       TAG.IMG_PATH "IMG_URL" ,
+		       TAG.EVENT_TAG "GOODS_TAG_TEXT" ,
+		       NVL(ET.CONF_YN, 'N') "CONF_YN" ,
+		       NVL(ET.CONF_LAND, 'N') "CONF_LAND" ,
+		       NVL(ET.CONF_AIR, 'N') "CONF_AIR" ,
+		       NVL(ET.CONF_INSU, 'N') "CONF_INSU" ,
+		       NVL(ET.CONF_HOTEL, 'N') "CONF_HOTEL" ,
+		       ET.GOODS_TYPE_CD "GOODS_TYPE_CD" ,
+		       NVL(ET.EMP_RATE, '0') "EMP_RATE" ,
+		       NVL(ET.GOODS_JOIN_CD,'') "GOODS_JOIN_CD",
+		       ET.BIZ_INSU_YN ,
+		       ET.PKG_INSU_YN ,
+		       ET.GUIDE_YN ,
+		       GD.DESC_FILE_PATH ,
+		       GD.DESC_FILE_NM ,
+		       GD.GOODS_CD ,
+		       (SELECT ECI.CLAUSE_FG FROM GD_SCHD_CLAUSE ECI WHERE ECI.SCHD_ID = ET.SCHD_ID) AS "OPT_DESC" ,
+		       (SELECT ECI.CLAUSE_DESC FROM GD_SCHD_CLAUSE ECI WHERE ECI.SCHD_ID = ET.SCHD_ID) AS "PRO_DESC",
+		       (SELECT ECI.CLAUSE_DESC2 FROM GD_SCHD_CLAUSE ECI WHERE ECI.SCHD_ID = ET.SCHD_ID) AS "PRO_DESC2",
+ 
+		       (PRICE.ADULT_PRICE + PRICE.ETC_PRICE1) TOT_AMT1,
+		       (PRICE.CHILD_PRICE + PRICE.ETC_PRICE2) TOT_AMT2,
+		       (PRICE.BABY_PRICE + PRICE.ETC_PRICE3) TOT_AMT3
+       		       		       
+				, CASE WHEN NVL(MP.ETC_PRICE1, 0) <![CDATA[<]]> NVL(PRICE.ADULT_PRICE,0) + NVL(PRICE.ETC_PRICE1,0) THEN 'Y' ELSE 'N' END AS MIN_YN
+		FROM   (SELECT ETM.*
+		        FROM   ET_MST ETM,
+		               (SELECT EVENT_CD
+		                FROM   CTG_EVENT
+		                WHERE  CTG_SEQ='5831') EVC
+		        WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                AND    EVC.EVENT_CD IS NULL)
+		        AND    (ETM.EV_CAN_CD IS NULL
+		                OR     ETM.EV_CAN_CD != '99') ) "ET",
+		       ET_PRICE "PRICE",
+		       GD_MST "GD",
+		       CO_CD_TRAFFIC TR,
+		       (SELECT MAX(EVENT_CD) "EVENT_CD" ,
+		               ltrim(XMLAGG(XMLELEMENT(EVENT_TAG, '|'||EVENT_TAG)
+		                        ORDER BY EVENT_TAG).EXTRACT('//text()').GetStringVal(), '|')AS EVENT_TAG,
+		               ltrim(XMLAGG(XMLELEMENT(IMG_PATH, '|'||IMG_PATH)
+		                        ORDER BY IMG_PATH).EXTRACT('//text()').GetStringVal(), '|') AS IMG_PATH
+		        FROM   (SELECT TAG.EVENT_CD ,
+		                       TAG.EVENT_TAG ,
+		                       TAG.IMG_PATH
+		                FROM   ET_DET_TAG TAG
+		                WHERE  TAG.EVENT_CD = #event_cd# )
+		        GROUP BY EVENT_CD ) TAG
+		        , (
+						SELECT  A.GOODS_CD, A.COMP_CD
+								, MIN(B.ADULT_PRICE+B.ETC_PRICE1) "ETC_PRICE1"
+						FROM    GD_MST "A", ET_PRICE "B",
+								(
+									SELECT ETM.*
+									FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT WHERE CTG_SEQ=#ctg#) EVC
+									WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL AND ETM.DISP_YN='Y')
+										   AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+								) "C"
+						WHERE   A.GOODS_CD=C.GOODS_CD
+								AND A.COMP_CD=C.COMP_CD
+								AND C.EVENT_CD=B.EVENT_CD
+								AND C.FEE_SEQ=B.FEE_SEQ
+								AND A.GOODS_CD=#goods_cd#
+								AND A.COMP_CD = #comp_cd#
+								AND B.ADULT_PRICE > 0
+<!-- 								AND C.END_DAY <![CDATA[ >= ]]> TO_CHAR(sysdate, 'yyyyMMdd') -->
+						GROUP BY A.GOODS_CD, A.COMP_CD
+		
+					 )  MP 
+		WHERE  ET.EVENT_CD = PRICE.EVENT_CD
+		AND    ET.FEE_SEQ = PRICE.FEE_SEQ
+		AND    ET.GOODS_CD = GD.GOODS_CD
+		AND    ET.COMP_CD = GD.COMP_CD
+		AND 	 GD.GOODS_CD = MP.GOODS_CD
+		AND    GD.GOODS_CD = #goods_cd#
+		AND    GD.COMP_CD = #comp_cd#
+		AND    ET.EVENT_CD = TAG.EVENT_CD(+)
+		AND    ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT(+)
+		AND    ET.EVENT_CD = #event_cd#
+		AND    ET.DISP_YN = 'Y'
+<!--     	AND    TR.DEL_YN = 'N' -->
+<!-- 		AND    ET.END_DAY <![CDATA[ >= ]]> TO_CHAR(sysdate, 'yyyyMMdd') -->
+
+	</select>
+
+	<!--  상품 상세 UI >  행사 상품 정보 조회   -->
+	<select id="RNGoodsDAO.selectETMstSrch2" parameterClass="RNETMstVO" resultMap="etMstVO">
+		SELECT /*+ 'lottejtb.t2.pw.goods.dao.PWet_mstDAOV02' */ET.EVENT_CD ,
+		       ET.COMP_CD ,
+		       ET.DISP_NM ,
+		       ET.EV_DAY_CNT ,
+		       ET.EV_NIGHT_CNT ,
+		       NVL(ET.START_DAY, '') AS START_DAY,
+		       TO_CHAR(TO_DATE(ET.START_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "START_WDAY" ,
+		       (CASE WHEN ET.START_TIME IS NOT NULL THEN ET.START_TIME ELSE ET.START_TIME_TO END) START_TIME,
+		       ET.START_PYUN ,
+		       ET.END_DAY_FR ,
+		       ET.END_TIME_FR ,
+		       ET.END_DAY ,
+		       TO_CHAR(TO_DATE(ET.END_DAY, 'yyyyMMdd'), 'DY', 'NLS_DATE_LANGUAGE=KOREAN') "END_WDAY" ,
+		       (CASE WHEN ET.END_TIME IS NOT NULL THEN ET.END_TIME ELSE ET.END_TIME_FR END) END_TIME,
+		       ET.END_PYUN ,
+		       ET.START_DAY_TO ,
+		       ET.START_TIME_TO ,
+		       ET.TRFF_CD ,
+		       NVL(TR.TRFF_KNM,'') "CD_NM" ,
+		       ET.TRFF_CD_SHORT ,
+		       NVL(ET.FEE_SEQ, 0) "FEE_SEQ" ,
+		       NVL(PRICE.ADULT_PRICE, 0) "ADULT_PRICE" ,
+		       NVL(PRICE.CHILD_PRICE, 0) "CHILD_PRICE",
+		       NVL(PRICE.BABY_PRICE, 0) "BABY_PRICE",
+		       PRICE.ETC_PRICE_TITLE1 ,
+		       NVL(PRICE.ETC_PRICE1, 0) "ETC_PRICE1",
+		       PRICE.ETC_PRICE_TITLE2 ,
+		       NVL(PRICE.ETC_PRICE2, 0) "ETC_PRICE2",
+		       PRICE.ETC_PRICE_TITLE3 ,
+		       NVL(PRICE.ETC_PRICE3, 0) "ETC_PRICE3",
+		       ET.EV_INWON ,
+		       ET.MIN_INWON ,
+		       ET.PROC_CD ,
+		       ET.LOCK_UNIT ,
+		       NVL(ET.TC_CNT, 0) "TC_CNT" ,
+		       ET.POINT_YN ,
+		       NVL(ET.POINT_RATE, 0) "POINT_RATE" ,
+		       CASE
+		         WHEN NVL(ET.POINT_AMT,0) <![CDATA[ <= ]]> 0 AND    NVL(ET.POINT_RATE,0) <![CDATA[ < ]]> 0 THEN NVL(PRICE.ADULT_PRICE,0) * 0 * 0.01
+		         WHEN NVL(ET.POINT_AMT,0) <![CDATA[ <= ]]> 0 THEN NVL(PRICE.ADULT_PRICE,0) * NVL(ET.POINT_RATE,0) * 0.01
+		         ELSE NVL(ET.POINT_AMT,0)
+		       END AS POINT_AMT ,
+		       ET.ET_ADM_CD ,
+		       NVL ((SELECT COUNT(RES_SEQ)
+		                FROM   RV_ROSTER RS,
+		                       RV_MST RV
+		                WHERE  (RS.CANC_CD IS NULL
+		                        OR     RS.CANC_CD = '')
+		                AND    RV.RES_CD=RS.RES_CD
+		                AND    ET.EVENT_CD = RV.EVENT_CD
+		                GROUP BY EVENT_CD ), 0) "RV_CNT" ,
+		       TAG.IMG_PATH "IMG_URL" ,
+		       TAG.EVENT_TAG "GOODS_TAG_TEXT" ,
+		       NVL(ET.CONF_YN, 'N') "CONF_YN" ,
+		       NVL(ET.CONF_LAND, 'N') "CONF_LAND" ,
+		       NVL(ET.CONF_AIR, 'N') "CONF_AIR" ,
+		       NVL(ET.CONF_INSU, 'N') "CONF_INSU" ,
+		       NVL(ET.CONF_HOTEL, 'N') "CONF_HOTEL" ,
+		       ET.GOODS_TYPE_CD "GOODS_TYPE_CD" ,
+		       NVL(ET.EMP_RATE, '0') "EMP_RATE" ,
+		       NVL(ET.GOODS_JOIN_CD,'') "GOODS_JOIN_CD",
+		       ET.BIZ_INSU_YN ,
+		       ET.PKG_INSU_YN ,
+		       ET.GUIDE_YN ,
+		       GD.DESC_FILE_PATH ,
+		       GD.DESC_FILE_NM ,
+		       GD.GOODS_CD ,
+		       (SELECT ECI.CLAUSE_FG FROM GD_SCHD_CLAUSE ECI WHERE ECI.SCHD_ID = ET.SCHD_ID) AS "OPT_DESC" ,
+		       (SELECT ECI.CLAUSE_DESC FROM GD_SCHD_CLAUSE ECI WHERE ECI.SCHD_ID = ET.SCHD_ID) AS "PRO_DESC",
+		       (SELECT ECI.CLAUSE_DESC2 FROM GD_SCHD_CLAUSE ECI WHERE ECI.SCHD_ID = ET.SCHD_ID) AS "PRO_DESC2",
+ 
+		       (NVL(PRICE.ADULT_PRICE,0) + NVL(PRICE.ETC_PRICE1,0)) TOT_AMT1,
+		       (NVL(PRICE.CHILD_PRICE,0) + NVL(PRICE.ETC_PRICE2,0)) TOT_AMT2,
+		       (NVL(PRICE.BABY_PRICE,0) + NVL(PRICE.ETC_PRICE3,0)) TOT_AMT3
+					
+				, CASE WHEN NVL(MP.ETC_PRICE1, 0) <![CDATA[<]]> NVL(PRICE.ADULT_PRICE,0) + NVL(PRICE.ETC_PRICE1,0) THEN 'Y' ELSE 'N' END AS MIN_YN
+       		       		       
+		FROM   (SELECT ETM.*
+		        FROM   ET_MST ETM,
+		               (SELECT EVENT_CD
+		                FROM   CTG_EVENT
+		                WHERE  CTG_SEQ='5831') EVC
+		        WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+		                AND    EVC.EVENT_CD IS NULL)
+		        AND    (ETM.EV_CAN_CD IS NULL
+		                OR     ETM.EV_CAN_CD != '99') ) "ET",
+		       ET_PRICE "PRICE",
+		       GD_MST "GD",
+		       CO_CD_TRAFFIC TR,
+		       (SELECT MAX(EVENT_CD) "EVENT_CD" ,
+		               ltrim(XMLAGG(XMLELEMENT(EVENT_TAG, '|'||EVENT_TAG)
+		                        ORDER BY EVENT_TAG).EXTRACT('//text()').GetStringVal(), '|')AS EVENT_TAG,
+		               ltrim(XMLAGG(XMLELEMENT(IMG_PATH, '|'||IMG_PATH)
+		                        ORDER BY IMG_PATH).EXTRACT('//text()').GetStringVal(), '|') AS IMG_PATH
+		        FROM   (SELECT TAG.EVENT_CD ,
+		                       TAG.EVENT_TAG ,
+		                       TAG.IMG_PATH
+		                FROM   ET_DET_TAG TAG
+		                WHERE  TAG.EVENT_CD = #event_cd# )
+		        GROUP BY EVENT_CD ) TAG 
+		        , (
+						SELECT  A.GOODS_CD, A.COMP_CD
+								, MIN(B.ADULT_PRICE+B.ETC_PRICE1) "ETC_PRICE1"
+						FROM    GD_MST "A", ET_PRICE "B",
+								(
+									SELECT ETM.*
+									FROM   ET_MST ETM, (SELECT EVENT_CD FROM CTG_EVENT WHERE CTG_SEQ=#ctg#) EVC
+									WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+) AND EVC.EVENT_CD IS NULL AND ETM.DISP_YN='Y')
+										   AND (ETM.EV_CAN_CD IS NULL OR ETM.EV_CAN_CD != '99')
+								) "C"
+						WHERE   A.GOODS_CD=C.GOODS_CD
+								AND A.COMP_CD=C.COMP_CD
+								AND C.EVENT_CD=B.EVENT_CD
+								AND C.FEE_SEQ=B.FEE_SEQ
+								AND A.GOODS_CD=#goods_cd#
+								AND A.COMP_CD = #comp_cd#
+								AND B.ADULT_PRICE > 0
+								AND C.START_DAY <![CDATA[ >= ]]> TO_CHAR(sysdate, 'yyyyMMdd')
+						GROUP BY A.GOODS_CD, A.COMP_CD
+		
+					 )  MP
+		WHERE  ET.EVENT_CD = PRICE.EVENT_CD(+)
+		AND    ET.FEE_SEQ = PRICE.FEE_SEQ(+)
+		AND    ET.GOODS_CD = GD.GOODS_CD
+		AND    ET.COMP_CD = GD.COMP_CD
+		AND 	 GD.GOODS_CD = MP.GOODS_CD
+		AND    GD.GOODS_CD = #goods_cd#
+		AND    GD.COMP_CD = #comp_cd#
+		AND    ET.EVENT_CD = TAG.EVENT_CD(+)
+		AND    ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT(+)
+		AND    ET.EVENT_CD = #event_cd#
+		AND    ET.DISP_YN = 'Y'
+		AND    ET.START_DAY <![CDATA[ >= ]]> TO_CHAR(sysdate, 'yyyyMMdd')
+
+	</select>
+	 	
+	<!--  상품 상세 UI >  행사 상품 태그 정보 조회   -->
+	<select id="RNGoodsDAO.selectGDTagsSrch" parameterClass="RNGDTagsVO" resultMap="gdTagsVO">
+
+		SELECT em.COMP_CD,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   ET_DET_TAG
+		        WHERE  EVENT_CD =em.EVENT_CD
+		        AND    USE_YN = 'Y'
+		        AND    EVENT_TAG = '001') AS HOMESHOPPING_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   ET_DET_TAG
+		        WHERE  EVENT_CD = em.EVENT_CD
+		        AND    USE_YN = 'Y'
+		        AND    EVENT_TAG = '002') AS PLAN_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   ET_DET_TAG
+		        WHERE  EVENT_CD = em.EVENT_CD
+		        AND    USE_YN = 'Y'
+		        AND    EVENT_TAG = '003') AS EVENT_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   ET_DET_TAG
+		        WHERE  EVENT_CD = em.EVENT_CD
+		        AND    USE_YN = 'Y'
+		        AND    EVENT_TAG = '004') AS PREMIUM_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   ET_DET_TAG
+		        WHERE  EVENT_CD = em.EVENT_CD
+		        AND    USE_YN = 'Y'
+		        AND    EVENT_TAG = '005') AS CLASSIC_YN ,
+		       (SELECT DECODE(COUNT(*), 0, 'N', 'Y')
+		        FROM   ET_DET_TAG
+		        WHERE  EVENT_CD = em.EVENT_CD
+		        AND    USE_YN = 'Y'
+		        AND    EVENT_TAG = '006') AS SAVE_YN
+		FROM   ET_MST em
+		WHERE  em.EVENT_CD = #event_cd#
+
+	</select>
+
+	<!--  상품 상세 UI >  상품 이미지 리스트 조회   -->
+	<select id="RNGoodsDAO.selectGDImgListSrch" parameterClass="RNGDImgVO" resultMap="gdImgVO">
+
+		SELECT /*+ 'lottejtb.t2.pw.goods.dao.PWgd_imgDAOV00' */GOODS_CD ,
+		       SEQ ,
+		       IMG_TITLE ,
+		       SAVE_FILE_NM ,
+		       GOODS_DESC ,
+		       IMG_PATH ,
+		       DISP_GRADE
+		FROM   GD_IMG
+		WHERE  GOODS_CD = #goods_cd#
+		ORDER BY DISP_GRADE ASC
+
+	</select>
+
+	<!--  상품 상세 UI >  표준약관/특별약관/국내약관 조회   -->
+	<select id="RNGoodsDAO.selectETClauseInfoSrch" parameterClass="RNETClauseInfoVO" resultMap="etClauseInfoVO">
+
+		SELECT CLAUSE_FG
+		    ,CLAUSE_DESC
+		    ,CLAUSE_DESC2
+		FROM GD_SCHD_CLAUSE
+		WHERE SCHD_ID = (SELECT SCHD_ID FROM ET_MST WHERE EVENT_CD = #event_cd#)
+
+	</select>
+	
+	<!--  상품 상세 UI > 공통 사항 조회   -->
+	<select id="RNGoodsDAO.selectGDCommSchdListSrch" parameterClass="RNGDSchdVO" resultMap="gdSchdVO">
+
+		SELECT GSD.SCHD_ID ,
+		       GSD.REG_SEQ ,
+		       GSD.DAY_CNT ,
+		       GSD.SEQ ,
+		       GSD.SCHD_DET_CD ,
+		       GSD.SCHD_DET_CD_VAL ,
+		       GSD.SCHD_DET_CNTN ,
+		       GSD.SCHD_DET_CLVAL ,
+		       GSD.IMG_TITLE ,
+		       
+		       CASE WHEN GSD.SCHD_DET_CD = '3017' AND ET.START_DAY>='20180118' AND ET.TRFF_CD_SHORT IN ('KE','AF','DL','KL','GA','MF','AM','SU','AZ','CI','OK') AND ET.START_CD = 'ICN'
+		       			THEN 'http://www.lottejtb.com/images/d_etc/detail/lotteholidays_airport_02.jpg'
+						ELSE GSD.IMG_PATH
+				END  IMG_PATH ,
+		       
+		       GSD.DISP_YN ,
+		       GSD.INCLUDE_YN ,
+		       OPT.OP_CD O_OP_CD ,
+		       OPT.AREA_CD O_AREA_CD ,
+		       OPT.OPTION_CD O_OPTION_CD ,
+		       OPT.SUB_AREA_CD O_SUB_AREA_CD ,
+		       OPT.OPTION_NM O_OPTION_NM ,
+		       OPT.COUNTRY_CD O_COUNTRY_CD ,
+		       OPT.CITY_CD O_CITY_CD ,
+		       OPT.PRICE_INFO O_PRICE_INFO ,
+		       OPT.OP_TIME O_OP_TIME ,
+		       OPT.OPTION_DESC O_OPTION_DESC ,
+		       OPT.INCLUDE_DESC O_INCLUDE_DESC ,
+		       OPT.USE_YN O_USE_YN ,
+		       OPT.DEPT_CD O_DEPT_CD ,
+		       
+		       OPT.OTHER_SCHD O_OTHER_SCHD ,
+		       OPT.GUIDE_YN O_GUIDE_YN ,
+		       DAI.COUNTRY_CD D_COUNTRY_CD ,
+		       DAI.CITY_CD D_CITY_CD ,
+		       FN_GET_CITY('NAME', DAI.OP_CD, DAI.CITY_CD, '') D_CITY_NM ,
+		       DAI.BUS_TIME D_BUS_TIME ,
+		       DAI.COST D_COST ,
+		       DAI.DETAIL_CNTS1 D_DETAIL_CNTS1 ,
+		       DAI.KNM D_KNM ,
+		       DHI.LODGE_KNM H_LODGE_KNM ,
+		       FN_SY_CD_DET_S01('HTGRD', DHI.LODGE_GRADE)  H_LODGE_GRADE ,
+		       DHI.COUNTRY_CD H_COUNTRY_CD ,
+		       DHI.CITY_CD H_CITY_CD ,
+		       DHI.HOTEL_DESC H_HOTEL_DESC ,
+		       DHI.HOMEPAGE_URL H_HOMEPAGE_URL ,
+		       DHI.PHONE_NO H_PHONE_NO ,
+		       DHI.ADDRESS H_ADDRESS ,
+		       DHI.LOCATION_DESC H_LOCATION_DESC ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_AREA_IMG
+		        WHERE  AREA_INFO_TYPE_CD = DAI.AREA_INFO_TYPE_CD
+		        AND    AREA_INFO_SEQ = DAI.AREA_INFO_SEQ
+		        AND    OP_CD = DAI.OP_CD
+		        AND    CITY_CD = DAI.CITY_CD ) D_IMGS ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_OPT_IMG
+		        WHERE  OP_CD = OPT.OP_CD
+		        AND    AREA_CD = OPT.AREA_CD
+		        AND    OPTION_CD = OPT.OPTION_CD ) O_IMGS ,
+		       CASE
+		         WHEN GSD.SCHD_DET_CD = '3005'
+		AND    GSD.SCHD_DET_CD_VAL IS NOT NULL THEN FN_SY_CD_DET_S01('COMMSAF', GSD.SCHD_DET_CD_VAL) /* 안정정보 */
+		         WHEN GSD.SCHD_DET_CD IN ('2001',
+		               '2002',
+		               '2003')
+		AND    GSD.SCHD_DET_CD_VAL IS NOT NULL THEN FN_SY_CD_DET_S01('EAT', GSD.SCHD_DET_CD_VAL) /* 식사 */
+		         WHEN GSD.SCHD_DET_CD = '1003'
+		AND    SUBSTR(GSD.SCHD_DET_CD_VAL, 1, 3) = '50/' THEN 'SHO' /* 쇼핑 */
+		         ELSE GSD.SCHD_DET_CD_VAL
+		       END SCHD_DET_NM ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_HOTEL_IMG
+		        WHERE  OP_CD = DHI.OP_CD
+		        AND    CITY_CD = DHI.CITY_CD
+		        AND    LODGE_CD = DHI.LODGE_CD ) H_IMGS
+		        , '' AS COUNTRY_CD
+		        , '' AS COUNTRY_NM
+		FROM   ET_MST ET,
+		       GD_SCHD GS,
+		       GD_SCHD_DET GSD,
+		       (SELECT DOI.OP_CD || '/' || DOI.AREA_CD || '/' || DOI.OPTION_CD AS SCHD_DET_CD_VAL,
+		               DOI.*
+		        FROM   DI_OPT_INFO DOI
+		        WHERE  USE_YN = 'Y' ) OPT,
+		       (SELECT DAI.AREA_INFO_TYPE_CD || '/' || DAI.AREA_INFO_SEQ || '/' || DAI.OP_CD || '/' || DAI.CITY_CD AS SCHD_DET_CD_VAL,
+		               DAI.*
+		        FROM   DI_AREA_INFO DAI
+		        WHERE  USE_YN = 'Y' ) DAI,
+		       (SELECT DHI.OP_CD || '|' || DHI.CITY_CD || '|' || DHI.LODGE_CD AS SCHD_DET_CD_VAL,
+		               DHI.*
+		        FROM   DI_HOTEL_INFO DHI
+		        WHERE  USE_YN = 'Y' ) DHI
+		WHERE  ET.EVENT_CD = #event_cd#
+		AND    ET.SCHD_ID = GS.SCHD_ID
+		AND    ET.SCHD_ID = GSD.SCHD_ID
+		AND    NVL(GS.USE_YN, 'Y') = 'Y'
+		AND    GSD.SCHD_DET_CD_VAL = OPT.SCHD_DET_CD_VAL(+)
+		AND    GSD.SCHD_DET_CD_VAL = DAI.SCHD_DET_CD_VAL(+)
+		AND    GSD.SCHD_DET_CD_VAL = DHI.SCHD_DET_CD_VAL(+)
+		AND    GSD.DAY_CNT = 0
+		ORDER BY DAY_CNT ,
+		       CASE
+		         WHEN SCHD_DET_CD IN ('2001',
+		               '2002',
+		               '2003') THEN 999
+		         WHEN SCHD_DET_CD = '2004' THEN 998 
+		         ELSE SEQ
+		       END,
+		       SEQ,
+		       SCHD_DET_CD
+
+	</select>
+	
+	
+	<!--  상품 상세 UI > 행사 상품 일정표 조회   -->
+	<select id="RNGoodsDAO.selectGDSchdListSrch" parameterClass="RNGDSchdVO" resultMap="gdSchdVO">
+
+		SELECT GSD.SCHD_ID,
+		       GSD.REG_SEQ ,
+		       GSD.DAY_CNT ,
+		       GSD.SEQ ,
+		       NVL(GSD.SCHD_DET_CD, '') SCHD_DET_CD,
+		       NVL(GSD.SCHD_DET_CD_VAL, '') SCHD_DET_CD_VAL,
+		       NVL(GSD.SCHD_DET_CNTN, '') SCHD_DET_CNTN,
+		       NVL(GSD.SCHD_DET_CLVAL, '') SCHD_DET_CLVAL,
+		       NVL(GSD.IMG_TITLE, '') IMG_TITLE,
+		       NVL(GSD.IMG_PATH, '') IMG_PATH,
+		       NVL(GSD.DISP_YN, '') DISP_YN,
+		       NVL(GSD.INCLUDE_YN, '') INCLUDE_YN,
+		       NVL(OPT.OP_CD, '') O_OP_CD  ,
+		       NVL(OPT.AREA_CD, '') O_AREA_CD,
+		       NVL(OPT.OPTION_CD, '') O_OPTION_CD,
+		       NVL(OPT.SUB_AREA_CD, '') O_SUB_AREA_CD,
+		       NVL(OPT.OPTION_NM, '') O_OPTION_NM,
+		       NVL(OPT.COUNTRY_CD, '') O_COUNTRY_CD,
+		       NVL(OPT.CITY_CD, '') O_CITY_CD,
+		       NVL(OPT.PRICE_INFO, '') O_PRICE_INFO,
+		       NVL(OPT.OP_TIME, '') O_OP_TIME,
+		       NVL(OPT.OPTION_DESC, '') O_OPTION_DESC,
+		       NVL(OPT.INCLUDE_DESC, '') O_INCLUDE_DESC,
+		       NVL(OPT.USE_YN, '') O_USE_YN,
+		       NVL(OPT.DEPT_CD, '') O_DEPT_CD,      
+		       NVL(OPT.OTHER_SCHD, '')  O_OTHER_SCHD ,
+		       NVL(OPT.GUIDE_YN, '')  O_GUIDE_YN ,
+		       NVL(DAI.COUNTRY_CD, '')  D_COUNTRY_CD ,
+		       NVL(DAI.CITY_CD, '')  D_CITY_CD ,
+		       FN_GET_CITY('NAME', DAI.OP_CD, DAI.CITY_CD, '') D_CITY_NM ,
+		       DAI.BUS_TIME D_BUS_TIME ,
+		       DAI.COST D_COST ,
+		       DAI.DETAIL_CNTS1 D_DETAIL_CNTS1 ,
+		       DAI.KNM D_KNM ,
+		       DHI.LODGE_KNM H_LODGE_KNM ,
+		       FN_SY_CD_DET_S01('HTGRD', DHI.LODGE_GRADE)  H_LODGE_GRADE ,
+		       DHI.COUNTRY_CD H_COUNTRY_CD ,
+		       DHI.CITY_CD H_CITY_CD ,
+		       DHI.HOTEL_DESC H_HOTEL_DESC ,
+		       DHI.HOMEPAGE_URL H_HOMEPAGE_URL ,
+		       DHI.PHONE_NO H_PHONE_NO ,
+		       DHI.ADDRESS H_ADDRESS ,
+		       DHI.LOCATION_DESC H_LOCATION_DESC ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_AREA_IMG
+		        WHERE  AREA_INFO_TYPE_CD = DAI.AREA_INFO_TYPE_CD
+		        AND    AREA_INFO_SEQ = DAI.AREA_INFO_SEQ
+		        AND    OP_CD = DAI.OP_CD
+		        AND    CITY_CD = DAI.CITY_CD ) D_IMGS ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_OPT_IMG
+		        WHERE  OP_CD = OPT.OP_CD
+		        AND    AREA_CD = OPT.AREA_CD
+		        AND    OPTION_CD = OPT.OPTION_CD ) O_IMGS ,
+		       CASE
+		         WHEN GSD.SCHD_DET_CD = '3005'
+					AND    GSD.SCHD_DET_CD_VAL IS NOT NULL THEN FN_SY_CD_DET_S01('COMMSAF', GSD.SCHD_DET_CD_VAL) /* 안정정보 */
+		         WHEN GSD.SCHD_DET_CD IN ('2001',
+		               '2002',
+		               '2003')
+						AND    GSD.SCHD_DET_CD_VAL IS NOT NULL THEN FN_SY_CD_DET_S01('EAT', GSD.SCHD_DET_CD_VAL) /* 식사 */
+		         WHEN GSD.SCHD_DET_CD = '1003'
+					AND    SUBSTR(GSD.SCHD_DET_CD_VAL, 1, 3) = '50/' THEN 'SHO' /* 쇼핑 */
+		         ELSE GSD.SCHD_DET_CD_VAL
+		       END SCHD_DET_NM ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_HOTEL_IMG
+		        WHERE  OP_CD = DHI.OP_CD
+		        AND    CITY_CD = DHI.CITY_CD
+		        AND    LODGE_CD = DHI.LODGE_CD ) H_IMGS
+		        
+                
+		    , CASE WHEN GSD.SCHD_DET_CD = '1001' AND GSD.DAY_CNT > 0 THEN (SELECT B.COUNTRY_CD_3
+		                                                 FROM DI_CITY A, DI_COUNTRY B
+		                                                WHERE A.COUNTRY_CD = B.COUNTRY_CD AND A.OP_CD = SUBSTR(GSD.SCHD_DET_CD_VAL, 1, 2) AND A.CITY_CD = SUBSTR(GSD.SCHD_DET_CD_VAL, 4))
+		             ELSE ''
+		        END AS COUNTRY_CD
+		    , CASE WHEN GSD.SCHD_DET_CD = '1001' AND GSD.DAY_CNT > 0 THEN (SELECT B.COUNTRY_KNM
+		                                                 FROM DI_CITY A, DI_COUNTRY B
+		                                                WHERE A.COUNTRY_CD = B.COUNTRY_CD AND A.OP_CD = SUBSTR(GSD.SCHD_DET_CD_VAL, 1, 2) AND A.CITY_CD = SUBSTR(GSD.SCHD_DET_CD_VAL, 4))
+		             ELSE ''
+		        END AS COUNTRY_NM
+		        
+		FROM   ET_MST ET,
+		       GD_SCHD GS,
+		       GD_SCHD_DET GSD,
+		       (SELECT DOI.OP_CD || '/' || DOI.AREA_CD || '/' || DOI.OPTION_CD AS SCHD_DET_CD_VAL,
+		               DOI.*
+		        FROM   DI_OPT_INFO DOI
+		        WHERE  USE_YN = 'Y' ) OPT,
+		       (SELECT DAI.AREA_INFO_TYPE_CD || '/' || DAI.AREA_INFO_SEQ || '/' || DAI.OP_CD || '/' || DAI.CITY_CD AS SCHD_DET_CD_VAL,
+		               DAI.*
+		        FROM   DI_AREA_INFO DAI
+		        WHERE  USE_YN = 'Y' ) DAI,
+		       (SELECT DHI.OP_CD || '|' || DHI.CITY_CD || '|' || DHI.LODGE_CD AS SCHD_DET_CD_VAL,
+		               DHI.*
+		        FROM   DI_HOTEL_INFO DHI
+		        WHERE  USE_YN = 'Y' ) DHI
+		WHERE  ET.EVENT_CD = #event_cd#
+		AND    ET.SCHD_ID = GS.SCHD_ID
+		AND    ET.SCHD_ID = GSD.SCHD_ID
+		AND    NVL(GS.USE_YN, 'Y') = 'Y'
+		AND    GSD.SCHD_DET_CD_VAL = OPT.SCHD_DET_CD_VAL(+)
+		AND    GSD.SCHD_DET_CD_VAL = DAI.SCHD_DET_CD_VAL(+)
+		AND    GSD.SCHD_DET_CD_VAL = DHI.SCHD_DET_CD_VAL(+)
+		AND    GSD.DAY_CNT <![CDATA[ > ]]> 0 
+		ORDER BY DAY_CNT ,
+		       CASE
+		         WHEN SCHD_DET_CD IN ('2001',
+		               '2002',
+		               '2003') THEN 999
+		         WHEN SCHD_DET_CD = '2004' THEN 998 
+		         ELSE SEQ
+		       END,
+		       SEQ,
+		       SCHD_DET_CD
+       
+	</select>
+
+	<!--  상품 상세 UI > 일정표 상세 조회  -->
+	<select id="RNGoodsDAO.srchGDSchdDetailSrch" parameterClass="RNGDSchdVO" resultMap="gdSchdVO">
+
+		SELECT GSD.SCHD_ID,
+		       GSD.REG_SEQ ,
+		       GSD.DAY_CNT ,
+		       GSD.SEQ ,
+		       NVL(GSD.SCHD_DET_CD, '') SCHD_DET_CD,
+		       NVL(GSD.SCHD_DET_CD_VAL, '') SCHD_DET_CD_VAL,
+		       NVL(GSD.SCHD_DET_CNTN, '') SCHD_DET_CNTN,
+		       NVL(GSD.SCHD_DET_CLVAL, '') SCHD_DET_CLVAL,
+		       NVL(GSD.IMG_TITLE, '') IMG_TITLE,
+		       NVL(GSD.IMG_PATH, '') IMG_PATH,
+		       NVL(GSD.DISP_YN, '') DISP_YN,
+		       NVL(GSD.INCLUDE_YN, '') INCLUDE_YN,
+		       NVL(OPT.OP_CD, '') O_OP_CD  ,
+		       NVL(OPT.AREA_CD, '') O_AREA_CD,
+		       NVL(OPT.OPTION_CD, '') O_OPTION_CD,
+		       NVL(OPT.SUB_AREA_CD, '') O_SUB_AREA_CD,
+		       NVL(OPT.OPTION_NM, '') O_OPTION_NM,
+		       NVL(OPT.COUNTRY_CD, '') O_COUNTRY_CD,
+		       NVL(OPT.CITY_CD, '') O_CITY_CD,
+		       NVL(OPT.PRICE_INFO, '') O_PRICE_INFO,
+		       NVL(OPT.OP_TIME, '') O_OP_TIME,
+		       NVL(OPT.OPTION_DESC, '') O_OPTION_DESC,
+		       NVL(OPT.INCLUDE_DESC, '') O_INCLUDE_DESC,
+		       NVL(OPT.USE_YN, '') O_USE_YN,
+		       NVL(OPT.DEPT_CD, '') O_DEPT_CD,      
+		       NVL(OPT.OTHER_SCHD, '')  O_OTHER_SCHD ,
+		       NVL(OPT.GUIDE_YN, '')  O_GUIDE_YN ,
+		       NVL(DAI.COUNTRY_CD, '')  D_COUNTRY_CD ,
+		       NVL(DAI.CITY_CD, '')  D_CITY_CD ,
+		       FN_GET_CITY('NAME', DAI.OP_CD, DAI.CITY_CD, '') D_CITY_NM ,
+		       DAI.BUS_TIME D_BUS_TIME ,
+		       DAI.COST D_COST ,
+		       DAI.DETAIL_CNTS1 D_DETAIL_CNTS1 ,
+		       DAI.KNM D_KNM ,
+		       DHI.LODGE_KNM H_LODGE_KNM ,
+		       FN_SY_CD_DET_S01('HTGRD', DHI.LODGE_GRADE)  H_LODGE_GRADE ,
+		       DHI.COUNTRY_CD H_COUNTRY_CD ,
+		       DHI.CITY_CD H_CITY_CD ,
+		       DHI.HOTEL_DESC H_HOTEL_DESC ,
+		       DHI.HOMEPAGE_URL H_HOMEPAGE_URL ,
+		       DHI.PHONE_NO H_PHONE_NO ,
+		       DHI.ADDRESS H_ADDRESS ,
+		       DHI.LOCATION_DESC H_LOCATION_DESC ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_AREA_IMG
+		        WHERE  AREA_INFO_TYPE_CD = DAI.AREA_INFO_TYPE_CD
+		        AND    AREA_INFO_SEQ = DAI.AREA_INFO_SEQ
+		        AND    OP_CD = DAI.OP_CD
+		        AND    CITY_CD = DAI.CITY_CD ) D_IMGS ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_OPT_IMG
+		        WHERE  OP_CD = OPT.OP_CD
+		        AND    AREA_CD = OPT.AREA_CD
+		        AND    OPTION_CD = OPT.OPTION_CD ) O_IMGS ,
+		       CASE
+		         WHEN GSD.SCHD_DET_CD = '3005'
+					AND    GSD.SCHD_DET_CD_VAL IS NOT NULL THEN FN_SY_CD_DET_S01('COMMSAF', GSD.SCHD_DET_CD_VAL) /* 안정정보 */
+		         WHEN GSD.SCHD_DET_CD IN ('2001',
+		               '2002',
+		               '2003')
+						AND    GSD.SCHD_DET_CD_VAL IS NOT NULL THEN FN_SY_CD_DET_S01('EAT', GSD.SCHD_DET_CD_VAL) /* 식사 */
+		         WHEN GSD.SCHD_DET_CD = '1003'
+					AND    SUBSTR(GSD.SCHD_DET_CD_VAL, 1, 3) = '50/' THEN 'SHO' /* 쇼핑 */
+		         ELSE GSD.SCHD_DET_CD_VAL
+		       END SCHD_DET_NM ,
+		       (SELECT SUBSTR( XMLAGG( XMLELEMENT(COL , '|', IMG_PATH || '@' || INFO_DESC)
+		                        ORDER BY DISP_ORDER).EXTRACT('//text()').GETSTRINGVAL() , 2)
+		        FROM   DI_HOTEL_IMG
+		        WHERE  OP_CD = DHI.OP_CD
+		        AND    CITY_CD = DHI.CITY_CD
+		        AND    LODGE_CD = DHI.LODGE_CD ) H_IMGS
+		        
+		    , '' AS COUNTRY_CD
+		    , '' AS COUNTRY_NM
+		FROM   ET_MST ET,
+		       GD_SCHD GS,
+		       GD_SCHD_DET GSD,
+		       (SELECT DOI.OP_CD || '/' || DOI.AREA_CD || '/' || DOI.OPTION_CD AS SCHD_DET_CD_VAL,
+		               DOI.*
+		        FROM   DI_OPT_INFO DOI
+		        WHERE  USE_YN = 'Y' ) OPT,
+		       (SELECT DAI.AREA_INFO_TYPE_CD || '/' || DAI.AREA_INFO_SEQ || '/' || DAI.OP_CD || '/' || DAI.CITY_CD AS SCHD_DET_CD_VAL,
+		               DAI.*
+		        FROM   DI_AREA_INFO DAI
+		        WHERE  USE_YN = 'Y' ) DAI,
+		       (SELECT DHI.OP_CD || '|' || DHI.CITY_CD || '|' || DHI.LODGE_CD AS SCHD_DET_CD_VAL,
+		               DHI.*
+		        FROM   DI_HOTEL_INFO DHI
+		        WHERE  USE_YN = 'Y' ) DHI
+		WHERE  ET.EVENT_CD = #event_cd#
+		AND    ET.SCHD_ID = GS.SCHD_ID
+		AND    ET.SCHD_ID = GSD.SCHD_ID
+		AND    NVL(GS.USE_YN, 'Y') = 'Y'
+		AND    GSD.SCHD_DET_CD_VAL = OPT.SCHD_DET_CD_VAL(+)
+		AND    GSD.SCHD_DET_CD_VAL = DAI.SCHD_DET_CD_VAL(+)
+		AND    GSD.SCHD_DET_CD_VAL = DHI.SCHD_DET_CD_VAL(+)
+		AND    GSD.DAY_CNT <![CDATA[ > ]]> 0 
+		AND    GSD.REG_SEQ = #reg_seq#       
+	</select>
+	
+	<!--  상품 상세 UI > 상품평 리스트 조회   -->
+	<select id="RNGoodsDAO.selectReviewListSrch" parameterClass="RNReviewVO" resultClass="java.util.List">
+
+		SELECT EVAL.GOODS_EVAL_SEQ "GOODS_EVAL_SEQ",
+		       EVAL.GOODS_NM "GOODS_NM",
+		       EVAL.GOODS_CD "GOODS_CD",
+		       EVAL.EVAL_TITLE "EVAL_TITLE",
+		       EVAL.EVAL_CNTS "EVAL_CNTS",
+		       EVAL.EVAL_AVG "EVAL_AVG",
+		       EVAL.TOUR_GOAL_CD "TOUR_GOAL_CD",
+		       FN_SY_CD_DET_S01('TRPP', TOUR_GOAL_CD) "CD_NM",
+		       EVAL.GOODS_TYPE_CD "GOODS_TYPE_CD",
+		       FN_SY_CD_DET_S01('GDTYPE', GOODS_TYPE_CD ) "CD_NM01",
+		       EVAL.AREA_CD "AREA_CD",
+		       FN_SY_CD_DET_S01('AREATYPE', AREA_CD ) "CD_NM02",
+		       EVAL.READ_CNT "READ_CNT",
+		       EVAL.RECOMMEND_CNT "RECOMMEND_CNT",
+		       EVAL.DISP_YN "DISP_YN",
+		       EVAL.CUST_CD "CUST_CD",
+		       EVAL.CUST_NM "CUST_NM",
+		       CU.ID "LOTTE_ID",
+		       EVAL.TEL "TEL",
+		       EVAL.MEMO "MEMO",
+		       EVAL.DEL_YN "DEL_YN",
+		       EVAL.INS_DT "INS_DT",
+		       EVAL.INS_ID "INS_ID",
+		       EVAL.UPD_DT "UPD_DT",
+		       EVAL.UPD_ID "UPD_ID" ,
+		       NVL(POINT1.EVAL_POINT, 0) EVAL_POINT1,
+		       NVL(POINT2.EVAL_POINT, 0) EVAL_POINT2,
+		       NVL(POINT3.EVAL_POINT, 0) EVAL_POINT3,
+		       NVL(POINT4.EVAL_POINT, 0) EVAL_POINT4
+		FROM   DI_GOODS_EVAL EVAL ,
+		       CU_MST CU ,
+		       (SELECT POINT.EVAL_ITEM_CD,
+		               POINT.EVAL_POINT,
+		               POINT.GOODS_EVAL_SEQ
+		        FROM   DI_GOODS_EVAL_POINT POINT,
+		               DI_GOODS_EVAL EVAL
+		        WHERE  EVAL.GOODS_CD = 'AAP1001'
+		        AND    EVAL.GOODS_EVAL_SEQ = POINT.GOODS_EVAL_SEQ
+		        AND    POINT.EVAL_ITEM_CD = '01' )POINT1 ,
+		       (SELECT POINT.EVAL_ITEM_CD,
+		               POINT.EVAL_POINT,
+		               POINT.GOODS_EVAL_SEQ
+		        FROM   DI_GOODS_EVAL_POINT POINT,
+		               DI_GOODS_EVAL EVAL
+		        WHERE  EVAL.GOODS_CD = 'AAP1001'
+		        AND    EVAL.GOODS_EVAL_SEQ = POINT.GOODS_EVAL_SEQ
+		        AND    POINT.EVAL_ITEM_CD = '02' )POINT2 ,
+		       (SELECT POINT.EVAL_ITEM_CD,
+		               POINT.EVAL_POINT,
+		               POINT.GOODS_EVAL_SEQ
+		        FROM   DI_GOODS_EVAL_POINT POINT,
+		               DI_GOODS_EVAL EVAL
+		        WHERE  EVAL.GOODS_CD = 'AAP1001'
+		        AND    EVAL.GOODS_EVAL_SEQ = POINT.GOODS_EVAL_SEQ
+		        AND    POINT.EVAL_ITEM_CD = '03' )POINT3 ,
+		       (SELECT POINT.EVAL_ITEM_CD,
+		               POINT.EVAL_POINT,
+		               POINT.GOODS_EVAL_SEQ
+		        FROM   DI_GOODS_EVAL_POINT POINT,
+		               DI_GOODS_EVAL EVAL
+		        WHERE  EVAL.GOODS_CD = 'AAP1001'
+		        AND    EVAL.GOODS_EVAL_SEQ = POINT.GOODS_EVAL_SEQ
+		        AND    POINT.EVAL_ITEM_CD = '04' )POINT4
+		WHERE  EVAL.GOODS_CD = #goods_cd#
+		AND    EVAL.GOODS_EVAL_SEQ = POINT1.GOODS_EVAL_SEQ
+		AND    EVAL.GOODS_EVAL_SEQ = POINT2.GOODS_EVAL_SEQ
+		AND    EVAL.GOODS_EVAL_SEQ = POINT3.GOODS_EVAL_SEQ
+		AND    EVAL.GOODS_EVAL_SEQ = POINT4.GOODS_EVAL_SEQ
+		AND    EVAL.CUST_CD = CU.CUST_CD
+		AND    EVAL.DEL_YN = 'N'
+		AND    DISP_YN != 'N'
+		ORDER BY EVAL.GOODS_EVAL_SEQ DESC
+
+	</select>
+
+	<!--  상품 상세 UI > 호텔 리스트 조회   -->
+	<select id="RNGoodsDAO.selectHotelListSrch" parameterClass="RNHotelVO" resultClass="java.util.List">
+
+		SELECT GHG.HOTEL_GRP_SEQ ,
+		       GHG.HOTEL_GRP_NM ,
+		       GHG.GOODS_CD ,
+		       GHG.COMP_CD ,
+		       ET.EVENT_CD ,
+		       (SELECT CTG_SEQ
+		        FROM   (SELECT GOODS_CD ,
+		                       CTG_SEQ ,
+		                       ROW_NUMBER() OVER(PARTITION BY GOODS_CD
+		                        ORDER BY DISP_ORDER ASC) AS SEQ
+		                FROM   CTG_GOODS
+		                WHERE  CTG_SEQ > (SELECT CTG_SEQ
+		                        FROM   (SELECT CTG_SEQ ,
+		                                       ROWNUM RN
+		                                FROM   CTG
+		                                WHERE  CTG_UPR_SEQ = 0 )
+		                        WHERE  RN = 1 ) )
+		        WHERE  SEQ = '1'
+		        AND    GOODS_CD = ET.GOODS_CD ) CTG_SEQ
+		FROM   GD_HOTEL_GRP GHG,
+		       ET_MST ET
+		WHERE  GHG.GOODS_CD = ET.GOODS_CD
+		AND    GHG.COMP_CD = ET.COMP_CD
+		AND    GHG.HOTEL_GRP_SEQ = ET.HOTEL_GRP_SEQ
+		AND    GHG.GOODS_CD = #goods_cd#
+		AND    GHG.COMP_CD = #comp_cd#
+		AND    GHG.USE_YN = 'Y'
+		AND    ET.START_DAY = #start_day#
+		ORDER BY GHG.HOTEL_GRP_NM
+
+	</select>
+	
+	<!--  상품 상세 UI >  날씨 정보   -->
+	<select id="RNGoodsDAO.selectWeatherListSrch" parameterClass="RNWeatherVO" resultMap="weatherVO">
+
+		SELECT
+		    DISTINCT AA.OP_CD "OP_CD",
+		    AA.COUNTRY_CD "COUNTRY_CD",
+		    AA.CITY_CD "CITY_CD",
+		    AA.CITY_KNM "CITY_KNM",
+		    AA.COUNTRY_NM "COUNTRY_NM",
+		    AA.MAX_TEMPER "MAX_TEMPER",
+		    AA.MIN_TEMPER "MIN_TEMPER",
+		    AA.WEAT_CD "WEAT_CD",
+		    AA.WEAT_NM "WEAT_NM",
+		    BB.DAY_CNT "DAY_CNT",
+		    AA.WEAT_DT "WEAT_DT"
+		FROM (
+		
+		        SELECT A.OP_CD, 
+		           A.COUNTRY_CD, 
+		           A.CITY_CD, 
+		           A.CITY_KNM,
+		           B.COUNTRY_NM,
+		           C.MAX_TEMPER,
+		           C.MIN_TEMPER,
+		           C.WEAT_CD,
+		           C.WEAT_NM,
+		           C.WEAT_DT
+		        FROM DI_CITY_MAP A,
+		           DI_WEATHER_CITY B,
+		           DI_WEATHER C
+		        WHERE A.COUNTRY_MAP_CD = B.COUNTRY_MAP_CD
+		        AND A.CITY_MAP_CD = B.CITY_MAP_CD
+		        AND A.COUNTRY_MAP_CD = C.COUNTRY_MAP_CD
+		        AND A.CITY_MAP_CD = C.CITY_MAP_CD
+		        AND C.WEAT_DT <![CDATA[ = ]]> #weatDt#
+		
+		        UNION ALL
+		
+		        SELECT A.OP_CD,
+		           A.COUNTRY_CD,
+		           A.CITY_CD, 
+		           A.CITY_KNM,
+		           '대한민국' COUNTRY_NM,
+		           C.MAX_TEMPER,
+		           C.MIN_TEMPER,
+		           C.WEAT_CD,
+		           C.WEAT_NM,
+		           C.WEAT_DT
+		        FROM DI_CITY_MAP A,
+		           DI_DOM_WEATHER_CD B,
+		           DI_DOM_WEATHER C
+		        WHERE A.CITY_MAP_CD = B.CITY_MAP_CD
+		        AND A.COUNTRY_MAP_CD = C.COUNTRY_MAP_CD
+		        AND A.CITY_MAP_CD = C.CITY_MAP_CD     
+		        AND C.WEAT_DT <![CDATA[ = ]]> #weatDt#
+		) AA, (
+		    SELECT DISTINCT DAY_CNT, OP_CD, CITY_CD
+		     FROM (
+		          SELECT CASE WHEN SCHD_DET_CD  = '1001' THEN SUBSTR(SCHD_DET_CD_VAL, 1, INSTR(SCHD_DET_CD_VAL, '/', 1, 1) - 1)
+		                    WHEN SCHD_DET_CD  = '1003' THEN DECODE(D_COUNTRY_CD,'KR','DO','OT')      
+		                    WHEN SCHD_DET_CD  = '1004' THEN DECODE(O_COUNTRY_CD,'KR','DO','OT')       
+		                    WHEN SCHD_DET_CD  = '2004' THEN DECODE(H_COUNTRY_CD,'KR','DO','OT')      
+		               END AS OP_CD,
+		               CASE WHEN SCHD_DET_CD  = '1001' THEN SUBSTR(SCHD_DET_CD_VAL, INSTR(SCHD_DET_CD_VAL, '/', 1, 1) + 1)
+		                    WHEN SCHD_DET_CD  = '1003' THEN D_CITY_CD 
+		                    WHEN SCHD_DET_CD  = '1004' THEN O_CITY_CD
+		                    WHEN SCHD_DET_CD  = '2004' THEN H_CITY_CD   
+		               END AS CITY_CD,
+		               DAY_CNT,
+		               SEQ
+		         FROM
+		         (
+		            SELECT  GSD.SCHD_ID
+		                    , GSD.REG_SEQ
+		                    , GSD.DAY_CNT
+		                    , GSD.SEQ
+		                    , GSD.SCHD_DET_CD
+		                    , GSD.SCHD_DET_CD_VAL
+		                    , OPT.COUNTRY_CD O_COUNTRY_CD
+		                    , OPT.CITY_CD O_CITY_CD
+		                    , DAI.COUNTRY_CD D_COUNTRY_CD
+		                    , DAI.CITY_CD D_CITY_CD
+		                    , DHI.COUNTRY_CD H_COUNTRY_CD
+		                    , DHI.CITY_CD H_CITY_CD
+		             FROM GD_SCHD GS,
+		                  GD_SCHD_DET GSD,
+		                  (
+		                    SELECT DOI.OP_CD || '/' || DOI.AREA_CD || '/' || DOI.OPTION_CD AS SCHD_DET_CD_VAL, 
+		                           DOI.*
+		                      FROM DI_OPT_INFO DOI
+		                     WHERE USE_YN = 'Y'
+		                  ) OPT,
+		                  (
+		                   SELECT DAI.AREA_INFO_TYPE_CD || '/' || DAI.AREA_INFO_SEQ || '/' || DAI.OP_CD || '/' || DAI.CITY_CD AS SCHD_DET_CD_VAL,
+		                           DAI.*
+		                      FROM DI_AREA_INFO DAI
+		                     WHERE USE_YN = 'Y'
+		                   ) DAI,
+		                  (SELECT DHI.OP_CD || '|' || DHI.CITY_CD || '|' || DHI.LODGE_CD AS SCHD_DET_CD_VAL,
+		                          DHI.*
+		                     FROM DI_HOTEL_INFO DHI
+		                    WHERE USE_YN = 'Y'
+		                   ) DHI        
+		            WHERE GS.SCHD_ID = DECODE(#schdId#, '', (SELECT to_char(schd_id) FROM ET_MST WHERE EVENT_CD = #eventCd#), #schdId#)
+		              AND GS.SCHD_ID = GSD.SCHD_ID
+		              AND NVL(GS.USE_YN,'Y') = 'Y'
+		              AND GSD.SCHD_DET_CD IN ('1001', '1003','1004','2004')
+		              AND GSD.SCHD_DET_CD_VAL = OPT.SCHD_DET_CD_VAL(+)
+		              AND GSD.SCHD_DET_CD_VAL = DAI.SCHD_DET_CD_VAL(+)
+		              AND GSD.SCHD_DET_CD_VAL = DHI.SCHD_DET_CD_VAL(+)
+		          ) 
+		    ) WHERE OP_CD IN ('DO','OT')
+		        AND CITY_CD IS NOT NULL
+		    ORDER BY DAY_CNT
+		)BB
+		WHERE AA.OP_CD = BB.OP_CD
+		AND AA.CITY_CD = BB.CITY_CD
+		
+		<isGreaterThan property="dayCnt" compareValue="0">	
+			AND BB.DAY_CNT = #dayCnt#
+		</isGreaterThan>		
+		
+		<isNotEmpty property="cityKnm">
+			AND AA.CITY_KNM = #cityKnm#
+		</isNotEmpty>		
+	</select>		
+	
+	<!--  상품 상세 UI >  날씨 정보   -->
+	<select id="RNGoodsDAO.selectTimeDifferCurrencyListSrch" parameterClass="RNTimeDifferCurrencyVO" resultMap="timeDifferCurrencyVO">
+
+
+		SELECT COUNTRY_KNM
+					, CITY_KNM, NOW_TIME
+					, NVL(TIME_DIFF, 0) AS TIME_DIFF
+					, OP_CD
+					, COUNTRY_CD
+					, CITY_CD
+					, CURRENCY_NM
+					, CASH_BUY_RATE 
+		FROM (
+			SELECT /*+ index_ss(B PK_DI_CITY) */
+				DISTINCT A.COUNTRY_KNM "COUNTRY_KNM", 
+									  B.CITY_KNM "CITY_KNM", 
+									  (sysdate + (NVL(B.TIME_DIFF, A.TIME_DIFF)/24)) "NOW_TIME",
+									  NVL(DECODE(B.TIME_DIFF,0, A.TIME_DIFF), DECODE(A.TIME_DIFF,0,B.TIME_DIFF)) "TIME_DIFF",
+							   A.OP_CD,
+							   A.COUNTRY_CD,
+							   B.CITY_CD,
+							   C.CURR_CD AS CURRENCY_NM,     
+							   C.BAS_RATE AS CASH_BUY_RATE    
+						 FROM DI_COUNTRY A
+						 , DI_CITY B
+						 , (  SELECT   CURR_CD
+								 			, BAS_RATE
+							FROM  SY_EXCHANGE SE
+						   WHERE  EXISTS ( SELECT 'O' 
+						   							FROM ( SELECT EXC_DT
+						   												, EXC_SEQ 
+									  							FROM ( SELECT /*+ index_desc(X PK_SY_EXCHANGE) */
+									  											TO_CHAR(EXC_DT, 'yyyyMMdd') AS EXC_DT
+									  											, EXC_SEQ
+											  								FROM SY_EXCHANGE x
+<!-- 											 							ORDER BY EXC_DT DESC, EXC_SEQ DESC -->
+										 ) WHERE ROWNUM = 1
+									) SE1
+<!-- 									 WHERE SE1.EXC_DT = TO_CHAR(SE.EXC_DT, 'yyyyMMdd') -->
+									 WHERE SE.EXC_DT between to_date(SE1.EXC_DT||'000000','yyyymmddhh24miss') and to_date(SE1.EXC_DT||'235959','yyyymmddhh24miss')
+											AND SE1.EXC_SEQ = SE.EXC_SEQ
+							   )
+				 ) C
+               WHERE A.COUNTRY_CD=B.COUNTRY_CD
+                  AND  NVL(B.TIME_DIFF, A.TIME_DIFF) IS NOT NULL 
+                   AND  A.EX_RATE = C.CURR_CD(+)
+                  AND  EXISTS (   
+                        SELECT DISTINCT OP_CD, CITY_CD
+                        FROM (
+                             SELECT CASE WHEN SCHD_DET_CD  = '1001' THEN SUBSTR(SCHD_DET_CD_VAL, 1, INSTR(SCHD_DET_CD_VAL, '/', 1, 1) - 1)
+                                       WHEN SCHD_DET_CD  = '1003' THEN DECODE(D_COUNTRY_CD,'KR','DO','OT')      
+                                       WHEN SCHD_DET_CD  = '1004' THEN DECODE(O_COUNTRY_CD,'KR','DO','OT')       
+                                       WHEN SCHD_DET_CD  = '2004' THEN DECODE(H_COUNTRY_CD,'KR','DO','OT')      
+                                  END AS OP_CD,
+                                  CASE WHEN SCHD_DET_CD  = '1001' THEN SUBSTR(SCHD_DET_CD_VAL, INSTR(SCHD_DET_CD_VAL, '/', 1, 1) + 1)
+                                       WHEN SCHD_DET_CD  = '1003' THEN D_CITY_CD 
+                                       WHEN SCHD_DET_CD  = '1004' THEN O_CITY_CD
+                                       WHEN SCHD_DET_CD  = '2004' THEN H_CITY_CD   
+                                  END AS CITY_CD
+                            FROM
+                            (
+                               SELECT  GSD.SCHD_ID
+                                       , GSD.REG_SEQ
+                                       , GSD.DAY_CNT
+                                       , GSD.SEQ
+                                       , GSD.SCHD_DET_CD
+                                       , GSD.SCHD_DET_CD_VAL
+                                       , OPT.COUNTRY_CD O_COUNTRY_CD
+                                       , OPT.CITY_CD O_CITY_CD
+                                       , DAI.COUNTRY_CD D_COUNTRY_CD
+                                       , DAI.CITY_CD D_CITY_CD
+                                       , DHI.COUNTRY_CD H_COUNTRY_CD
+                                       , DHI.CITY_CD H_CITY_CD
+                                FROM GD_SCHD GS,
+                                     GD_SCHD_DET GSD,
+                                     (
+                                       SELECT DOI.OP_CD || '/' || DOI.AREA_CD || '/' || DOI.OPTION_CD AS SCHD_DET_CD_VAL, 
+                                              DOI.*
+                                         FROM DI_OPT_INFO DOI
+                                        WHERE USE_YN = 'Y'
+                                     ) OPT,
+                                     (
+                                       SELECT DAI.AREA_INFO_TYPE_CD || '/' || DAI.AREA_INFO_SEQ || '/' || DAI.OP_CD || '/' || DAI.CITY_CD AS SCHD_DET_CD_VAL,
+                                              DAI.*
+                                         FROM DI_AREA_INFO DAI
+                                        WHERE USE_YN = 'Y'
+                                      ) DAI,
+                                     (SELECT DHI.OP_CD || '|' || DHI.CITY_CD || '|' || DHI.LODGE_CD AS SCHD_DET_CD_VAL,
+                                             DHI.*
+                                        FROM DI_HOTEL_INFO DHI
+                                       WHERE USE_YN = 'Y'
+                                      ) DHI 
+		                    WHERE GS.SCHD_ID = DECODE(#schdId#, '', (SELECT to_char(schd_id) FROM ET_MST WHERE EVENT_CD = #eventCd#), #schdId#)
+                                 AND GS.SCHD_ID = GSD.SCHD_ID
+                                 AND NVL(GS.USE_YN,'Y') = 'Y'
+                                 AND GSD.SCHD_DET_CD IN ('1001', '1003','1004','2004')
+                                 AND GSD.SCHD_DET_CD_VAL = OPT.SCHD_DET_CD_VAL(+)
+                                 AND GSD.SCHD_DET_CD_VAL = DAI.SCHD_DET_CD_VAL(+)
+                                 AND GSD.SCHD_DET_CD_VAL = DHI.SCHD_DET_CD_VAL(+)                                          
+                             )
+                       ) WHERE OP_CD IN ('OT')
+                           AND CITY_CD IS NOT NULL
+                           AND OP_CD = A.OP_CD
+                           AND CITY_CD = B.CITY_CD
+                    
+                 )
+          ) WHERE NVL(TIME_DIFF,0) > 0 OR CASH_BUY_RATE IS NOT NULL
+ 		<isNotEmpty property="countryKnm">
+			AND COUNTRY_KNM = #countryKnm#
+		</isNotEmpty>			
+		ORDER BY COUNTRY_KNM
+
+
+	</select>		
+	
+	<!--  상품 상세 UI >  다른 이용 항공사 조회   -->
+	<select id="RNGoodsDAO.selectETMstOtherAirLineSrch" parameterClass="ETMstOtherAirLineVO" resultMap="otherAirLineVO">
+		SELECT MAX(EVENT_CD) AS EVENT_CD
+                , TRFF_KNM
+                , START_TIME
+                , START_PYUN
+                , START_DAY
+                , START_WDAY
+                , END_TIME
+                , CTG_SEQ
+                , RV_CNT
+                , EV_INWON
+                , PROC_CD
+                , ADULT_PRICE
+                , SEL_TXT
+         FROM (
+
+			SELECT EVENT_CD ,
+			       TRFF_KNM ,
+			       START_TIME ,
+			       START_PYUN ,
+			       START_DAY "START_DAY",
+			       START_WDAY ,
+			       END_TIME ,
+			       CTG_SEQ ,
+			       RV_CNT ,
+			       EV_INWON ,
+			       PROC_CD ,
+			       ADULT_PRICE ,
+			       SUBSTR(START_DAY, 1, 4) || '년 ' || SUBSTR(START_DAY, 5, 2) || '월 ' || SUBSTR(START_DAY, 7, 2) || '일' || '(' || START_WDAY || ') ' || START_TIME || '-' || START_PYUN AS SEL_TXT
+			FROM   (SELECT ET.EVENT_CD ,
+			                       CASE
+			                         WHEN OET.TRFF_CD = 'AIR' THEN TR.TRFF_KNM
+			                         ELSE NVL(FN_SY_CD_DET_S01('TRAFMST', OET.TRFF_CD), ' ')
+			                       END TRFF_KNM,
+			               SUBSTR(ET.START_TIME, 1, 2) || ':' || SUBSTR(ET.START_TIME, 3, 2) START_TIME ,
+			               OET.START_PYUN,
+			               OET.START_DAY,
+			               PRICE.ADULT_PRICE,
+			               decode(to_char(to_date(OET.START_DAY, 'yyyyMMdd'), 'd'), '1', '일' , '2', '월' , '3', '화' , '4', '수' , '5', '목' , '6', '금' , '7', '토') START_WDAY,
+			               SUBSTR(ET.END_TIME, 1, 2) || ':' || SUBSTR(ET.END_TIME, 3, 2) END_TIME,
+			               (SELECT CTG_SEQ
+			                FROM   (SELECT GOODS_CD ,
+			                               CTG_SEQ ,
+			                               ROW_NUMBER() OVER(PARTITION BY GOODS_CD
+			                                ORDER BY DISP_ORDER ASC) AS SEQ
+			                        FROM   CTG_GOODS
+			                        WHERE  CTG_SEQ > (SELECT CTG_SEQ
+			                                FROM   (SELECT CTG_SEQ ,
+			                                               ROWNUM RN
+			                                        FROM   CTG
+			                                        WHERE  CTG_UPR_SEQ = 0 )
+			                                WHERE  RN = 2 ) )
+			                WHERE  SEQ = '1'
+			                AND    GOODS_CD = ET.GOODS_CD ) CTG_SEQ,
+			               NVL ((SELECT COUNT(RES_SEQ)
+			                        FROM   RV_ROSTER RS,
+			                               RV_MST RV
+			                        WHERE  (RS.CANC_CD IS NULL
+			                                OR     RS.CANC_CD = '')
+			                        AND    RV.RES_CD=RS.RES_CD
+			                        AND    ET.EVENT_CD = RV.EVENT_CD
+			                        GROUP BY EVENT_CD ), 0) "RV_CNT",
+			               ET.EV_INWON,
+			               ET.PROC_CD
+			        FROM   (SELECT ETM.*
+			                FROM   ET_MST_USE ETM,
+			                       (SELECT EVENT_CD
+			                        FROM   CTG_EVENT
+			                        WHERE  CTG_SEQ='5813') EVC
+			                WHERE  (ETM.EVENT_CD = EVC.EVENT_CD(+)
+			                        AND    EVC.EVENT_CD IS NULL)
+			                AND    (ETM.EV_CAN_CD IS NULL
+			                        OR     ETM.EV_CAN_CD != '99') ) "ET",
+			               ET_PRICE "PRICE",
+			               GD_MST "GD",
+			               CO_CD_TRAFFIC TR,
+			               ET_MST OET
+			        WHERE  ET.EVENT_CD=PRICE.EVENT_CD
+			        AND    ET.FEE_SEQ=PRICE.FEE_SEQ
+			        AND    ET.GOODS_CD=GD.GOODS_CD
+			        AND    ET.COMP_CD=GD.COMP_CD
+			        AND    GD.GOODS_CD=#goods_cd#
+			        AND    GD.COMP_CD = #comp_cd#
+			        AND    ET.TRFF_CD_SHORT = TR.TRFF_CD_SHORT(+)
+			        AND    ET.EVENT_CD = OET.EVENT_CD(+)
+			        AND    ET.DISP_YN='Y'
+			        AND    ET.START_DAY = #start_day# )
+           ) T1 GROUP BY TRFF_KNM
+           , START_TIME
+           , START_PYUN
+           , START_DAY
+           , START_WDAY
+           , END_TIME
+           , CTG_SEQ
+           , RV_CNT
+           , EV_INWON
+           , PROC_CD
+           , ADULT_PRICE
+           , SEL_TXT
+
+	</select>	
+	
+	<!-- 임직원 유무 조회  -->
+	<select id="RNGoodsDAO.selectCustGrade" parameterClass="String" resultClass="String">
+		SELECT FN_SY_CD_DET_S01('CUGRADE', A.CUST_GRADE_CD) GRADE FROM CU_MST A WHERE A.CUST_CD = #custCd#
+	</select>		 					 	
+</sqlMap>

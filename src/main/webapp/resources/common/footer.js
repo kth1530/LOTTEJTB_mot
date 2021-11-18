@@ -1,0 +1,17 @@
+document.write('<a href="#"  class="go-top"><i class="fa fa-angle-up"></i></a>');
+document.write('<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="foot" >');
+document.write('<ul><li><a href="#"><img src="/resources/images/btn/Footer_home.png" alt=""/></a></li>');
+document.write('<li><a href="#" data-rel="back"><img src="/resources/images/btn/Footer_pre.png" alt=""/></a></li>');
+document.write('<li><a href="#"><img src="/resources/images/btn/Footer_next.png" alt=""/></a></li>');
+document.write('<li><a href="#"><img src="/resources/images/btn/Footer_human.png" alt=""/></a></li>');
+document.write('<li class="sns">');
+document.write('<nav class="containerT">');
+document.write('<a href="https://www.instagram.com/lotteholidays/" class="buttons"></a>');
+document.write('<a href="https://m.facebook.com/lotteholiday/" class="buttons"></a>');
+document.write('<a href="https://story.kakao.com/ch/lottejtb/" class="buttons"></a>');
+document.write('<a href="http://blog.naver.com/lottejtbblog/" class="buttons"></a>');
+document.write('<a href="#" class="buttons"></a>');
+document.write('</nav>');
+document.write('<a href="#" class="snsLink"><img src="/resources/images/btn/Footer_share.png" alt=""/></a>');
+document.write('</nav><div class="blinds"></div>');
+document.write('</li></ul></div>');

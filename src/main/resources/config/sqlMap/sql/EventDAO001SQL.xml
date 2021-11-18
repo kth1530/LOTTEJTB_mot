@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="EventDAO">
+	
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="EventVO"         type="com.lottejtb.event.service.EventVO"/>
+	
+	<!-- 	
+	<resultMap id="event" class="EventVO">
+	 	<result property="rn" column="RN"/>
+	 	<result property="eventNm" column="EVENT_NM"/>
+	 	<result property="eventSeq" column="EVENT_SEQ"/>	 	
+	 	<result property="eventClsCd" column="EVENT_CLS_CD"/>
+		<result property="cnt" column="CNT" jdbcType="CLOB" javaType="String" />
+		<result property="eventSmallImgUrl" column="EVENT_SMALL_IMG_URL"/>
+		<result property="eventBigImgurl" column="EVENT_BIG_IMG_URL"/>
+		<result property="eventFrday" column="EVENT_FR_DAY"/>
+		<result property="eventToday" column="EVENT_TO_DAY"/>
+		<result property="eventFrtm" column="EVENT_FR_TM"/>
+		<result property="eventTotm" column="EVENT_TO_TM"/>
+		<result property="eventTypeCd" column="EVENT_TYPE_CD"/>
+		<result property="dispYn" column="DISP_YN"/>
+		<result property="eventUrl" column="EVENT_URL"/>
+		<result property="roundApplaycnt" column="ROUND_APPLY_CNT"/>
+		<result property="totalWinnerCnt" column="TOTAL_WINNER_CNT"/>
+		<result property="winLimitYn" column="WIN_LIMIT_YN"/>
+		<result property="spotWinYn" column="SPOT_WIN_YN"/>
+		<result property="tempYn" column="TEMP_YN"/>
+		<result property="mngAns" column="MNG_ANS"/>
+		<result property="mapInfo" column="MAP_INFO"/>
+		<result property="eventDesc" column="EVENT_DESC"/>
+		<result property="etcDetDesc" column="ETC_DET_DESC"/>
+					
+    </resultMap>
+     -->
+     
+	<select id="EventDAO.srchEventList" parameterClass = "EventVO" resultClass="EventVO">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (	
+			
+			 SELECT	/*+  'DIeventDAOP00'  */ 
+			   
+				EVENT_SEQ          	"eventSeq",		/*이벤트번호*/
+				EVENT_NM           	"eventNm",		/*이벤트명*/
+				EVENT_CLS_CD       	"eventClsCd",
+				FN_SY_CD_DET_S01('GDTYPE', EVENT_CLS_CD)     "cd_nm01",		
+				EVENT_DET_CLS_CD   	"eventDetClsCd",
+				FN_SY_CD_DET_S01('AREATYPE', EVENT_DET_CLS_CD)     "cd_nm02",		
+				EVENT_SMALL_IMG_URL	"eventSmallImgUrl",
+				EVENT_BIG_IMG_URL  	"eventBigImgurl",
+				EVENT_FR_DAY       	"eventFrday",		/*이벤트시작일자*/
+				EVENT_TO_DAY       	"eventToday",		/*이벤트종료일자*/
+				EVENT_FR_TM        	"eventFrtm",		/*이벤트시작시간*/
+				EVENT_TO_TM        	"eventTotm",		/*이벤트종료시간*/
+				EVENT_TYPE_CD      	"eventTypeCd",		/*진행유형코드[EVTPROC]*/
+				DISP_YN            	"dispYn",		/*진행상태코드[EVTSTS]*/
+				EVENT_URL          	"eventUrl",		/*이벤트URL*/
+				NVL(ROUND_APPLY_CNT,0)    	"roundApplaycnt",		/*회차별응모가능횟수*/
+				NVL(TOTAL_WINNER_CNT,0)   	"totalWinnerCnt",		/*전체당첨자수*/
+				WIN_LIMIT_YN       	"winLimitYn",		/*당첨자제한여부*/
+				SPOT_WIN_YN        	"spotWinYn",		/*즉시당첨여부*/
+				TEMP_YN            	"tempYn",
+				MNG_ANS            	"mngAns",		/*관리정답*/
+				MAP_INFO           	"mapInfo",
+				EVENT_DESC         	"eventDesc",		/*이벤트설명*/
+				INS_DT             	"insDt",		/*등록일시
+				INS_ID             	"insId",		/*등록자번호
+				FN_USERNM_S01(INS_ID) "insEmpNm",		
+				UPD_DT             	"updDt",		/*최종수정일시*/
+				UPD_ID             	"updId",
+				FN_USERNM_S01(UPD_ID) "updEmpNm",
+				CNT                 "cnt",
+				ETC_DET_DESC		"etcDetDesc"
+				
+			FROM	DI_EVENT
+			
+			ORDER BY 	EVENT_SEQ DESC
+		 ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+	</select>
+	
+	<select id="EventDAO.srchEventingList" parameterClass="EventVO" resultClass="EventVO">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (
+			 SELECT	/*+  'DIeventDAOP00'  */ 
+					EVENT_SEQ          																						"eventSeq",			/*이벤트번호*/
+					EVENT_NM           																						"eventNm",			/*이벤트명*/
+					EVENT_CLS_CD       																						"eventClsCd",
+					FN_SY_CD_DET_S01('GDTYPE', EVENT_CLS_CD)																"cd_nm01",		
+					EVENT_DET_CLS_CD   																						"eventDetClsCd",
+					FN_SY_CD_DET_S01('AREATYPE', EVENT_DET_CLS_CD)															"cd_nm02",		
+					EVENT_SMALL_IMG_URL																						"eventSmallImgUrl",
+					EVENT_BIG_IMG_URL  																						"eventBigImgurl",
+					SUBSTR(EVENT_FR_DAY, 0, 4) || '-' || SUBSTR(EVENT_FR_DAY, 5, 2) || '-' || SUBSTR(EVENT_FR_DAY, 7, 2) 	"eventFrday",		/*이벤트시작일자*/
+					SUBSTR(EVENT_TO_DAY, 0, 4) || '-' || SUBSTR(EVENT_TO_DAY, 5, 2) || '-' || SUBSTR(EVENT_TO_DAY, 7, 2) 	"eventToday",		/*이벤트종료일자*/
+					EVENT_FR_TM        																						"eventFrtm",		/*이벤트시작시간*/
+					EVENT_TO_TM        																						"eventTotm",		/*이벤트종료시간*/
+					EVENT_TYPE_CD      																						"eventTypeCd",		/*진행유형코드[EVTPROC]*/
+					DISP_YN            																						"dispYn",			/*진행상태코드[EVTSTS]*/
+					EVENT_URL          																						"eventUrl",			/*이벤트URL*/
+					NVL(ROUND_APPLY_CNT,0)    																				"roundApplaycnt",	/*회차별응모가능횟수*/
+					NVL(TOTAL_WINNER_CNT,0)   																				"totalWinnerCnt",	/*전체당첨자수*/
+					WIN_LIMIT_YN       																						"winLimitYn",		/*당첨자제한여부*/
+					SPOT_WIN_YN        																						"spotWinYn",		/*즉시당첨여부*/
+					TEMP_YN            																						"tempYn",
+					MNG_ANS            																						"mngAns",			/*관리정답*/
+					MAP_INFO           																						"mapInfo",
+					EVENT_DESC         																						"eventDesc",		/*이벤트설명*/
+					INS_DT             																						"insDt",			/*등록일시*/
+					INS_ID             																						"insId",			/*등록자번호*/
+					FN_USERNM_S01(INS_ID) 																					"insEmpNm",		
+					UPD_DT             																						"updDt",			/*최종수정일시*/
+					UPD_ID             																						"updId",
+					FN_USERNM_S01(UPD_ID) 																					"updEmpNm",
+					CNT                 																					"cnt",
+					ETC_DET_DESC																							"etcDetDesc",
+					DISPLAY_TYPE_CD																							"displayTypeCd"
+			  FROM	DI_EVENT
+		     WHERE  TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN EVENT_FR_DAY AND EVENT_TO_DAY 
+		       AND  DISP_YN = 'Y'
+		       AND ((DISPLAY_TYPE_CD = 'MBL') OR (DISPLAY_TYPE_CD = 'ALL') OR (DISPLAY_TYPE_CD IS NULL))
+		      
+		ORDER BY 	EVENT_SEQ DESC
+	 ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+	</select>
+	
+	<select id="EventDAO.srchEventingCnt" parameterClass="EventVO" resultClass="int">
+		SELECT COUNT(1) AS totalcnt
+		  FROM DI_EVENT
+		 WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') <![CDATA[ > ]]> EVENT_TO_DAY
+	</select>
+	
+	<select id="EventDAO.srchEventEndList" parameterClass="EventVO" resultClass="EventVO">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (
+			 SELECT	/*+  'DIeventDAOP00'  */ 
+					EVENT_SEQ          																						"eventSeq",			/*이벤트번호*/
+					EVENT_NM           																						"eventNm",			/*이벤트명*/
+					EVENT_CLS_CD    									  											 		"eventClsCd",
+					FN_SY_CD_DET_S01('GDTYPE', EVENT_CLS_CD)    															"cd_nm01",		
+					EVENT_DET_CLS_CD   																						"eventDetClsCd",
+					FN_SY_CD_DET_S01('AREATYPE', EVENT_DET_CLS_CD)															"cd_nm02",		
+					EVENT_SMALL_IMG_URL																						"eventSmallImgUrl",
+					EVENT_BIG_IMG_URL  																						"eventBigImgurl",
+					SUBSTR(EVENT_FR_DAY, 0, 4) || '-' || SUBSTR(EVENT_FR_DAY, 5, 2) || '-' || SUBSTR(EVENT_FR_DAY, 7, 2) 	"eventFrday",		/*이벤트시작일자*/
+					SUBSTR(EVENT_TO_DAY, 0, 4) || '-' || SUBSTR(EVENT_TO_DAY, 5, 2) || '-' || SUBSTR(EVENT_TO_DAY, 7, 2) 	"eventToday",		/*이벤트종료일자*/
+					EVENT_FR_TM 			   																		       	"eventFrtm",		/*이벤트시작시간*/
+					EVENT_TO_TM        				   																		"eventTotm",		/*이벤트종료시간*/
+					EVENT_TYPE_CD      						   																"eventTypeCd",		/*진행유형코드[EVTPROC]*/
+					DISP_YN            								   														"dispYn",			/*진행상태코드[EVTSTS]*/
+					EVENT_URL        	   		  																			"eventUrl",			/*이벤트URL*/
+					NVL(ROUND_APPLY_CNT,0)    			   																	"roundApplaycnt",	/*회차별응모가능횟수*/
+					NVL(TOTAL_WINNER_CNT,0)   					   															"totalWinnerCnt",	/*전체당첨자수*/
+					WIN_LIMIT_YN       						   																"winLimitYn",		/*당첨자제한여부*/
+					SPOT_WIN_YN        							   															"spotWinYn",		/*즉시당첨여부*/
+					TEMP_YN      	   		      																			"tempYn",
+					MNG_ANS            		   																				"mngAns",			/*관리정답*/
+					MAP_INFO           				   																		"mapInfo",
+					EVENT_DESC         						   																"eventDesc",		/*이벤트설명*/
+					INS_DT             								   														"insDt",			/*등록일시*/
+					INS_ID             			   																			"insId",			/*등록자번호*/
+					FN_USERNM_S01(INS_ID) 				   																	"insEmpNm",		
+					UPD_DT            							  											 			 	"updDt",			/*최종수정일시*/
+					UPD_ID            																			   		 	"updId",
+					FN_USERNM_S01(UPD_ID) 				   																	"updEmpNm",
+					CNT                 																	   				"cnt",
+					ETC_DET_DESC																					   		"etcDetDesc",
+					DISPLAY_TYPE_CD																							"displayTypeCd"
+			  FROM	DI_EVENT
+		     WHERE  TO_CHAR(SYSDATE, 'YYYYMMDD') <![CDATA[ > ]]> EVENT_TO_DAY
+		       AND  DISP_YN = 'Y'
+		       AND 	((DISPLAY_TYPE_CD = 'MBL') OR (DISPLAY_TYPE_CD = 'ALL') OR (DISPLAY_TYPE_CD IS NULL))
+		ORDER BY 	EVENT_SEQ DESC
+	 ) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+	</select>
+	
+	<select id="EventDAO.srchEventEndCnt" parameterClass="EventVO" resultClass="int">
+		SELECT COUNT(1) AS totalcnt
+		  FROM DI_EVENT
+		 WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') NOT BETWEEN EVENT_FR_DAY AND EVENT_TO_DAY
+	</select>
+	
+	<!-- 이벤트  상세 조회수 1증가 -->
+	<update id="EventDAO.eventCnt" parameterClass = "EventVO">
+		UPDATE DI_EVENT
+		SET    CNT = NVL(CNT,0) + 1
+		WHERE  EVENT_SEQ = #eventSeq#
+	</update>
+	
+	<select id="EventDAO.getCnt" parameterClass = "EventVO" resultClass="int">
+		SELECT CNT  "cnt"
+		FROM   DI_EVENT
+		WHERE  EVENT_SEQ = #eventSeq#
+	</select>
+	
+	
+	<!-- 당첨자발표 목록조회-->
+	<select id="EventDAO.winnerList" parameterClass = "EventVO" resultClass="EventVO">
+	SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM ( 
+		SELECT    /*+  'DIeventDAOP00'  */ 
+	        EVENT_SEQ           																					"eventSeq",
+	        EVENT_NM             																					"eventNm",
+	        EVENT_CLS_CD         																					"eventClsCd",
+	        FN_SY_CD_DET_S01('GDTYPE', EVENT_CLS_CD)     															"cd_nm01",
+	        EVENT_DET_CLS_CD       																					"eventDetClsCd",
+	        FN_SY_CD_DET_S01('AREATYPE', EVENT_DET_CLS_CD)		 											    	"cd_nm02",
+	        EVENT_SMALL_IMG_URL    																					"eventSmallImgUrl",
+	        EVENT_BIG_IMG_URL      																					"eventBigImgurl",
+	        SUBSTR(EVENT_FR_DAY, 0, 4) || '-' || SUBSTR(EVENT_FR_DAY, 5, 2) || '-' || SUBSTR(EVENT_FR_DAY, 7, 2) 	"eventFrday",
+			SUBSTR(EVENT_TO_DAY, 0, 4) || '-' || SUBSTR(EVENT_TO_DAY, 5, 2) || '-' || SUBSTR(EVENT_TO_DAY, 7, 2) 	"eventToday",
+	        EVENT_FR_TM            																					"eventFrtm",
+	        EVENT_TO_TM            																					"eventTotm",
+	        EVENT_TYPE_CD          																					"eventTypeCd",
+	        DISP_YN                																					"dispYn",
+	        EVENT_URL              																					"eventUrl",
+	        NVL(ROUND_APPLY_CNT,0)        																			"roundApplaycnt",
+	        NVL(TOTAL_WINNER_CNT,0)       																			"totalWinnerCnt",
+	        WIN_LIMIT_YN           																					"winLimitYn",
+	        SPOT_WIN_YN            																					"spotWinYn",
+	        TEMP_YN                																					"tempYn",
+	        MNG_ANS                																					"mngAns",
+	        MAP_INFO               																					"mapInfo",
+	        EVENT_DESC             																					"eventDesc",
+	        INS_DT                 																					"insDt",
+	        INS_ID                 																					"insId",
+	        FN_USERNM_S01(INS_ID) 																					"insEmpNm",
+	        UPD_DT                 																					"updDt",
+	        UPD_ID                 																					"updId",
+	        FN_USERNM_S01(UPD_ID) 																					"updEmpNm",
+	        DISPLAY_TYPE_CD																							"displayTypeCd",
+	        TEMP_TYPE_CD																							"tempTypeCd"
+		FROM    DI_EVENT 
+		WHERE   EVENT_DESC IS NOT NULL
+		  AND   DISP_YN= #dispYn#
+		  <!--AND   EVENT_NM LIKE '%'||NVL(EVENT_NM,'')||'%'-->
+		  AND   EVENT_TO_DAY <![CDATA[ < ]]> TO_CHAR(SYSDATE,'yyyymmdd')
+		  <!--AND   EVENT_DESC LIKE '%'||NVL(EVENT_DESC,'')||'%'-->
+		  AND   ((DISPLAY_TYPE_CD = 'MBL') OR (DISPLAY_TYPE_CD = 'ALL') OR (DISPLAY_TYPE_CD IS NULL))  
+		  		  
+		ORDER BY     EVENT_SEQ DESC
+	) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+	</select>
+	
+	<select id="EventDAO.winnerCnt" parameterClass="EventVO" resultClass="int">
+	  	SELECT COUNT(1) AS totalcnt
+		  FROM DI_EVENT 
+		 WHERE EVENT_DESC IS NOT NULL
+		   AND DISP_YN= #dispYn#
+		   AND EVENT_NM LIKE '%'||NVL(EVENT_NM,'')||'%'
+		   AND EVENT_TO_DAY <![CDATA[ < ]]> TO_CHAR(SYSDATE,'yyyymmdd')
+		   AND EVENT_DESC LIKE '%'||NVL(EVENT_DESC,'')||'%'
+	</select>
+	
+	
+	
+	<!-- EVENT_SEQ에 해당하는 탬플릿의 상세정보를 조회 -->
+	<select id="EventDAO.templateSrch" parameterClass="EventVO" resultClass="EventVO">
+		SELECT A.EVENT_SEQ         																							"eventSeq",
+			   A.EVENT_NM																									"eventNm",
+			   SUBSTR(A.EVENT_FR_DAY, 0, 4) || '-' || SUBSTR(A.EVENT_FR_DAY, 5, 2) || '-' || SUBSTR(A.EVENT_FR_DAY, 7, 2) 	"eventFrday",
+			   SUBSTR(A.EVENT_TO_DAY, 0, 4) || '-' || SUBSTR(A.EVENT_TO_DAY, 5, 2) || '-' || SUBSTR(A.EVENT_TO_DAY, 7, 2) 	"eventToday",
+			   A.DISPLAY_TYPE_CD																						    "displayTypeCd",
+			   A.MBL_EVENT_URL																								"mblEeventUrl",
+			   A.EVENT_DESC																									"eventDesc",
+			   A.SPOT_WIN_YN																								"spotWinYn",
+			   A.TEMP_TYPE_CD																								"tempTypeCd",
+			   A.ROUND_APPLY_CNT                                                                                            "roundApplyCnt",
+       		   A.MNG_ANS                                                                                                    "mngAns",
+       		   A.EVENT_VOTE1																								"eventVote1",
+       		   A.EVENT_VOTE2																								"eventVote2",
+       		   A.EVENT_VOTE3																								"eventVote3",
+       		   A.EVENT_VOTE4																								"eventVote4",
+       		   A.EVENT_VOTE5																								"eventVote5",
+       		   A.EVENT_VOTE6																								"eventVote6",
+       		   A.EVENT_VOTE7																								"eventVote7",
+       		   A.EVENT_VOTE8																								"eventVote8",
+       		   A.EVENT_VOTE9																								"eventVote9",
+       		   A.EVENT_VOTE10																								"eventVote10",
+       		   A.ETC_DET_DESC																								"etcDetDesc"
+       		   
+		  FROM DI_EVENT A
+	 	  WHERE A.EVENT_SEQ = #eventSeq# 
+	 	   AND  ((A.DISPLAY_TYPE_CD = 'MBL') OR (A.DISPLAY_TYPE_CD = 'ALL') OR (A.DISPLAY_TYPE_CD IS NULL))
+		   
+		 ORDER BY A.EVENT_SEQ DESC
+	</select> 
+	
+	<select id="EventDAO.commentList" parameterClass="EventVO" resultClass="EventVO">
+		SELECT *
+		  FROM (
+			  	SELECT QUERY.*
+			  		 , ROWNUM AS RN
+			  	  FROM(
+						SELECT  EVENT_SEQ						AS eventSeq,
+						        APPLY_SEQ						AS applySeq,
+						        CUST_CD							AS custCd,
+						        CUST_NM							AS custNm,
+						        EVENT_TITLE						AS eventTitle,
+						        EVENT_CNTS						AS eventCnts,
+						        APPLY_NO						AS applyNo,
+						        EVENT_INPUT1					AS eventInput1,
+						        EVENT_INPUT2					AS eventInput2, 
+						        EVENT_INPUT3					AS eventInput3,
+						        EVENT_INPUT4					AS eventInput4, 
+						        EVENT_INPUT5					AS eventInput5, 
+						        EVENT_INPUT6					AS eventInput6,
+						        EVENT_INPUT7					AS eventInput7, 
+						        EVENT_INPUT8					AS eventInput8, 
+						        EVENT_INPUT9					AS eventInput9,
+						        TO_CHAR(INS_DT, 'YYYY-MM-DD') 	AS insDt,
+						        CUST_ID							AS custId,
+						        LOGIN_ID						AS loginId
+						  FROM  DI_EVENT_APPLY
+						 <!--  
+						 WHERE  APPLY_SEQ > (SELECT MAX(APPLY_SEQ)-1000 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq# AND EVENT_INPUT1 = 'Y')
+						   AND EVENT_SEQ = #eventSeq#
+						   AND	EVENT_INPUT1 = 'Y'
+						  -->
+						 WHERE EVENT_SEQ = #eventSeq#
+						   AND EVENT_INPUT1 = 'Y'
+						  ORDER BY INS_DT DESC
+					) QUERY
+			) WHERE RN BETWEEN #startRow# AND #endRow#
+	</select>
+	
+	<select id="EventDAO.commentCnt" parameterClass="EventVO" resultClass="int">
+		SELECT  COUNT(*) AS totalCnt
+		  FROM  DI_EVENT_APPLY
+		 <!--  
+		 WHERE  APPLY_SEQ > (SELECT MAX(APPLY_SEQ)-1000 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq# AND EVENT_INPUT1 = 'Y')
+		   AND EVENT_SEQ = #eventSeq#
+		   AND	EVENT_INPUT1 = 'Y'
+		  -->
+		 WHERE EVENT_SEQ = #eventSeq#
+		   AND EVENT_INPUT1 = 'Y'
+		  ORDER BY INS_DT DESC
+	</select>
+	
+	<select id="EventDAO.votecontentlist" parameterClass="EventVO" resultClass="EventVO">
+		
+	</select>
+	
+	<insert id="EventDAO.insertComment" parameterClass="EventVO">
+		INSERT INTO DI_EVENT_APPLY (
+              EVENT_SEQ
+            , APPLY_SEQ
+            , CUST_CD
+            , CUST_NM
+            , EMAIL
+            , EVENT_TITLE
+            , EVENT_CNTS
+            , WIN_YN
+            , EVENT_INPUT1
+            , INS_DT
+            , CUST_ID
+            , LOGIN_ID
+            , INFLOW_GB
+        ) VALUES (
+              #eventSeq#
+            , (SELECT NVL(MAX(APPLY_SEQ), 0) + 1 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq#)
+            , #custCd#
+            , #custNm#
+            , #email#
+            , #eventTitle#
+            , #eventCnts#
+            , #winYn#
+            , #eventInput1#
+            , SYSDATE
+            , #custId#
+            , #loginId#
+            , 'MO'
+        )
+	</insert>
+	
+	<select id="EventDAO.applyCountCheck" parameterClass="EventVO" resultClass="int">
+		SELECT COUNT(1) AS applyCnt
+		  FROM DI_EVENT_APPLY
+		 WHERE EVENT_SEQ = #eventSeq#
+		   AND CUST_CD = #custCd#
+		   AND EVENT_INPUT1 = 'Y'
+	</select>
+	
+	<delete id="EventDAO.deleteComment" parameterClass="EventVO">
+		UPDATE DI_EVENT_APPLY
+		   SET EVENT_INPUT1 = 'N'
+		 WHERE EVENT_SEQ = #eventSeq#
+		   AND APPLY_SEQ = #applySeq#
+	</delete>
+	
+	<select id="EventDAO.attendApplyCountCheck" parameterClass="EventVO" resultClass="int">
+		SELECT COUNT(1) AS applyCnt
+		  FROM DI_EVENT_APPLY
+		 WHERE EVENT_SEQ = #eventSeq#
+		   AND CUST_CD = #custCd#
+		   AND EVENT_INPUT1= 'Y'
+		   AND TO_CHAR(INS_DT, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD') 
+	</select>
+	
+	<select id="EventDAO.attendChkList" parameterClass="EventVO" resultClass="EventVO">
+		SELECT  EVENT_SEQ						AS eventSeq,
+		        APPLY_SEQ						AS applySeq,
+		        CUST_CD							AS custCd,
+		        CUST_NM							AS custNm,
+		        EVENT_TITLE						AS eventTitle,
+		        EVENT_CNTS						AS eventCnts,
+		        APPLY_NO						AS applyNo,
+		        EVENT_INPUT1					AS eventInput1,
+		        EVENT_INPUT2					AS eventInput2, 
+		        EVENT_INPUT3					AS eventInput3,
+		        EVENT_INPUT4					AS eventInput4, 
+		        EVENT_INPUT5					AS eventInput5, 
+		        EVENT_INPUT6					AS eventInput6,
+		        EVENT_INPUT7					AS eventInput7, 
+		        EVENT_INPUT8					AS eventInput8, 
+		        EVENT_INPUT9					AS eventInput9,
+		        EVENT_CHGUBUN					AS eventChgubun,
+		        TO_CHAR(INS_DT, 'YYYY-MM-DD') 	AS insDt,
+		        CUST_ID							AS custId,
+		        LOGIN_ID						AS loginId
+		  FROM  DI_EVENT_APPLY 
+		 <!-- 
+		 WHERE  APPLY_SEQ > (SELECT MAX(APPLY_SEQ)-1000 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq# AND EVENT_INPUT1 = 'Y')
+		   AND 	EVENT_SEQ = #eventSeq#
+		   AND	EVENT_INPUT1 = 'Y'
+		   AND 	CUST_CD = #custCd#
+		   -->
+		 WHERE  EVENT_SEQ = #eventSeq#
+		   AND	EVENT_INPUT1 = 'Y'
+		   AND 	CUST_CD = #custCd#
+		  ORDER BY INS_DT DESC
+				 
+	</select>
+	
+	<insert id="EventDAO.insertEventEntry" parameterClass="EventVO">
+		INSERT INTO DI_EVENT_APPLY (
+              EVENT_SEQ
+            , APPLY_SEQ
+            , CUST_CD
+            , CUST_NM
+            , EMAIL
+            , EVENT_TITLE
+            , WIN_YN
+            , EVENT_INPUT1
+            , INS_DT
+            , CUST_ID
+            , LOGIN_ID
+            , INFLOW_GB
+        ) VALUES (
+              #eventSeq#
+            , (SELECT NVL(MAX(APPLY_SEQ), 0) + 1 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq#)
+            , #custCd#
+            , #custNm#
+            , #email#
+            , #eventTitle#
+            , #winYn#
+            , #eventInput1#
+            , SYSDATE
+            , #custId#
+            , #loginId#
+            , 'MO'
+        )
+	</insert>
+	
+	<insert id="EventDAO.insertEventQuiz" parameterClass="EventVO">
+		INSERT INTO DI_EVENT_APPLY (
+              EVENT_SEQ
+            , APPLY_SEQ
+            , CUST_CD
+            , CUST_NM
+            , EMAIL
+            , EVENT_TITLE
+            , EVENT_CNTS
+            , WIN_YN
+            , EVENT_INPUT1
+            , INS_DT
+            , CUST_ID
+            , LOGIN_ID
+            , INFLOW_GB
+        ) VALUES (
+              #eventSeq#
+            , (SELECT NVL(MAX(APPLY_SEQ), 0) + 1 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq#)
+            , #custCd#
+            , #custNm#
+            , #email#
+            , #eventTitle#
+            , #eventCnts#
+            , #winYn#
+            , #eventInput1#
+            , SYSDATE
+            , #custId#
+            , #loginId#
+            , 'MO'
+        )
+	</insert>
+	
+	<insert id="EventDAO.insertEventAttend" parameterClass="EventVO">
+		INSERT INTO DI_EVENT_APPLY (
+              EVENT_SEQ
+            , APPLY_SEQ
+            , CUST_CD
+            , CUST_NM
+            , EMAIL
+            , EVENT_TITLE
+            , EVENT_CNTS
+            , WIN_YN
+            , EVENT_INPUT1
+            , EVENT_CHGUBUN
+            , INS_DT
+            , CUST_ID
+            , LOGIN_ID
+            , INFLOW_GB
+        ) VALUES (
+              #eventSeq#
+            , (SELECT NVL(MAX(APPLY_SEQ), 0) + 1 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq#)
+            , #custCd#
+            , #custNm#
+            , #email#
+            , #eventTitle#
+            , #eventCnts#
+            , #winYn#
+            , #eventInput1#
+            , #event_chgubun#
+            , SYSDATE
+            , #custId#
+            , #loginId#
+            , 'MO'
+        )
+	</insert>
+	
+	<insert id="EventDAO.insertEventVote" parameterClass="EventVO">
+		INSERT INTO DI_EVENT_APPLY (
+              EVENT_SEQ
+            , APPLY_SEQ
+            , CUST_CD
+            , CUST_NM
+            , EMAIL
+            , EVENT_TITLE
+            , EVENT_CNTS
+            , WIN_YN
+            , EVENT_INPUT1
+            , EVENT_INPUT2
+            , INS_DT
+            , CUST_ID
+            , LOGIN_ID
+            , INFLOW_GB
+        ) VALUES (
+              #eventSeq#
+            , (SELECT NVL(MAX(APPLY_SEQ), 0) + 1 FROM DI_EVENT_APPLY WHERE EVENT_SEQ = #eventSeq#)
+            , #custCd#
+            , #custNm#
+            , #email#
+            , #eventTitle#
+            , #eventCnts#
+            , #winYn#
+            , #eventInput1#
+            , #eventInput2#
+            , SYSDATE
+            , #custId#
+            , #loginId#
+            , 'MO'
+        )
+	</insert>
+	
+	<select id="EventDAO.ListDetail" parameterClass="EventVO" resultClass="EventVO">
+	
+	</select>
+	
+</sqlMap>

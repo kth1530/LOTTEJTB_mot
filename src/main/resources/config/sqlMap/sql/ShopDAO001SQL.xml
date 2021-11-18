@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="ShopDAO">
+
+	<typeAlias alias="egovMap"      type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="ShopVO"  		type="com.lottejtb.shop.service.ShopVO"/>
+	
+	<resultMap id="shop" class="ShopVO">
+		<result property="siteCd" 		column="SITE_CD"/>
+		<result property="siteNm"		column="SITE_NM"/>
+		<result property="zipCd"		column="ZIP_CD"/>
+		<result property="siteAddr1"	column="SITE_ADDR1"/>
+		<result property="siteAddr2"	column="SITE_ADDR2"/>
+		<result property="siteFax"		column="SITE_FAX"/>
+		<result property="manaDeptCd"	column="MANA_DEPT_CD"/>
+		<result property="url"			column="URL"/>
+		<result property="siteTel1"		column="SITE_TEL1"/>
+		<result property="siteTel2"		column="SITE_TEL2"/>
+		<result property="siteTel3"		column="SITE_TEL3"/>
+		<result property="remark"		column="REMARK"/>
+		<result property="cdNm"			column="CD_NM"/>
+	</resultMap>
+	
+	<select id="ShopDAO.selectShopList" parameterClass="ShopVO" resultMap="shop">
+		<!--  
+		SELECT *
+		  FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY A.SITE_NM) AS NO,
+				   A.SITE_CD,
+			       A.SITE_NM,
+			       A.ZIP_CD,
+			       A.SITE_ADDR1,
+			       A.SITE_ADDR2,
+			       A.SITE_FAX,
+			       A.MANA_DEPT_CD,
+			       A.URL,
+			       A.SITE_TEL1,
+			       A.SITE_TEL2,
+			       A.SITE_TEL3,
+			       A.REMARK,
+				   B.SITE_TYPE_CD,
+				   C.CHA_NM,
+				   C.COMP_TEL1,
+				   C.COMP_TEL2,
+				   C.COMP_TEL3,
+			       D.CD_NM
+			  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+						           ON A.SITE_CD = B.SITE_CD
+								 JOIN  SY_CD_DET D
+						           ON  A.MANA_DEPT_CD = D.CD
+							  	 LEFT JOIN CO_SITE_USER C
+						           ON A.SITE_CD	= C.SITE_CD
+			 WHERE D.GRP_CD = 'SIUF' 
+			   AND B.SITE_TYPE_CD= '50'
+			   AND A.DEL_YN ='N'
+			   <isNotEmpty property="schTxt">
+			    AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+			   </isNotEmpty>
+		) QUERY WHERE QUERY.NO BETWEEN #startRow# AND #endRow#
+		 ORDER BY QUERY.SITE_NM
+		 -->
+		 
+		 SELECT * 
+			FROM(
+				 SELECT ROW_NUMBER() OVER (ORDER BY QUERY.SITE_NM) AS NO
+					        ,QUERY.SITE_CD
+					        ,QUERY.SITE_NM
+					        ,QUERY.ZIP_CD
+					        ,QUERY.SITE_ADDR1
+					        ,QUERY.SITE_ADDR2
+					        ,QUERY.SITE_FAX
+					        ,QUERY.MANA_DEPT_CD
+					        ,QUERY.URL
+					        ,QUERY.SITE_TEL1
+					        ,QUERY.SITE_TEL2
+					        ,QUERY.SITE_TEL3
+					        ,QUERY.REMARK
+					        ,QUERY.CD_NM
+				  FROM (
+						SELECT distinct 
+							   A.SITE_CD,
+						       A.SITE_NM,
+						       A.ZIP_CD,
+						       A.SITE_ADDR1,
+						       A.SITE_ADDR2,
+						       A.SITE_FAX,
+						       A.MANA_DEPT_CD,
+						       A.URL,
+						       A.SITE_TEL1,
+						       A.SITE_TEL2,
+						       A.SITE_TEL3,
+						       A.REMARK,
+						       D.CD_NM
+						  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+									           ON A.SITE_CD = B.SITE_CD
+											 JOIN  SY_CD_DET D
+									           ON  A.MANA_DEPT_CD = D.CD
+										  	 LEFT JOIN CO_SITE_USER C
+									           ON A.SITE_CD	= C.SITE_CD
+						 WHERE D.GRP_CD = 'SIUF' 
+						   	AND A.DEL_YN ='N'
+			         		AND A.AGENT_FLG  = '01'
+			         
+						   <isNotEmpty property="schTxt">
+						    AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+						   </isNotEmpty>
+						   
+					 	ORDER BY A.SITE_NM
+				) QUERY
+			)Z
+			WHERE Z.NO BETWEEN #startRow# AND #endRow#
+	</select>
+	
+	<select id="ShopDAO.selectShopListRoad" parameterClass="ShopVO" resultMap="shop">
+		  SELECT * 
+			FROM(
+				 SELECT ROW_NUMBER() OVER (ORDER BY QUERY.SITE_NM) AS NO
+					        ,QUERY.SITE_CD
+					        ,QUERY.SITE_NM
+					        ,QUERY.ZIP_CD
+					        ,QUERY.SITE_ADDR1
+					        ,QUERY.SITE_ADDR2
+					        ,QUERY.SITE_FAX
+					        ,QUERY.MANA_DEPT_CD
+					        ,QUERY.URL
+					        ,QUERY.SITE_TEL1
+					        ,QUERY.SITE_TEL2
+					        ,QUERY.SITE_TEL3
+					        ,QUERY.REMARK
+					        ,QUERY.CD_NM
+				  FROM (
+						SELECT distinct 
+							   A.SITE_CD,
+						       A.SITE_NM,
+						       A.ZIP_CD,
+						       A.SITE_ADDR1,
+						       A.SITE_ADDR2,
+						       A.SITE_FAX,
+						       A.MANA_DEPT_CD,
+						       A.URL,
+						       A.SITE_TEL1,
+						       A.SITE_TEL2,
+						       A.SITE_TEL3,
+						       A.REMARK,
+						       D.CD_NM
+						  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+									           ON A.SITE_CD = B.SITE_CD
+											 JOIN  SY_CD_DET D
+									           ON  A.MANA_DEPT_CD = D.CD
+										  	 LEFT JOIN CO_SITE_USER C
+									           ON A.SITE_CD	= C.SITE_CD
+					 WHERE D.GRP_CD = 'SIUF' 
+			           AND A.AGENT_FLG  = '01'
+					   AND A.DEL_YN ='N'
+					   AND A.SITE_NM LIKE '로드샵%'
+					   <isNotEmpty property="schTxt">
+					    AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+					   </isNotEmpty>
+					 ORDER BY A.SITE_NM
+				) QUERY 
+			)Z
+		WHERE Z.NO BETWEEN #startRow# AND #endRow#
+	</select>
+	
+	<select id="ShopDAO.selectShopListLotte" parameterClass="ShopVO" resultMap="shop">
+		 SELECT * 
+			FROM(
+				 SELECT ROW_NUMBER() OVER (ORDER BY QUERY.SITE_NM) AS NO
+					        ,QUERY.SITE_CD
+					        ,QUERY.SITE_NM
+					        ,QUERY.ZIP_CD
+					        ,QUERY.SITE_ADDR1
+					        ,QUERY.SITE_ADDR2
+					        ,QUERY.SITE_FAX
+					        ,QUERY.MANA_DEPT_CD
+					        ,QUERY.URL
+					        ,QUERY.SITE_TEL1
+					        ,QUERY.SITE_TEL2
+					        ,QUERY.SITE_TEL3
+					        ,QUERY.REMARK
+					        ,QUERY.CD_NM
+				  FROM (
+						SELECT distinct 
+							   A.SITE_CD,
+						       A.SITE_NM,
+						       A.ZIP_CD,
+						       A.SITE_ADDR1,
+						       A.SITE_ADDR2,
+						       A.SITE_FAX,
+						       A.MANA_DEPT_CD,
+						       A.URL,
+						       A.SITE_TEL1,
+						       A.SITE_TEL2,
+						       A.SITE_TEL3,
+						       A.REMARK,
+						       D.CD_NM
+					  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+								           ON A.SITE_CD = B.SITE_CD
+										 JOIN  SY_CD_DET D
+								           ON  A.MANA_DEPT_CD = D.CD
+									  	 LEFT JOIN CO_SITE_USER C
+								           ON A.SITE_CD	= C.SITE_CD
+					 WHERE D.GRP_CD = 'SIUF' 
+				       AND A.AGENT_FLG  = '01'
+					   AND A.DEL_YN ='N'
+					   AND A.SITE_NM NOT LIKE '로드샵%'
+					   <isNotEmpty property="schTxt">
+					    AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+					   </isNotEmpty>
+					 ORDER BY A.SITE_NM
+				   )QUERY
+		   		)Z 
+		   WHERE Z.NO BETWEEN #startRow# AND #endRow#
+	</select>
+	
+	<select id="ShopDAO.selectShopListCount" parameterClass="ShopVO" resultClass="ShopVO">
+		SELECT COUNT(1) cnt
+		FROM(	
+					SELECT DISTINCT A.SITE_CD
+					  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+									           ON A.SITE_CD = B.SITE_CD
+											 JOIN  SY_CD_DET D
+									           ON  A.MANA_DEPT_CD = D.CD
+										  	 LEFT JOIN CO_SITE_USER C
+									           ON A.SITE_CD	= C.SITE_CD
+					 WHERE D.GRP_CD = 'SIUF'
+			         AND A.AGENT_FLG  = '01'
+					   AND A.DEL_YN = 'N'
+					   <isNotEmpty property="schTxt">
+					   	AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+					   </isNotEmpty>
+		)
+		
+		UNION ALL
+		
+		SELECT COUNT(1) cnt
+		FROM(
+					SELECT DISTINCT A.SITE_CD
+					  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+									           ON A.SITE_CD = B.SITE_CD
+											 JOIN  SY_CD_DET D
+									           ON  A.MANA_DEPT_CD = D.CD
+										  	 LEFT JOIN CO_SITE_USER C
+									           ON A.SITE_CD	= C.SITE_CD
+					 WHERE D.GRP_CD = 'SIUF'
+			         AND A.AGENT_FLG  = '01'
+					   AND A.DEL_YN = 'N'
+					   AND A.SITE_NM LIKE '로드샵%'
+					   <isNotEmpty property="schTxt">
+				    	AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+				  	   </isNotEmpty>
+		)
+		
+		UNION ALL
+		
+		SELECT COUNT(1) cnt
+		FROM(
+				SELECT DISTINCT A.SITE_CD
+				  FROM CO_SITE_MST A JOIN CO_SITE_TYPE_INFO B
+								           ON A.SITE_CD = B.SITE_CD
+										 JOIN  SY_CD_DET D
+								           ON  A.MANA_DEPT_CD = D.CD
+									  	 LEFT JOIN CO_SITE_USER C
+								           ON A.SITE_CD	= C.SITE_CD
+				 WHERE D.GRP_CD = 'SIUF'
+		         AND A.AGENT_FLG  = '01'
+				   AND A.DEL_YN = 'N'
+				   AND A.SITE_NM NOT LIKE '로드샵%'
+				   <isNotEmpty property="schTxt">
+				    AND A.SITE_NM LIKE '%' || #schTxt# || '%'
+				   </isNotEmpty>
+		   )
+	</select>
+</sqlMap>

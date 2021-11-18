@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="RsvAirDAO">
+
+  <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+  <typeAlias alias="rsvAirVO" type="com.lottejtb.front.air.service.RsvAirVO"/>
+  <typeAlias alias="rsvAirPaxVO" type="com.lottejtb.front.air.service.RsvAirPaxVO"/> 
+  <typeAlias alias="rsvAirItinVO" type="com.lottejtb.front.air.service.RsvAirItinVO"/> 
+  <typeAlias alias="faFitAtxtCdVO" type="com.lottejtb.front.service.FaFitAtxtCdVO"/>   
+    
+  <!-- 항공 예약내역 조회 -->
+  <select id="RsvAirDAO.selectRsvAir" parameterClass="rsvAirVO" resultClass="rsvAirVO">
+
+		SELECT MT.AIR_RSV_SEQNO AS airRsvSeqno ,
+			   NVL((SELECT M1.SALE_AMT_AIR FROM FA_FIT_RSV_MST M1 WHERE M1.AIR_RSV_SEQNO = MT.AIR_RSV_SEQNO), 0) AS saleAmtAir,
+		       MT.ITIN_SHAPE_GB AS itinShapeGb ,
+		       MT.RSV_NM_ID AS rsvNmId ,
+		       MT.RSV_STATE_GB AS rsvStateGb ,
+		       (SELECT CD_NM_KR
+		        FROM   COM_SYS_CD
+		        WHERE  GRP_CD = 'AR005'
+		        AND    CD = MT.RSV_STATE_GB) AS rsvStateNm ,
+		       MT.FARE_STATE_GB AS fareStateGb ,
+		       (SELECT CD_NM_KR
+		        FROM   COM_SYS_CD
+		        WHERE  GRP_CD = 'AR007'
+		        AND    CD = MT.FARE_STATE_GB) AS fareStateNm ,
+		       TO_CHAR(MT.RSV_DTT, 'YYYY.MM.DD') AS rsvDtt ,
+		       MT.TOT_SALE_AMT AS totSaleAmt ,
+		       MT.TOT_TASF_AMT AS totTasfAmt ,
+		       ITIN_DEP.FLTNO AS depFltno ,
+		       ITIN_DEP.DEP_CD AS depCd ,
+		       (SELECT
+		                       CASE
+		                         WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                         ELSE X.AIRPORT_KR_NM
+		                       END
+		        FROM   COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y ON X.NATION_CD = Y.NATION_CD
+		        AND    X.CT_CD = Y.CT_CD
+		        WHERE  X.AIRPORT_CD = ITIN_DEP.DEP_CD) AS depNm ,
+		       SUBSTR(ITIN_DEP.DEP_DT, 0, 4) || '.' || SUBSTR(ITIN_DEP.DEP_DT, 5, 2) || '.' || SUBSTR(ITIN_DEP.DEP_DT, 7, 2) AS depDt ,
+		       ITIN_DEP.DEP_HM AS depHm ,
+		       ITIN_DEP.ARR_CD AS arrCd ,
+		       (SELECT
+		                       CASE
+		                         WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                         ELSE X.AIRPORT_KR_NM
+		                       END
+		        FROM   COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y ON X.NATION_CD = Y.NATION_CD
+		        AND    X.CT_CD = Y.CT_CD
+		        WHERE  X.AIRPORT_CD = ITIN_DEP.ARR_CD) AS firstArrNm ,
+		       ITIN_ARR.FLTNO AS arrFltno ,
+		       ITIN_ARR.ARR_CD AS arrCd,
+		       (SELECT
+		                       CASE
+		                         WHEN NVL(X.AIRPORT_KR_NM, '') = '' THEN Y.CT_KR_NM
+		                         ELSE X.AIRPORT_KR_NM
+		                       END
+		        FROM   COM_AIRPORTCD X LEFT OUTER JOIN COM_CTCD Y ON X.NATION_CD = Y.NATION_CD
+		        AND    X.CT_CD = Y.CT_CD
+		        WHERE  X.AIRPORT_CD = ITIN_ARR.ARR_CD) AS lastArrNm ,
+		       SUBSTR(ITIN_ARR.ARR_DT, 0, 4) || '.' || SUBSTR(ITIN_ARR.ARR_DT, 5, 2) || '.' || SUBSTR(ITIN_ARR.ARR_DT, 7, 2) AS lastArrDt ,
+		       ITIN_ARR.ARR_HM AS lastArrHm ,
+		       PAX.ADT AS adt ,
+		       PAX.CHD AS chd ,
+		       PAX.INF AS inf ,
+		       SUBSTR(MT.PAYMTTL_DT, 0, 4) || '.' || SUBSTR(MT.PAYMTTL_DT, 5, 2) || '.' || SUBSTR(MT.PAYMTTL_DT, 7, 2) AS payMtDt,
+		       SUBSTR( MT.PAYMTTL_HM, 0, 2) || ':' || SUBSTR(MT.PAYMTTL_HM, 3, 4)  AS payMtHm,
+		       MT.CARRIER_CD as carrierCd,
+		       (SELECT CARRIER_EN_NM FROM COM_CARRIERCD where CARRIER_CD = MT.CARRIER_CD) as carrierNm,
+		       (SELECT CARRIER_KR_NM FROM COM_CARRIERCD where CARRIER_CD = MT.RSV_STATE_GB) as deptFlightNm,
+		       MT.RSV_NM_ID as rsvNmId,
+		       MT.RSV_NM as rsvNm,
+		       MT.RSV_NM_HTEL as rsvNmHtel,
+		       MT.RSV_NM_EMAIL as rsvNmEmail
+		       
+		       
+		FROM   AIR_RSV_MST MT LEFT OUTER JOIN (SELECT A.AIR_RSV_SEQNO , A.FLTNO , A.DEP_CD , A.DEP_DT , A.DEP_HM , A.ARR_CD
+		        FROM   AIR_ITIN_INF A INNER JOIN (SELECT AIR_RSV_SEQNO , MIN(ITIN_GRP_NO) AS GRP_NO
+		                FROM   AIR_ITIN_INF
+		                GROUP BY AIR_RSV_SEQNO ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		        AND    A.ITIN_GRP_NO = B.GRP_NO ) ITIN_DEP ON MT.AIR_RSV_SEQNO = ITIN_DEP.AIR_RSV_SEQNO LEFT OUTER JOIN (SELECT A.AIR_RSV_SEQNO , A.FLTNO , A.ARR_CD , A.ARR_DT , A.ARR_HM
+		        FROM   AIR_ITIN_INF A INNER JOIN (SELECT AIR_RSV_SEQNO , MAX(ITIN_GRP_NO) AS GRP_NO
+		                FROM   AIR_ITIN_INF
+		                GROUP BY AIR_RSV_SEQNO ) B ON A.AIR_RSV_SEQNO = B.AIR_RSV_SEQNO
+		        AND    A.ITIN_GRP_NO = B.GRP_NO
+		        AND    B.GRP_NO <![CDATA[ <> ]]> 1
+		        ORDER BY A.AIR_RSV_SEQNO ) ITIN_ARR ON MT.AIR_RSV_SEQNO = ITIN_ARR.AIR_RSV_SEQNO LEFT OUTER JOIN (SELECT C.AIR_RSV_SEQNO , SUM(C.ADT) AS ADT , SUM(C.CHD) AS CHD , SUM(C.INF) AS INF
+		        FROM   (SELECT AIR_RSV_SEQNO ,
+		                       COUNT(
+		                                                       CASE
+		                                                         WHEN PAX_TY_GB = 'ADT' THEN 1
+		                                                       END) ADT ,
+		                       COUNT(
+		                                                       CASE
+		                                                         WHEN PAX_TY_GB = 'CHD' THEN 1
+		                                                       END) CHD ,
+		                       COUNT(
+		                                                       CASE
+		                                                         WHEN PAX_TY_GB = 'INF' THEN 1
+		                                                       END) INF
+		                FROM   AIR_PAX_INF
+		                GROUP BY AIR_RSV_SEQNO, PAX_TY_GB
+		                ORDER BY AIR_RSV_SEQNO ) C
+		        GROUP BY C.AIR_RSV_SEQNO ) PAX ON MT.AIR_RSV_SEQNO = PAX.AIR_RSV_SEQNO
+		WHERE  MT.ITIN_SHAPE_GB IN ('OW', 'RT', 'MT', 'OO')
+		AND    MT.AIR_RSV_SEQNO = #airRsvSeqno#
+		AND ROWNUM <![CDATA[ < ]]> 2
+  </select>
+
+  <!-- 항공 탑승객 정보 조회 -->
+  <select id="RsvAirDAO.selectRsvAirPaxList" parameterClass="rsvAirPaxVO" resultClass="rsvAirPaxVO">
+
+
+		SELECT AP.AIR_RSV_SEQNO AS airRsvSeqNo,
+		       AP.PAX_NO AS paxNo,
+		       AP.GENDER_GB AS genderGb,
+		       AP.KR_NM AS krNm,
+		       AP.EN_SUR_NM AS enSurNm,
+		       AP.EN_FIRST_NM AS enFirstNm,
+		       AP.PASSPORT_YN AS passportYn,
+		       AP.TITLE_TY_GB AS titleTyGb,
+		       AP.PAX_TY_GB AS paxTyGb,
+		       AP.YMD AS ymd,
+		       AP.INF_ACCO_YN AS infAccoYn,
+		       AP.PROOF_CONF_YN AS proofConfYn,
+		       AP.PROOF_CONF_BY_ID AS proofConfById,
+		       AP.PROOF_CONF_DTT AS proofConfDtt,
+		       AP.PARENT_PAX_NO AS parentPaxNo,
+		       AP.TKET_DTT AS tketDtt,
+		       AP.REQ_DTT AS reqDtt,
+		       AP.HTEL AS hTel,
+		       AP.EMAIL AS email,
+		       AP.REGTOR_ID AS regtorId,
+		       AP.REG_DTT AS regDtt,
+		       AP.MODTOR_ID AS modtorId,
+		       AP.MOD_DTT AS modDtt,
+		       AP.TATTOO_PAX_NO AS tattodPaxNo,
+		       PF.TASF_AMT AS tasfAmt
+		FROM   AIR_PAX_INF AP, AIR_PAX_FARE PF
+		WHERE AP.AIR_RSV_SEQNO = PF.AIR_RSV_SEQNO
+		AND AP.PAX_NO = PF.PAX_NO
+		AND AP.AIR_RSV_SEQNO = #airRsvSeqNo#
+		ORDER BY AP.PAX_NO 
+
+
+  </select>
+  
+   <!-- 항공 여정 정보 조회 -->
+  <select id="RsvAirDAO.selectRsvAirItinList" parameterClass="rsvAirItinVO" resultClass="rsvAirItinVO">
+
+		SELECT 
+			AIR_RSV_SEQNO     AS airRsvSeqno,
+			ITIN_GRP_NO       AS itinGrpNo,
+			SEG_NO            AS segNo,
+			DEST_YN           AS destYn,
+			FLTNO             AS fltNo,
+			DEP_CD            AS depCd,
+			ARR_CD            AS arrCd,
+		    SUBSTR(DEP_DT, 0, 4) || '.' || SUBSTR(DEP_DT, 5, 2) || '.' || SUBSTR(DEP_DT, 7, 2) AS depDt ,
+		    SUBSTR(DEP_HM, 0, 2) || ':' || SUBSTR(DEP_HM, 3, 4) AS depHm ,
+		    SUBSTR(ARR_DT, 0, 4) || '.' || SUBSTR(ARR_DT, 5, 2) || '.' || SUBSTR(ARR_DT, 7, 2) AS arrDt ,
+		    SUBSTR(ARR_HM, 0, 2) || ':' || SUBSTR(ARR_HM, 3, 4) AS arrHm ,
+			CABIN_CLAS        AS cabinClass,
+			BOOKING_CLAS      AS bookingClass,
+			SEAT_QTY          AS seatQty,
+			PAX_QTY           AS paxQty,
+			SEAT_STATE        seatState,
+		    SUBSTR(FLY_DURATION_HM, 0, 2) || '시간 ' || SUBSTR(FLY_DURATION_HM, 3, 4) || '분' AS flyDurationHm ,
+			REGTOR_ID         AS regtorId,
+			REG_DTT           AS regDtt,
+			MODTOR_ID         AS modtorId,
+			MOD_DTT           AS modDtt,
+			CARRIER_CD        AS carrierCd,
+			OP_CARRIER_CD     AS opCarrierCd
+		FROM   AIR_ITIN_INF
+		WHERE  AIR_RSV_SEQNO = #airRsvSeqno#
+		 
+  </select>
+  
+  <!-- 자유여행  상용문구 조회 -->
+  <select id="RsvAirDAO.selectRsvFitAtxt" parameterClass="faFitAtxtCdVO" resultClass="faFitAtxtCdVO">
+		SELECT 	
+		    GRP_CD as grpCd,
+		    ATXT_CD as atxtCd,
+		    SMS as sms,
+		    EMAIL_TITLE as emailTitle,
+		    EMAIL_CONT as emailCont,
+		    USER_DIVI as userDivi,
+		    USE_YN as useYn,
+		    REGTOR_ID as regtorId,
+		    REG_DTT as regDtt,
+		    MODTOR_ID as modtorId,
+		    MOD_DTT as modDtt
+		
+		FROM FA_FIT_ATXT_CD
+		WHERE ATXT_CD = #atxtCd#
+  </select>
+     
+</sqlMap>

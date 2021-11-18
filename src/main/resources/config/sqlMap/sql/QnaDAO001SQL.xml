@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="QnaDAO">
+	
+		
+	<typeAlias alias="egovMap"        type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="QnaVO"         type="com.lottejtb.customer.service.QnaVO"/>
+   
+	
+	<select id="QnaDAO.selectQnaListCount" parameterClass="QnaVO" resultClass="int">
+		SELECT
+				COUNT(*) totalCnt
+		  FROM	BE_MST A
+		 WHERE	A.CANC_CD is null
+				AND A.INC_FG = NVL('',A.INC_FG)
+				AND A.CUST_CD = NVL('',A.CUST_CD)
+                AND TO_CHAR(A.INS_DT, 'YYYYMMDD') <![CDATA[ >= ]]> TO_CHAR(SYSDATE-(INTERVAL '1' YEAR), 'YYYYMMDD')
+				AND NVL(A.CONSULT_MST_CD,'null') = NVL(#consultMstCd#,'null')
+				AND A.CHANNEL_CD = NVL(#channelCd#,A.CHANNEL_CD)
+				<isNotEmpty property="searchKeyword">
+				AND A.CONSULT_TITLE LIKE '%' || #searchKeyword# || '%'
+				</isNotEmpty>
+				<isNotEmpty property="custCd">
+				AND A.CUST_CD = #custCd#
+				</isNotEmpty>
+	</select>	
+    
+	<select id="QnaDAO.selectQnaList" parameterClass="QnaVO" resultClass="QnaVO">
+		SELECT * FROM ( SELECT /*+ FIRST_ROWS */ QUERY.*, ROWNUM RN FROM (
+			 SELECT A.CONSULT_CD			AS consultCd
+			      , A.INC_FG				AS incFg
+			      , A.CUST_CD				AS custCd
+			      , A.CONSULT_TITLE			AS consultTitle
+			      , A.CHANNEL_CD			AS channelCd
+			      , A.CONSULT_MST_CD		AS consultMstCd
+			      , A.CONSULT_TYPE_CD		AS consultTypeCd
+			      , A.PROC_CD				AS procCd
+			      , A.INS_DT				AS insDt
+			      , A.TITLE_YN 				AS titleYn
+			      , FN_SY_CD_DET_S01('CONDET', A.CONSULT_TYPE_CD) AS consultTypeNm
+			      , (SELECT COUNT(1) FROM BE_CONSULT C WHERE C.CONSULT_CD = A.CONSULT_CD AND C.CONSULT_DETAIL_CD='A02') AS ansCnt
+			FROM	BE_MST A
+			WHERE A.CANC_CD is null
+				AND A.INC_FG = NVL('',A.INC_FG)
+				AND A.CUST_CD = NVL('',A.CUST_CD)
+                AND TO_CHAR(A.INS_DT, 'YYYYMMDD') <![CDATA[ >= ]]> TO_CHAR(SYSDATE-(INTERVAL '1' YEAR), 'YYYYMMDD')
+				AND NVL(A.CONSULT_MST_CD,'null') = NVL(#consultMstCd#,'null')
+				AND A.CHANNEL_CD = NVL(#channelCd#,A.CHANNEL_CD)
+				<isNotEmpty property="searchKeyword">
+				AND A.CONSULT_TITLE LIKE '%' || #searchKeyword# || '%'
+				</isNotEmpty>
+				<isNotEmpty property="custCd">
+				AND A.CUST_CD = #custCd#
+				</isNotEmpty>
+				ORDER BY A.CONSULT_CD DESC
+		) QUERY  WHERE ROWNUM <![CDATA[ <= ]]> #endRow# ) WHERE RN >= #startRow#
+	</select>
+	
+	<select id="QnaDAO.selectQnaDetail" parameterClass="QnaVO" resultClass="QnaVO">
+			 SELECT
+					A.CONSULT_CD					consultCd,
+					A.NEXT_CONSULT_DAY		        nextConsultDay,
+					A.CONSULT_TITLE					consultTitle,
+					A.CHA_ID						chaId,	               
+					A.INS_DT						insDt,      
+					A.CUST_CD						custCd,              
+					A.RES_CD resCd,             
+					A.START_DAY startDay,            
+					A.AREA_CD areaCd,               
+					A.GOODS_TYPE_CD goodsTypeCd,         
+					A.RES_NM resNm,               
+					A.ADULT_CNT adultCnt,             
+					A.UPD_DT updDt,            
+					A.GRP_NM grpNm,                
+					A.EVENT_CD eventCd,              
+					A.EMAIL email,      
+					A.CONSULT_TYPE_CD consultTypeCd,   
+					A.SMS_YN smsYn,              
+					A.EMAIL_YN emailYn,             
+					A.CHANNEL_CD channelCd,          
+					A.TITLE_YN titleYn,             
+					A.DESC_YN descYn,              
+					A.VIEW_CNT viewCnt, 				
+					A.CONSULT_MST_CD consultMstCd,       
+					fn_sy_cd_det_s01('SITECLASS',A.GRP_SPEC_CD)      grpSpecNm,
+					fn_sy_cd_det_s01('CONDET',A.CONSULT_TYPE_CD)     consultTypeNm, 
+					fn_sy_cd_det_s01('CONTYPE',A.CONSULT_MST_CD)     consultMstNm, 
+					fn_sy_cd_det_s01('JOINCHL',A.CHANNEL_CD)         channelNm, 
+					fn_sy_cd_det_s01('CUCB',A.PROC_CD)               procNm, 
+					(SELECT ADMINNAME FROM ADM_ADMIN WHERE USERID=A.CHA_ID) chaNm,  
+					(SELECT ADMINNAME FROM ADM_ADMIN WHERE USERID=A.UPD_ID) updNm,  
+					FN_SY_DEPT_MST_S01(A.CHA_DEPT_CD) deptNm, 
+					(SELECT COUNT(*) FROM BE_CONSULT B WHERE B.CONSULT_CD = A.CONSULT_CD) addConsultCount,
+					CASE WHEN TEL2  IS NULL OR LENGTH(TEL2)  <![CDATA[<]]> 1 THEN ''
+							ELSE TEL1  || '-' || TEL2  || '-' || TEL3 END  telNum, 
+					CASE WHEN COMP_TEL2  IS NULL OR LENGTH(COMP_TEL2)  <![CDATA[<]]> 1 THEN ''
+							ELSE COMP_TEL1  || '-' || COMP_TEL2  || '-' || COMP_TEL3 END   compTelNum, 
+					CASE WHEN HANDPHONE2 IS NULL OR LENGTH(HANDPHONE2) <![CDATA[<]]> 1 THEN ''
+						 ELSE HANDPHONE1 || '-' || HANDPHONE2 || '-' || HANDPHONE3 END  AS  handPhone, 
+					(SELECT COUNT(*) FROM BE_CONSULT C WHERE C.CONSULT_CD = A.CONSULT_CD AND C.CONSULT_DETAIL_CD='A02') ansCnt,	 
+					REMARK remark,
+					(SELECT CONSULT_DESC FROM BE_CONSULT WHERE CONSULT_CD = #consultCd# AND SEQ = 1 AND CONSULT_DETAIL_CD = 'A02') consultDesc
+			FROM	BE_MST A
+			WHERE   CONSULT_CD = #consultCd#
+			  AND   CANC_CD is null
+	</select>
+	
+	<select id="QnaDAO.selectQnaCode" parameterClass="java.util.HashMap" resultClass="QnaVO">
+		SELECT A.CD				AS cd
+			 , A.CD_NM			AS cdNm
+			 , A.CD_JP_NM		AS cdJpNm
+			 , A.CD_EN_NM		AS cdEnNm
+		  FROM SY_CD_DET A
+		 WHERE A.GRP_CD = #grpCd#
+		   AND A.DEL_YN = 'N'
+		 ORDER BY A.DISP_ORDER ASC, A.CD_NM
+	</select>
+	
+	<insert id="QnaDAO.insertConsultQna" parameterClass="QnaVO">
+		INSERT INTO BE_MST
+		(
+			CONSULT_CD       	,
+			CONSULT_TITLE    	,
+			CONSULT_TYPE_CD  	,
+			CUST_CD          	,
+			RES_NM           	,
+			AGE              	,
+			SEX              	,
+			EMAIL            	,
+			HANDPHONE1       	,
+			HANDPHONE2       	,
+			HANDPHONE3       	,
+			REMARK           	,
+			INS_DT           	,
+			INS_ID           	,
+			SMS_YN           	,
+			EMAIL_YN         	,
+			CHANNEL_CD       	,
+			TITLE_YN         	,
+			INC_FG				,
+			CONSULT_MST_CD		,
+			PROC_CD				,
+			INS_DEPT_CD			,
+			RES_CD
+		) 
+		VALUES
+		(
+			(SELECT fn_be_mst_get_seq(#incFg#) AS CONSULT_CD FROM DUAL)       	,
+			#consultTitle#    	,
+			#consultTypeCd#  	,
+			#custCd#          	,
+			#resNm#           	,
+			#age#              	,
+			#sex#              	,
+			#email#            	,
+			#handphone1#       	,
+			#handphone2#       	,
+			#handphone3#       	,
+			#remark#           	,
+			sysdate           	,
+			#insId#           	,
+			#smsYn#           	,
+			#emailYn#         	,
+			#channelCd#       	,
+			#titleYn#         	,
+			#incFg#				,
+			#consultMstCd#		,
+			#procCd#			,
+			#insDeptCd#			,
+			#resCd#	
+		) 
+	</insert>
+</sqlMap>
